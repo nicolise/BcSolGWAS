@@ -2,7 +2,7 @@
 #101315
 #-------------------------------------------------------------
 rm(list=ls())
-setwd("~/Projects/SlBcGWAS/data")
+setwd("~/Projects/BcSolGWAS/data")
 MyDat <- read.csv("AllResultsSlBc96.csv")
 IsoNm <- read.csv("IsoIDs.csv")
 PlantNm <- read.csv("PlantIDs.csv")
@@ -218,17 +218,52 @@ lsmMod2 <- lmer(Scale.LS ~ Igeno + Species + Igeno:Species + (1|ExpBlock) + (1|E
 #keeping ExpBlock/AgFlat as random because Flat is random
 lsmMod3 <- lmer(Scale.LS ~ Species + ExpBlock + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
 
+#------------------------------------------------------------------------------
+#lsmeans calculations
+#check for multicollinearity of variables
+library("caret")
+ModDat2 <- ModDat[,c("Scale.LS", "Igeno", "Species", "PlGenoNm", "ExpBlock","AgFlat","IndPlant", "AorB")]
+
+#findLinearCombos can only deal with numeric variables, so convert each column
+ModDat2$Igeno.f <- as.numeric(factor(ModDat2$Igeno))
+ModDat2$Species.f <- as.numeric(factor(ModDat2$Species))
+ModDat2$PlGenoNm.f <- as.numeric(factor(ModDat2$PlGenoNm))
+ModDat2$ExpBlock.f <- as.numeric(factor(ModDat2$ExpBlock))
+ModDat2$AgFlat.f <- as.numeric(factor(ModDat2$AgFlat))
+ModDat2$IndPlant.f <- as.numeric(factor(ModDat2$IndPlant))
+ModDat2$AorB.f <- as.numeric(factor(ModDat2$AorB))
+ModDat3 <- ModDat2[,c("Scale.LS", "Igeno.f", "Species.f", "PlGenoNm.f", "ExpBlock.f","AgFlat.f","IndPlant.f", "AorB.f")]
+findLinearCombos(ModDat3) #looks fine
+
 #removed just igeno * plant interactions (and expblock as fixed)
-lsmMod0 <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + ExpBlock + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
+lsmMod0 <- lmer(Scale.LS ~ Igeno + Species + Species/PlGenoNm + ExpBlock + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
 #error: fixed-effect model matrix is rank deficient so dropping 12 columns / coefficients
 
-library("lsmeans")
+library("lsmeans"); 
+#also in lmerTest
 #example(lsmeans)
-mymod.lsm <- lsmeans(lsmMod0, "Igeno")
-contrast(mymod.lsm, "trt.vs.ctrlk") #pairwise comparisons vs. UKRazz
+modIso.lsm <- lsmeans(lsmMod0, "Igeno")
+modPlant.lsm <- lsmeans(lsmMod0, "PlGenoNm")
+LesIso.cn <- contrast(modIso.lsm, "trt.vs.ctrlk") #pairwise comparisons vs. UKRazz
+LesPlant.cn <- contrast(modPlant.lsm, "trt.vs.ctrlk")
+
+summary(LesIso.co)
 lsmeans (mymod.lsm, 'Igeno', contr = "trt.vs.ctrlk")
 #this is incorrect, replace 'Igeno' with what? 'specs' argument
 pairs(mymod.lsm) #pairs of each isolate contrasted
+
+mymod.lsm.Pl <- lsmeans(lsmMod0, "PlGenoNm")
+contrast(mymod.lsm.Pl, "trt.vs.ctrlk") #pairwise comparisons
+lsmeans (mymod.lsm, 'PlGenoNm', contr = "trt.vs.ctrlk")
+warp.lsm <- lsmeans(warp.lm, ~ tension | wool)
+#this is incorrect, replace 'Igeno' with what? 'specs' argument
+pairs(mymod.lsm) #pairs of each isolate contrasted
+myx <- lsmeans(lsmMod0, trt.vs.ctrl~PlGenoNm|Igeno, adjust="none")
+#Error in forceSymmetric(2 * solve(IE2)) : 
+#error in evaluating the argument 'x' in selecting a method for function #'forceSymmetric': Error in solve.default(IE2) : 
+#  system is computationally singular: reciprocal condition number = 8.36832e-17
+myx2 <- lsmeans(lsmMod0, pairwise ~ Igeno) # + PlGenoNm?
+write.csv(myx2, "lsmeans_firsttry.csv")
 
 #more things to try
 # warp.lm <- lm(breaks ~ wool * tension, data = warpbreaks)
