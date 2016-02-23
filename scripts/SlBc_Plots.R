@@ -2,7 +2,7 @@
 #101315
 #-------------------------------------------------------------
 rm(list=ls())
-setwd("~/PhD/Research/Eudicots/Solanum/Analysis/R")
+setwd("~/Projects/BcSolGWAS/data")
 MyDat <- read.csv("AllResultsSlBc96.csv")
 IsoNm <- read.csv("IsoIDs.csv")
 PlantNm <- read.csv("PlantIDs.csv")
@@ -193,7 +193,12 @@ ggplot(FigDat5, aes(x = Species, y = SpMean, group=Igeno))+
 
 library(ggplot2)
 ggplot (data = ModDat, 
-  aes(x=GenFx, y=bigH))+
+  aes(x=Species, y=Scale.LS))+
+  geom_boxplot()
+  
+
+ggplot (data = ModDat, 
+  aes(x=Species, y=Scale.LS))+
   geom_violin(adjust = 0.5, scale = "width", fill="#E6F598")+
   theme_bw()+
   theme(axis.line = element_line(colour = "black"),

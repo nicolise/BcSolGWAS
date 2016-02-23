@@ -1,0 +1,13 @@
+PlantID,PlantGeno,Seq Lin 2014 Nature,Group Lin 2014 Nature,PlantSp,Name,Long,Lat,Site,OgSampSz,OgPopSz,ElevKm
+FL,410,TS-224,BIG,Sl,NA,NA,NA,"Guayaquil Mercado, Guayas, Ecuador",NA,NA,NA
+SD,480,TS-411,PIM,Sp,NA,NA,NA,"Hacienda Santa Inez, Ica, Peru",6,30,0.4
+CA,1547,TS-14,PIM,Sp,NA,-77.933333,0.583333,"Carchi, Ecuador",NA,NA,3
+UT,1589,TS-19 / TS-291,PIM,Sp,NA,-78.740000 ,-8.39,NA,15,50,NA
+PA,1684,NA,NA,Sp,NA,-80.15,-5.1,"Chulucanas, Peru",29,1000,0.09
+IL,2093,TS-15,PIM,Sp,NA,-79.888056,-3.628056,NA,5,5,229
+NY,2176,NA,NA,Sp,NA,-79.008333,-5.141667,"Timbaruca, Peru",1,1,NA
+TX,2706,TS-2,BIG,Sl,Moneymaker,NA,NA,NA,NA,NA,NA
+OR,3008,TS-6,BIG,Sl,San Marzano,NA,NA,NA,NA,NA,NA
+KS,3475,TS-3#,BIG,Sl,M-82,NA,NA,NA,NA,NA,NA
+MA,4345,TS-253#,BIG,Sl,Heinz 1706,NA,NA,NA,NA,NA,NA
+NC,4355,TS-98,CER,Sl,Gold Nugget,NA,NA,NA,NA,NA,NA

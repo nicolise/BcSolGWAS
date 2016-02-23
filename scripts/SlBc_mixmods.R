@@ -187,7 +187,6 @@ ggplot(histdat, aes(x=mids, y=counts)) +
 
 #------------------------------------------------------------------------------------------------
 #full model
-#nesting terms are already included- don't need to add Species as a separate term BUT for random effects (ExpBlock alone) do need a separate term
 
 #error messages: fixed-effect model matrix is rank deficient so dropping 1164 columns / coefficients
 #Warning messages:
@@ -201,22 +200,35 @@ ggplot(histdat, aes(x=mids, y=counts)) +
 #but maybe include a term for "bench"?? random or fixed?
 #ExpBlock/Bench/AgFlat
 
+#nesting terms are already included- don't need to add Species as a separate term BUT for random effects (ExpBlock alone) do need a separate term
 #PlGenoNm is a term nested within Species (but not CODED as if nested within Species = it's not an implicitly nested factor)
 #AgFlat IS implicitly nested within ExpBlock -- let's fix this
 #non-numeric factors to use: Igeno, PlGenoNm, Species, ExpBlock, AgFlat
+#expblock is only 6 terms so I'm going to include it as a fixed effect
 
-#optional to fix: coding of AgFlat so that it is not implicitly nested
-fullmod <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
+# #optional to fix: coding of AgFlat so that it is not implicitly nested
+Sys.time()
+fullmod <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
+Sys.time()
+sink(file='output021716.txt')
+Sys.time()
+#summary(fullmod) # the code generating output
+#Sys.time()
+rand(fullmod)
+Anova(fullmod, type=2)
+anova(fullmod)
+Sys.time()
+sink()
 
-#model for lsmeans - Igeno removed
-lsmMod <- lmer(Scale.LS ~ Species/PlGenoNm + Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
-#model for lsmeans - PlGenoNm removed
-lsmMod2 <- lmer(Scale.LS ~ Igeno + Species + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
-#model for lsmeans - Igeno and PlGenoNm removed
-# lsmMod3 <- lmer(Scale.LS ~ Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
-#gives errors: trying expblock as fixed effect (below)
-#keeping ExpBlock/AgFlat as random because Flat is random
-lsmMod3 <- lmer(Scale.LS ~ Species + ExpBlock + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
+# #model for lsmeans - Igeno removed
+# lsmMod <- lmer(Scale.LS ~ Species/PlGenoNm + Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
+# #model for lsmeans - PlGenoNm removed
+# lsmMod2 <- lmer(Scale.LS ~ Igeno + Species + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
+# #model for lsmeans - Igeno and PlGenoNm removed
+# # lsmMod3 <- lmer(Scale.LS ~ Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
+# #gives errors: trying expblock as fixed effect (below)
+# #keeping ExpBlock/AgFlat as random because Flat is random
+# lsmMod3 <- lmer(Scale.LS ~ Species + ExpBlock + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
 
 #------------------------------------------------------------------------------
 #lsmeans calculations
@@ -236,16 +248,26 @@ ModDat3 <- ModDat2[,c("Scale.LS", "Igeno.f", "Species.f", "PlGenoNm.f", "ExpBloc
 findLinearCombos(ModDat3) #looks fine
 
 #removed just igeno * plant interactions (and expblock as fixed)
-lsmMod0 <- lmer(Scale.LS ~ Igeno + Species + Species/PlGenoNm + ExpBlock + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
+#lsmMod0 <- lmer(Scale.LS ~ Igeno + Species + Species/PlGenoNm + ExpBlock + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
 #error: fixed-effect model matrix is rank deficient so dropping 12 columns / coefficients
 
-library("lsmeans"); 
+#try calculating lsm separately within each plant genotype
+Lesion.lm <- lmer(Scale.LS ~ Igeno + Species + Species/PlGenoNm + ExpBlock + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
+
+#library("lsmeans"); 
 #also in lmerTest
 #example(lsmeans)
-modIso.lsm <- lsmeans(lsmMod0, "Igeno")
-modPlant.lsm <- lsmeans(lsmMod0, "PlGenoNm")
-LesIso.cn <- contrast(modIso.lsm, "trt.vs.ctrlk") #pairwise comparisons vs. UKRazz
-LesPlant.cn <- contrast(modPlant.lsm, "trt.vs.ctrlk")
+lsm.options(pbkrtest.limit = 6285)
+lsm.options(disable.pbkrtest=TRUE)
+LesIso.lsm <- lsmeans(Lesion.lm, "Igeno")
+s <- summary(LesIso.lsm)
+class(s)
+s[c("lsmean", "SE")]
+LesIso.cn <- contrast(LesIso.lsm, "trt.vs.ctrlk") #pairwise comparisons vs. UKRazz
+#not working for PlGenoNm
+
+lsmeans(fm17, "Treatment")
+pairs(.Last.value)
 
 summary(LesIso.co)
 lsmeans (mymod.lsm, 'Igeno', contr = "trt.vs.ctrlk")

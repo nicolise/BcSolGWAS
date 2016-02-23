@@ -2,12 +2,15 @@
 #101315
 #-------------------------------------------------------------
 rm(list=ls())
-setwd("~/PhD/Research/Eudicots/Solanum/Analysis/R")
+setwd("~/Projects/BcSolGWAS/data")
 MyDat <- read.csv("AllResultsSlBc96.csv")
 IsoNm <- read.csv("IsoIDs.csv")
 PlantNm <- read.csv("PlantIDs.csv")
 AddUnits <- read.csv("AddUnits.csv")
 AtDat <- read.csv("96BcRAWlesiondata.csv")
+CiDat <- read.csv("CiModelData.csv")
+GmDat <- read.csv("GmModelData.csv")
+
 names(AtDat)
 ?anova
 
@@ -99,55 +102,63 @@ ModDat <- merge(ModDat, PlGenNum, by="Pgeno")
 names(ModDat)
 List1 <- unique(ModDat$Igeno)
 List2 <- unique(AtDat$Isolate)
+List3 <- unique(CiDat$IsolateID)
+List4 <- unique(GmDat$isolatename)
 AtDat <- AtDat[AtDat$Isolate!="Ctrl",]
-df1 <- data.frame(matrix(unlist(List1), nrow=100, byrow=T),stringsAsFactors=FALSE)
+df1 <- data.frame(matrix(unlist(List1), nrow=97, byrow=T),stringsAsFactors=FALSE)
 df2 <- data.frame(matrix(unlist(List2), nrow=98, byrow=T),stringsAsFactors=FALSE)
+df3 <- data.frame(matrix(unlist(List3), nrow=98, byrow=T),stringsAsFactors=FALSE)
+df4 <- data.frame(matrix(unlist(List4), nrow=96, byrow=T),stringsAsFactors=FALSE)
 
 #remove unmatched from ModDat
 #AtDatOG <- AtDat
 AtDat<- AtDatOG
 #ModDat <- ModDat[ModDat$Igeno!=c("01.02.05","94.1"),]
+ModDat <- ModDat[ModDat$Igeno!=c("Gallo3"),]
 #AtDat <- AtDat[AtDat$Isolate!="01.02.13", "01.02.19", ,]
 ModDat$Igeno <- revalue(ModDat$Igeno, c("MEAP6G" = "MEAPGG"))
-AtDat$Isolate <- revalue(AtDat$Isolate, c("Apple 404" = "Apple404", "Triple 3 (T3)" = "Triple3", "Davis Navel" = "DavisNavel", "Gallo 2" = "Gallo2", "Kern A2" = "KernA2", "Kern B2" = "KernB2", "Kern B1" = "KernB1", "Apple 517" = "Apple517", "UK razz" = "UKRazz", "Triple 7 (T7)" = "Triple7", "Philo Menlo" = "PhiloMenlo", "Pepper sub" = "PepperSub", "Noble Rot" = "NobleRot", "Mex-03" = "Mex03", "MEA PGG" = "MEAPGG", "Katie tomato" = "KatieTomato", "Gallo 1" = "Gallo1", "Gallo 2" = "Gallo2", "Fresa S.D." = "FresaSD", "Fresa 525" = "Fresa525", "Esparato Fresa" = "EsparatoFresa", "BPA 1 " = "BPA1"))
-
+AtDat$Isolate <- revalue(AtDat$Isolate, c("Apple 404" = "Apple404", "Triple 3 (T3)" = "Triple3", "Davis Navel" = "DavisNavel", "Gallo 2" = "Gallo2", "Kern A2" = "KernA2", "Kern B2" = "KernB2", "Kern B1" = "KernB1", "Apple 517" = "Apple517", "UK razz" = "UKRazz", "Triple 7 (T7)" = "Triple7", "Philo Menlo" = "PhiloMenlo", "Pepper sub" = "PepperSub", "Noble Rot" = "NobleRot", "Mex-03" = "Mex03", "MEA PGG" = "MEAPGG", "Katie tomato" = "KatieTomato", "Gallo 1" = "Gallo1", "Gallo 2" = "Gallo2", "Fresa S.D." = "FresaSD", "Fresa 525" = "Fresa525", "Esparato Fresa" = "EsparatoFresa", "BPA 1" = "BPA1"))
+CiDat$IsolateID <- revalue(CiDat$IsolateID, c("FresaS.D." = "FresaSD", "Katietomato" = "KatieTomato", "MEAP6G" = "MEAPGG", "Mex-03" = "Mex03", "Peppersub" = "PepperSub", "Tripple3(T3)" = "Triple3", "Tripple7(T7)" = "Triple7"))
+GmDat$isolatename <- revalue(GmDat$isolatename, c("Apple 404" = "Apple404", "Triple 3 (T3)" = "Triple3", "Davis Navel" = "DavisNavel", "Gallo 2" = "Gallo2", "Kern A2" = "KernA2", "Kern B2" = "KernB2", "Kern B1" = "KernB1", "Apple 517" = "Apple517", "UK razz" = "UKRazz", "Triple 7 (T7)" = "Triple7", "Philo Menlo" = "PhiloMenlo", "Pepper sub" = "PepperSub", "Noble Rot" = "NobleRot", "MEA P6G" = "MEAPGG", "Katie Tomato" = "KatieTomato", "Gallo 1" = "Gallo1", "Gallo 2" = "Gallo2", "Fresa S.D." = "FresaSD", "Fresa 525" = "Fresa525", "Esparato Fresa" = "EsparatoFresa", "BPA 1 " = "BPA1"))
 #keep only: Experiment, Plant, Isolate, Scale.LS
 #and ExpBlock, Igeno, Pgeno, Species, Scale.LS
-AtDat2 <- AtDat[,c(1,5,7,12)]
-ModDat2 <- ModDat[,c(1,2,3,8,16)]
-names(AtDat2)
-names(ModDat2)
-ModDat2 <- dplyr::select(ModDat2, Experiment = ExpBlock, Plant = Pgeno, Isolate = Igeno, matches("."))
-AtDat2$Species <- "At"
-AtDat2$Experiment <- as.factor(AtDat2$Experiment)
+names(AtDat)
+names(ModDat)
+names(GmDat)
+AtDat2 <- AtDat[,c("Isolate", "Plant", "Scale.LS")]
+SlDat2 <- ModDat[,c("Igeno", "Pgeno", "Scale.LS", "Species")]
+GmDat2 <- GmDat[,c("isolatename", "plantnumber", "Scale.LS")]
+CiDat2 <- CiDat[,c("IsolateID", "PlantGeno", "Scale.LS")]
+SlDat2 <- dplyr::select(SlDat2, Isolate = Igeno, Plant = Pgeno, matches("."))
+GmDat2 <- dplyr::select(GmDat2, Isolate = isolatename, Plant = plantnumber, matches("."))
+CiDat2 <- dplyr::select(CiDat2, Isolate = IsolateID, Plant = PlantGeno, matches("."))
 
-FullDat <- rbind(ModDat2, AtDat2)
+AtDat2$Species <- "At"
+CiDat2$Species <- "Ci"
+GmDat2$Species <- "Gm"
+
+FullDat <- rbind(SlDat2, AtDat2, CiDat2, GmDat2)
 
 #means by isolate*plant
 #violin plot for Wild, Domest, At
 #add "Plant" to list of Les.means factors if want to look within plant genos
 names(FullDat)
 Les.means <- ddply(FullDat, c("Isolate", "Species"), summarise, mean=mean(Scale.LS))
-Les.means$NumSp <- ifelse(Les.means$Species == "At", 3, ifelse (Les.means$Species == "Dm", 1, 2))
+Les.means$NumSp <- ifelse(Les.means$Species == "At", 5, 
+                          ifelse (Les.means$Species == "Ci", 4,
+                                  ifelse (Les.means$Species == "Gm", 3,
+                                     ifelse (Les.means$Species == "Dm", 1, 2))))
 
 #add Les.means scaled to mean of each
 tapply(Les.means$mean, Les.means$Species, mean)
-#At = 0.2649255
-#Dm = 0.7309409
-#Wl = 0.6008727
-Les.means$GpMean <- ifelse(Les.means$Species == "At", 0.2649255, ifelse (Les.means$Species == "Dm", 0.7309409, 0.6008727))
+Les.means$GpMean <- ifelse(Les.means$Species == "At", 0.2649255, 
+                           ifelse(Les.means$Species == "Gm", 0.3300405,
+                                  ifelse(Les.means$Species == "Ci", 1.1561966,
+                           ifelse (Les.means$Species == "Dm", 0.7309409, 0.6008727))))
 Les.means <- transform(Les.means, RelLes=(mean/GpMean))
 
 #add a factor for species x exp
-Les.means2 <- ddply(FullDat, c("Isolate", "Species", "Experiment"), summarise, mean=mean(Scale.LS))
-Les.means2$NumSp <- ifelse(Les.means2$Species == "At", 3, ifelse (Les.means2$Species == "Dm", 1, 2))
-tapply(Les.means2$mean, Les.means2$Species, mean)
-#At = 0.2631917
-#Dm = 0.7366425
-#Wl = 0.620993
-Les.means2$GpMean <- ifelse(Les.means2$Species == "At", 0.2631917, ifelse (Les.means2$Species == "Dm", 0.7366425, 0.620993))
-Les.means2 <- transform(Les.means2, RelLes=(mean/GpMean))
-Les.means2$ExpbySp <- paste(Les.means2$NumSp, Les.means2$Experiment, sep='')
+#Les.means2$ExpbySp <- paste(Les.means2$NumSp, Les.means2$Experiment, sep='')
 
 
 #-------------------------------------------------------------------------
@@ -165,8 +176,8 @@ ggplot(Les.means, aes(x = NumSp, y = RelLes))+
   geom_point()+
   theme_bw()+
   geom_line(size=1, aes(color=factor(mRL), group=factor(Isolate)), show_guide=F)+
-  scale_x_discrete(breaks=c("1","2","3"),
-                   labels=c(expression(paste(italic("S. lycopersicum"))), expression(paste(italic("S. pimpinellifolium"))), expression(paste(italic("A. thaliana")))))+
+  scale_x_discrete(breaks=c("1","2","3", "4","5"),
+                   labels=c(expression(paste(italic("S. lycopersicum"))), expression(paste(italic("S. pimpinellifolium"))), expression(paste(italic("G. max"))), expression(paste(italic("C. intybus"))), expression(paste(italic("A. thaliana")))))+
   theme(text = element_text(size=24), axis.text.x = element_text(angle = 15, hjust = 1, vjust=1))+
   labs(y=expression(Relative ~ Lesion ~ Area), x=element_blank())
 #-----------------------------------------------
@@ -198,7 +209,7 @@ ggplot (data = Les.means,
   theme(axis.line = element_line(colour = "black"),
         axis.text.x = element_text(angle = 15, hjust = 1, vjust=1),
         text = element_text(size=24))+
-  scale_x_discrete(breaks=c("1","2","3"),
-                   labels=c(expression(paste(italic("S. lycopersicum"))), expression(paste(italic("S. pimpinellifolium"))), expression(paste(italic("A. thaliana")))))+
+  scale_x_discrete(breaks=c("1","2","3", "4","5"),
+                   labels=c(expression(paste(italic("S. lycopersicum"))), expression(paste(italic("S. pimpinellifolium"))), expression(paste(italic("G. max"))), expression(paste(italic("C. intybus"))), expression(paste(italic("A. thaliana")))))+
   geom_boxplot(width=0.1)+
   labs(y=expression(Mean~Lesion~Area~(cm^2)), x=NULL)
