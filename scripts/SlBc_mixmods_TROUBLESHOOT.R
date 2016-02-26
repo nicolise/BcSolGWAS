@@ -80,6 +80,36 @@ ModDat$IndPlant <- paste(ModDat$PlGenoNm, ModDat$Plant, sep='.')
 library(lme4); library(car); library(lmerTest)
 
 #--------------------------------------------------------
+#include or exclude Exp:Isolate and Exp:Plant
+Sys.time()
+Test1.lm <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|Species/PlGenoNm/IndPlant) + AorB , data = ModDat)
+Sys.time()
+Test2.lm <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|Species/PlGenoNm/IndPlant) + AorB + (1|ExpBlock:Igeno), data = ModDat)
+Sys.time()
+Test3.lm <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|Species/PlGenoNm/IndPlant) + AorB + (1|ExpBlock:PlGenoNm), data = ModDat)
+Sys.time()
+Test4.lm <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|Species/PlGenoNm/IndPlant) + AorB + (1|ExpBlock:PlGenoNm) + (1|ExpBlock:Igeno), data = ModDat)
+Sys.time()
+anova(Test1.lm, Test2.lm)
+Sys.time()
+anova(Test1.lm, Test3.lm)
+Sys.time()
+anova(Test2.lm, Test4.lm)
+Sys.time()
+anova(Test3.lm, Test4.lm)
+Sys.time()
+#include or exclude Exp/BLOCK/AgFlat
+#include or exclude iso:Pgeno
+Sys.time()
+Test4.lm <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|Species/PlGenoNm/IndPlant) + AorB + (1|ExpBlock:PlGenoNm) + (1|ExpBlock:Igeno), data = ModDat)
+Sys.time()
+Test5.lm <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|Species/PlGenoNm/IndPlant) + AorB + (1|ExpBlock:PlGenoNm) + (1|ExpBlock:Igeno), data = ModDat)
+Sys.time()
+anova(Test4.lm, Test5.lm)
+Sys.time()
+#isolate as random or fixed effect
+
+#--------------------------------------------------------
 #building up a minimal model to check overfitting problem
 
 #final model: 
@@ -87,31 +117,29 @@ library(lme4); library(car); library(lmerTest)
 #Igeno, PlGenoNm, Species, ExpBlock, AgFlat, IndPlant, AorB
 
 attach(ModDat)
-Lesion.lm.min1 <- lmer(Scale.LS ~ Igeno + (1|ExpBlock))
-LesIso.lsm.min1 <- lsmeans(Lesion.lm.min1, "Igeno")
+Lesion.lm.minA1 <- lmer(Scale.LS ~ Igeno + (1|ExpBlock))
+LesIso.lsm.minA1 <- lsmeans(Lesion.lm.minA1, "Igeno")
 
-Lesion.lm.min2 <- lmer(Scale.LS ~ PlGenoNm + (1|ExpBlock))
-LesIso.lsm.min2 <- lsmeans(Lesion.lm.min2, "PlGenoNm")
+Lesion.lm.minA2 <- lmer(Scale.LS ~ PlGenoNm + (1|ExpBlock))
+LesIso.lsm.minA2 <- lsmeans(Lesion.lm.minA2, "PlGenoNm")
 
-Lesion.lm.min3 <- lmer(Scale.LS ~ AorB + (1|ExpBlock))
-LesIso.lsm.min3 <- lsmeans(Lesion.lm.min3, "AorB")
+Lesion.lm.minA3 <- lmer(Scale.LS ~ Species + (1|ExpBlock))
+LesIso.lsm.minA3 <- lsmeans(Lesion.lm.minA3, "Species")
 
-Lesion.lm.min4 <- lmer(Scale.LS ~ (1|IndPlant) + (1|ExpBlock))
+Lesion.lm.minA4 <- lmer(Scale.LS ~ AorB + (1|ExpBlock))
+LesIso.lsm.minA4 <- lsmeans(Lesion.lm.minA4, "AorB")
 
-Lesion.lm.min5 <- lmer(Scale.LS ~ Species + (1|ExpBlock))
-LesIso.lsm.min5 <- lsmeans(Lesion.lm.min5, "Species")
+Lesion.lm.minA5 <- lmer(Scale.LS ~ PlGenoNm + Igeno + (1|ExpBlock))
 
-Lesion.lm.min6 <- lmer(Scale.LS ~ (1|AgFlat) + (1|ExpBlock))
+Lesion.lm.minA6 <- lmer(Scale.LS ~ Species + Igeno + (1|ExpBlock))
 
-Lesion.lm.min7 <- lmer(Scale.LS ~ Species + Igeno + (1|ExpBlock))
-
-Lesion.lm.min8 <- lmer(Scale.LS ~ PlGenoNm + Igeno + (1|ExpBlock))
-
+attach(ModDat)
+Lesion.lm.minXX<- lmer(Scale.LS ~ Igeno + Species + (1|IndPlant) + (1|ExpBlock/AgFlat)) 
 #first issue detected: PlGenoNm + Species
 
-Lesion.lm.min9 <- lmer(Scale.LS ~ PlGenoNm + Igeno + AorB +  (1|ExpBlock))
+Lesion.lm.minA14 <- lmer(Scale.LS ~ PlGenoNm + Igeno + AorB +  (1|ExpBlock))
 
-Lesion.lm.min10 <- lmer(Scale.LS ~ PlGenoNm + Igeno + AorB +  (1|ExpBlock) + (1|AgFlat))
+Lesion.lm.minF14 <- lmer(Scale.LS ~ PlGenoNm + Igeno + AorB +  (1|ExpBlock) + (1|AgFlat))
 
 Lesion.lm.min11 <- lmer(Scale.LS ~ Species + Igeno + AorB +  (1|ExpBlock) + (1|AgFlat))
 
@@ -123,34 +151,48 @@ Lesion.lm.min14 <- lmer(Scale.LS ~ PlGenoNm + (1|ExpBlock) + (1|ExpBlock/AgFlat)
 
 Lesion.lm.min15 <- lmer(Scale.LS ~ PlGenoNm + Igeno + (1|ExpBlock) + (1|ExpBlock/AgFlat))
 
+Lesion.lm.min16 <- lmer(Scale.LS ~ Species + Igeno + Species:Igeno + (1|ExpBlock))
+
+Lesion.lm.min20 <- lmer(Scale.LS ~ PlGenoNm + Igeno + PlGenoNm:Igeno + (1|ExpBlock) + (1|ExpBlock/AgFlat))
+
 #current fullest model that works
-Lesion.lm.min16 <- lmer(Scale.LS ~ PlGenoNm + Igeno + PlGenoNm:Igeno + (1|ExpBlock) + (1|ExpBlock/AgFlat))
-
-#next ones to try
-Lesion.lm.min17 <- lmer(Scale.LS ~ PlGenoNm + Igeno + PlGenoNm:Igeno + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (ExpBlock:Igeno))
-
-Lesion.lm.min18 <- lmer(Scale.LS ~ PlGenoNm + Igeno + PlGenoNm:Igeno + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (ExpBlock:PlGenoNm))
-
-Lesion.lm.min19 <- lmer(Scale.LS ~ PlGenoNm + Igeno + PlGenoNm:Igeno + (1|ExpBlock) + (1|ExpBlock/AgFlat) + IndPlant)
-
-Lesion.lm.min20 <- lmer(Scale.LS ~ Species + Igeno + Species:Igeno + (1|ExpBlock))
-
 Lesion.lm.min21 <- lmer(Scale.LS ~ Species + Igeno + Species:Igeno + (1|ExpBlock) + (1|ExpBlock/AgFlat))
 
-Lesion.lm.min22 <- lmer(Scale.LS ~ Species + Igeno + Species:Igeno + (1|ExpBlock) + (1|ExpBlock/AgFlat) + Species/IndPlant)
+Lesion.lm.min22 <- lmer(Scale.LS ~ PlGenoNm + Igeno + PlGenoNm:Igeno + AorB + (1|ExpBlock) + (1|ExpBlock/AgFlat))
 
 #Warning message: In checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv,: Model is nearly unidentifiable: large eigenvalue ratio - Rescale variables?
 Lesion.lm.min17 <- lmer(Scale.LS ~ PlGenoNm + Igeno + PlGenoNm:Igeno + (1|ExpBlock:Igeno) + (1|ExpBlock) + (1|ExpBlock/AgFlat))
 
 Lesion.lm.min18 <- lmer(Scale.LS ~ PlGenoNm + Igeno + PlGenoNm:Igeno + (1|ExpBlock:PlGenoNm) + (1|ExpBlock) + (1|ExpBlock/AgFlat))
 
-#drop 1
+Lesion.lm.min23 <- lmer(Scale.LS ~ Species + Igeno + Species:Igeno + AorB + (1|ExpBlock) + (1|ExpBlock/AgFlat))
+
+#Warning messages: 1: In checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv,: unable to evaluate scaled gradient
+#2: In checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv,: Model failed to converge: degenerate  Hessian with 1 negative eigenvalues
+
+Lesion.lm.min23 <- lmer(Scale.LS ~ PlGenoNm + Igeno + PlGenoNm:Igeno + (1|IndPlant) + (1|ExpBlock) + (1|ExpBlock/AgFlat))
+
+Lesion.lm.min24 <- lmer(Scale.LS ~ Species + Igeno + Species:Igeno + (1|IndPlant) + (1|ExpBlock) + (1|ExpBlock/AgFlat))
+
+Lesion.lm.min24 <- lmer(Scale.LS ~ Igeno + Pgeno + Igeno:Pgeno + (1|ExpBlock))
+
+#fixed-effect model matrix is rank deficient so dropping 1 columns / coefficients
 Lesion.lm.min07 <- lmer(Scale.LS ~ PlGenoNm + Species + (1|ExpBlock))
 Lesion.lm.min09 <- lmer(Scale.LS ~ PlGenoNm + Species + (1|AgFlat))
 Lesion.lm.min09 <- lmer(Scale.LS ~ PlGenoNm + Species + (1|IndPlant))
 
+#drop 2 
+Lesion.lm.min17 <- lmer(Scale.LS ~ PlGenoNm + Igeno + PlGenoNm:Igeno + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (ExpBlock:Igeno))
+
+#drop 11
+Lesion.lm.min19 <- lmer(Scale.LS ~ PlGenoNm + Igeno + PlGenoNm:Igeno + (1|ExpBlock) + (1|ExpBlock/AgFlat) + IndPlant)
+
 #drop 12
 Lesion.lm.min010 <- lmer(Scale.LS ~ (Species/PlGenoNm) + Igeno + (1|ExpBlock))
+Lesion.lm.min09 <- lmer(Scale.LS ~ Species/PlGenoNm + Species + (1|ExpBlock))
+
+#drop 72
+Lesion.lm.min22 <- lmer(Scale.LS ~ Species + Igeno + Species:Igeno + (1|ExpBlock) + (1|ExpBlock/AgFlat) + Species/IndPlant)
 
 #drop 792
 Lesion.lm.min19 <- lmer(Scale.LS ~ PlGenoNm + Igeno + PlGenoNm:Igeno + (PlGenoNm/IndPlant) + (1|ExpBlock) + (1|ExpBlock/AgFlat))
@@ -161,6 +203,13 @@ Lesion.lm.min19 <- lmer(Scale.LS ~ PlGenoNm + Igeno + PlGenoNm:Igeno + (PlGenoNm
 #Error in forceSymmetric(2 * solve(IE2)) : 
 #error in evaluating the argument 'x' in selecting a method for function #'forceSymmetric': Error in solve.default(IE2) : 
 #  system is computationally singular: reciprocal condition number = 8.36832e-17
+
+
+#non mixed-models
+Lesion.lm.min4 <- lmer(Scale.LS ~ (1|IndPlant) + (1|ExpBlock))
+Lesion.lm.min6 <- lmer(Scale.LS ~ (1|AgFlat) + (1|ExpBlock))
+
+
 myx2 <- lsmeans(lsmMod0, pairwise ~ PlGenoNm + Igeno)
 write.csv(myx2, "lsmeans_firsttry.csv")
 

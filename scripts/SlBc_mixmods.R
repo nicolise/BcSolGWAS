@@ -77,6 +77,7 @@ names(ModDat)
 
 #Plant is coded as numeric and nested within Pgeno
 ModDat$IndPlant <- paste(ModDat$PlGenoNm, ModDat$Plant, sep='.') 
+write.csv(ModDat, "SlBcDATAFRAME.csv")
 #--------------------------------------------------------
 #ASSUMPTIONS BEFORE STATISTICS!
 #check data structure
@@ -158,7 +159,10 @@ library(lme4); library(car); library(lmerTest)
 
 #optional to fix: coding of AgFlat so that it is not implicitly nested
 Sys.time()
-fullmod <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
+#fullmod <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
+#trying: LesionWpi.lm and LesionWOpi.lm
+LesionWpi.lm <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
+LesionWOpi.lm <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species + ExpBlock + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
 Sys.time()
 sink(file='output021716.txt')
 Sys.time()
