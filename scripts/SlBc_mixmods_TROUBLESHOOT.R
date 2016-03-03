@@ -108,6 +108,19 @@ Sys.time()
 anova(Test4.lm, Test5.lm)
 Sys.time()
 #isolate as random or fixed effect
+Sys.time()
+Test5.lm <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|Species/PlGenoNm/IndPlant) + AorB + (1|ExpBlock:PlGenoNm) + (1|ExpBlock:Igeno), data = ModDat)
+Sys.time()
+Test6.lm <- lmer(Scale.LS ~ 1|Igeno + Species/PlGenoNm + 1|Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|Species/PlGenoNm/IndPlant) + AorB + (1|ExpBlock:PlGenoNm) + (1|ExpBlock:Igeno), data = ModDat)
+Sys.time()
+Test7.lm <- lmer(Scale.LS ~ 1|Igeno + Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|Species/PlGenoNm/IndPlant) + AorB + (1|ExpBlock:PlGenoNm) + (1|ExpBlock:Igeno), data = ModDat)
+Sys.time()
+anova(Test5.lm, Test6.lm)
+Sys.time()
+anova(Test6.lm, Test7.lm)
+Sys.time()
+anova(Test5.lm, Test7.lm)
+Sys.time()
 
 #--------------------------------------------------------
 #building up a minimal model to check overfitting problem
