@@ -174,22 +174,20 @@ anova(fullmod)
 Sys.time()
 sink()
 
+#extract p values for each individual predictor variable from anova
+anova(lm)$P
+# Function to extract the overall ANOVA p-value out of a linear model object
+lmp <- function (modelobject) {
+    +     if (class(modelobject) != "lm") stop("Not an object of class 'lm' ")
+    +     f <- summary(modelobject)$fstatistic
+    +     p <- pf(f[1],f[2],f[3],lower.tail=F)
+    +     attributes(p) <- NULL
+    +     return(p)
+    + }
+ lmp(lm) #extracts p-value for F-test
+
 #------------------------------------------------------------------------------
 #lsmeans calculations
-#check for multicollinearity of variables
-library("caret")
-ModDat2 <- ModDat[,c("Scale.LS", "Igeno", "Species", "PlGenoNm", "ExpBlock","AgFlat","IndPlant", "AorB")]
-
-#findLinearCombos can only deal with numeric variables, so convert each column
-ModDat2$Igeno.f <- as.numeric(factor(ModDat2$Igeno))
-ModDat2$Species.f <- as.numeric(factor(ModDat2$Species))
-ModDat2$PlGenoNm.f <- as.numeric(factor(ModDat2$PlGenoNm))
-ModDat2$ExpBlock.f <- as.numeric(factor(ModDat2$ExpBlock))
-ModDat2$AgFlat.f <- as.numeric(factor(ModDat2$AgFlat))
-ModDat2$IndPlant.f <- as.numeric(factor(ModDat2$IndPlant))
-ModDat2$AorB.f <- as.numeric(factor(ModDat2$AorB))
-ModDat3 <- ModDat2[,c("Scale.LS", "Igeno.f", "Species.f", "PlGenoNm.f", "ExpBlock.f","AgFlat.f","IndPlant.f", "AorB.f")]
-findLinearCombos(ModDat3) #looks fine
 
 #removed just igeno * plant interactions
 #ideally: Igeno, Species, PlGenoNm, AorB are fixed
