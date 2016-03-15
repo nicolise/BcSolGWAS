@@ -34,8 +34,8 @@ IsoNm96b <- IsoNm
 colnames(IsoNm96b)[3] <- "Piso"
 LsDat96a2 <- merge(LsDat96a, IsoNm96a, by="Piso")
 LsDat96b2 <- merge(LsDat96b, IsoNm96b, by="Piso")
-LsDat96a2 <-LsDat96a2[,c(1:14,18)] #18 should be Isolate
-LsDat96b2 <-LsDat96b2[,c(1:14,18)]
+LsDat96a2 <-LsDat96a2[,c(1:14,18,20)] #18 should be Isolate, 20 is OrderNJ for isolate colors
+LsDat96b2 <-LsDat96b2[,c(1:14,18,20)]
 SrtDat <- rbind(LsDat96a2, LsDat96b2)
 
 #add a column for plant*iso interaction
@@ -58,7 +58,7 @@ SrtDat <- SrtDat[SrtDat$Isolate!="Control",]
 #rename columns as needed
 ModDat <- SrtDat
 names(ModDat)
-ModDat <- dplyr::select(ModDat, ExpBlock = Pexp, Igeno = Isolate, Pgeno = PPlant, AorB = PInLflt, Leaf = PInLeaf, Plant = PInPlant, AgFlat = PImage, Species = Domest, matches("."))
+ModDat <- dplyr::select(ModDat, ExpBlock = Pexp, Igeno = Isolate, Pgeno = PPlant, AorB = PInLflt, Leaf = PInLeaf, Plant = PInPlant, AgFlat = PImage, Species = Domest, IsoColor = OrderNJ, matches("."))
 
 #remove any rows with NA for plant or isolate
 completeFun <- function(data, desiredCols) {

@@ -115,6 +115,24 @@ for (i in c(1:12,14:58,60:67,69:76, 78:98, 100)) {
 }
 sink()
 
+#-----------------------------------------------------------
+#FDR cutoff
+#p is a vector of p values
+MyPvals <- read.csv("isoANOVApvals.csv")
+names(MyPvals)
+p <- MyPvals$pSpecies
+MyPvals$pSpFDR <- p.adjust(p, method = "fdr", n = length(p))
+
+pSpPl <- MyPvals$pSpPlant
+MyPvals$pSpPlFDR <- p.adjust(pSpPl, method = "fdr", n = length(pSpPl))
+
+bpSp <- MyPvals$BpSpecies
+MyPvals$bpSpFDR <- p.adjust(bpSp, method = "fdr", n = length(bpSp))
+
+bpSpPl <- MyPvals$BpSpPlant
+MyPvals$bpSpPlFDR <- p.adjust(bpSpPl, method = "fdr", n = length(bpSpPl))
+
+write.csv(MyPvals, "isoANOVAfdr.csv")
 #final model: 
 #lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|Species/PlGenoNm/IndPlant) + AorB + (1|ExpBlock/Igeno) + (1|ExpBlock/PlGenoNm), data = ModDat)
 #Igeno, PlGenoNm, Species, ExpBlock, AgFlat, IndPlant, AorB

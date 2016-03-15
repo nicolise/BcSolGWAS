@@ -5,6 +5,15 @@ rm(list=ls())
 setwd("~/Projects/BcSolGWAS/data")
 ModDat <- read.csv("SlBcDATAFRAME.csv")
 #-------------------------------------------------
+#bean plot by tray
+names(ModDat)
+library(ggplot2)
+p <- ggplot(ModDat, aes(factor(AgFlat), Scale.LS))
+p + geom_violin()
+library("beanplot")
+beanplot(Scale.LS ~ AgFlat, data=ModDat, las=3)
+text(srt=45)
+
 #plot my data: scatterplot!
 names(ModDat)
 attach(ModDat)
@@ -31,11 +40,11 @@ FigDat3 <- FigDat3[order(mmLS),]
 ggplot(FigDat3, aes(x = PlNum, y = mLS))+
   geom_point()+
   theme_bw()+
-  geom_line(size=1, aes(color=factor(mmLS), group=factor(Igeno)), show_guide=F)+
+  geom_line(size=1, aes(color=factor(mmLS), group=factor(Igeno)), show.legend=F)+
   scale_x_discrete(breaks=c("1","2","3", "4", "5", "6", "1", "2", "3", "4", "5", "6"),
                    labels=c("LA4345", "LA3008", "LA4355", "LA2706", "LA3475", 
                     "LA0410", "LA1547", "LA2093", "LA1684", "LA1589", "LA0480", "LA2176"))+
-  facet_grid(~SpLabs, scales="free_x", space="free_x")+
+  facet_grid(~SpLabs, scales="fixed", space="free_x")+
   theme(text = element_text(size=24), axis.text.x = element_text(angle = 45, hjust = 1))+
   labs(y=expression(Lesion ~ Area ~ (cm^{2})), x=element_blank())
 #+geom_smooth(aes(group = 2), size = 2, method = "lm", se = T)

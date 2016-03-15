@@ -1,5 +1,6 @@
 #Preliminary data analysis Solanum spp. x Botrytis cinerea lesions
 #112315
+#this is the streamlined version
 #-------------------------------------------------------------
 rm(list=ls())
 setwd("~/PhD/Research/Eudicots/Solanum/Analysis/R")
@@ -88,16 +89,6 @@ names(ModDat)
 #Plant is coded as numeric and nested within Pgeno
 ModDat$IndPlant <- paste(ModDat$PlGenoNm, ModDat$Plant, sep='.') 
 
-#add a column: isolates ranked by min lesion size (after avg per plant)
-#and a column: isolates ranked by MAX ls (after avg per plant)
-# ModDatx1 <- ModDat[complete.cases(ModDat[,21]),]
-# ModDatx1 <- ddply(ModDatx1, c("PlGenoNm", "Igeno"), summarise,
-#                   mLS   = mean(Scale.LS))
-# ModDatx2 <- ddply(ModDatx1, c("Igeno"), summarise,
-#                   min  = min(mLS))
-# ModDatx3 <- ddply(ModDatx1, c("Igeno"), summarise,
-#                   max   = max(mLS))
-
 ddply(ModDat,~PExpRep.x,summarise,mean=mean(Scale.LS))
 p <- ggplot(ModDat, aes(factor(PExpRep.x), Lesion.Size))
 p + geom_violin() + geom_jitter(height=0)
@@ -140,24 +131,6 @@ scores <- LS.pca4$x
 scores3 <- scores[,3]
 scores2 <- scores[,c(1:6)]
 
-#compare PCs to isolate min, max, mean
-scores4 <- data.frame(scores2)
-scores4 <- cbind(scores4, ModDat_wide4[,1])
-names(scores4)[7] <- "Isolate"
-PCbyIso <- merge(scores4, IsoNm, by="Isolate")
-names(PCbyIso)
-plot(miLSPn~PC1, data=PCbyIso)
-plot(maLSPn~PC1, data=PCbyIso)
-PCmod <- lm(maLSPn~PC3, data=PCbyIso)
-summary(PCmod)
-head(PCbyIso)
-#PC1 to minLS R2 = 0.3668, p=2.998e-11, 95 df
-#PC1 to meanLS R2 = 0.5086, p=2.2e-16, 95 df
-#PC1 to maxLS R2= 0.3946, p=3.439e-12, 95 df
-#PC2 to minLS R2 = 0, p=0.64, 95 df
-#PC2 to meanLS R2 = 0, p=0.40, 95 df
-#PC2 to maxLS R2 = 0, p=0.58, 95 df
-
 #histogram of PC3
 h <- hist(scores2, xlab="PC3", ylim = c(0,25), breaks=15)
 x <- scores2
@@ -181,7 +154,7 @@ plot (hclust_scores)
 dev.off ()  ##  Close the image
 #--------------------------------------------------
 #plot it
-library(ggbiplot)
+library("ggbiplot")
 #Best Pair = PCs 1 and 3
 g <- ggbiplot(LS.pca4, choices = c(1,3), obs.scale = 1, var.scale = 0.1, groups = factor(Iso.Color), ellipse = F, circle = T, varname.size=4, varname.adjust=10, varname.abbrev=T) + theme_bw() 
 g <- g + scale_color_discrete(name = '')
@@ -194,42 +167,6 @@ print(g)
 #library(ggfortify)
 #autoplot(LS.pca4, label=T, shape=T) + theme_bw()
 
-#-------------------------------------------------------------
-#LA1589 vs LA3475
-ModDatmin <- ModDat[ModDat$PlGenoNm=c("LA1589","LA3475"),]
-df[df$ID %in% keep, ]
-keep <- c("LA1589","LA3475")
-ModDatmin <- ModDat[ ModDat$PlGenoNm %in% keep,]
-ModDatm_w <- dcast(ModDatmin, Igeno + IsoColor ~ PlGenoNm + Species, value.var="Scale.LS", mean)
-names(ModDatm_w)
-p <- ggplot(ModDatm_w, aes(LA1589_Wl, LA3475_Dm))
-p + geom_point()
-p + geom_point(aes(color = factor(IsoColor))) + theme(legend.position = 'none') + geom_smooth(method="lm")
-
-ggplotRegression <- function (fit) {
-  
-  require(ggplot2)
-  
-  ggplot(fit$model, aes_string(x = names(fit$model)[2], y = names(fit$model)[1])) + 
-    geom_point() +
-    stat_smooth(method = "lm", col = "red") +
-    labs(title = paste("Adj R2 = ",signif(summary(fit)$adj.r.squared, 5),
-                       "Intercept =",signif(fit$coef[[1]],5 ),
-                       " Slope =",signif(fit$coef[[2]], 5),
-                       " P =",signif(summary(fit)$coef[2,4], 5)))
-}
-p <- ggplot(ModDatm_w, aes(LA1589_Wl, LA3475_Dm))
-fit1 <- lm(LA1589_Wl ~ LA3475_Dm, data = ModDatm_w)
-ggplotRegression(fit1)
-
-#other pairs
-levels(ModDat$PlGenoNm)
-keep <- c("LA1589","LA2706")
-ModDatminx <- ModDat[ ModDat$PlGenoNm %in% keep,]
-ModDatx <- dcast(ModDatminx, Igeno + IsoColor ~ PlGenoNm + Species, value.var="Scale.LS", mean)
-names(ModDatx)
-fit1 <- lm(LA1589_Wl ~ LA2706_Dm, data = ModDatx)
-summary(fit1)
 #------------------------------------------------------------------
 ModDat_wide5 <- dcast(ModDat1, Igeno + PExpRep.x ~ PlGenoNm + Species, value.var="log.LS", mean)
 Exp.Color <- ModDat_wide5[,2]
@@ -249,6 +186,14 @@ summary(LS.pca4)
 library(ggbiplot)
 #Best Pair = 1,3
 g <- ggbiplot(LS.pca4, choices = c(1,3), obs.scale = 1, var.scale = 0.5, groups = factor(Iso.Color), ellipse = F, circle = T, varname.size=4, varname.adjust=5, varname.abbrev=F) + theme_bw() 
+g <- g + scale_color_discrete(name = '')
+g <- g  + scale_x_continuous(limits=c(-5,7))+
+  theme(legend.position = 'none')+
+  scale_y_continuous(limits=c(-5,7))
+print(g)
+
+#plot PCs 1 and 2
+g <- ggbiplot(LS.pca4, choices = c(1,2), obs.scale = 1, var.scale = 1, groups = factor(Iso.Color), ellipse = F, circle = T, varname.size=4, varname.adjust=20, varname.abbrev=F) + theme_bw() 
 g <- g + scale_color_discrete(name = '')
 g <- g  + scale_x_continuous(limits=c(-5,7))+
   theme(legend.position = 'none')+
