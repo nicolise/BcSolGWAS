@@ -20,7 +20,7 @@ bigRR_update <- function (obj, Z, family = poisson(link = log), tol.err = 1e-06,
 
 library(bigRR)
 
-#Get data
+#Get genotype data
 SNPs <- read.csv("JulinsAcc3_MAF20_RFF.csv", row.names = 1)
 
 SNPs <- as.matrix(t(SNPs))
