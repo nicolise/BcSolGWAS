@@ -1,0 +1,37 @@
+open a shell with sudo priviledges
+$sudo -s 
+
+view contents of tar
+$tar -tf filename.tar.gz
+
+this didn't work
+$vim filename.tar.gz
+
+extract the file
+$gzip -d filename.tar.gz
+
+$tar -xvf filename.tar
+
+compress the file / directory
+$tar -cvzf file.tar.gz inputfile1 inputfile2
+
+read the top few lines
+$nano filename.vcf| head
+
+kill a process
+Ctrl + Alt + Esc 
+kill
+
+file is at media/nesoltis/Data/Kliebenstein/Soltis/BcGenome
+
+install vcftools
+$git clone https://github.com/vcftools/vcftools.git
+$export PERL5LIB=/vcftools-directory/src/perl/
+$cd vcftools/
+$autoreconf -i
+$./configure
+$make
+$make install
+
+
+

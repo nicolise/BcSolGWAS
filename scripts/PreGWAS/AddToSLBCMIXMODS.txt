@@ -1,0 +1,14 @@
+#library("lsmeans"); 
+#also in lmerTest
+#example(lsmeans)
+lsm.options(pbkrtest.limit = 6285)
+lsm.options(disable.pbkrtest=TRUE)
+LesIso.lsm <- lsmeans(Lesion.lm, "Igeno")
+s <- summary(LesIso.lsm)
+class(s)
+s[c("lsmean", "SE")]
+LesIso.cn <- contrast(LesIso.lsm, "trt.vs.ctrlk") #pairwise comparisons vs. UKRazz
+#not working for PlGenoNm
+
+lsmeans(fm17, "Treatment")
+pairs(.Last.value)

@@ -1,0 +1,288 @@
+bigRR                  package:bigRR                   R Documentation
+
+Fitting big ridge regression
+
+Description:
+
+     Function fits big ridge regression with special computational
+     advantage for the cases when number of shrinkage parameters
+     exceeds number of observations. The shrinkage parameter, lambda,
+     can be pre-specified or estimated along with the model. Any subset
+     of model parameter can be shrunked.
+
+Usage:
+
+     bigRR(formula = NULL, y = NULL, X = NULL, Z = NULL, data = NULL, 
+           shrink = NULL, weight = NULL, family = gaussian(link = identity), 
+           lambda = NULL, impute = FALSE, tol.err = 1e-6, tol.conv = 1e-8, 
+           only.estimates = FALSE, GPU = FALSE, ...)
+     ## Default S3 method:
+     bigRR(formula = NULL, y , X , Z , data = NULL, 
+                             shrink = NULL, weight = NULL, family = gaussian(link = identity), 
+                             lambda = NULL, impute = FALSE, tol.err = 1e-6, tol.conv = 1e-8, 
+                             only.estimates = FALSE, GPU = FALSE, ...)
+     ## S3 method for class 'formula'
+     bigRR(formula = NULL, y = NULL, X = NULL, Z = NULL, data = NULL, 
+                             shrink = NULL, weight = NULL, family = gaussian(link = identity), 
+                             lambda = NULL, impute = FALSE, tol.err = 1e-6, tol.conv = 1e-8, 
+                             only.estimates = FALSE, GPU = FALSE, ...)
+     
+Arguments:
+
+ formula: a two-sided model ‘formula’. However, matrix input is
+          recommended since it makes the inputs clear, i.e. to define
+          ‘y’, ‘X’ and ‘Z’.
+
+       y: response variable; either y or ‘formula’ is to be used.
+
+       X: design matrix related to the parameters not to be shrunk
+          (i.e. fixed effects in the mixed model framework); not
+          redundant if formula is already used.
+
+       Z: design matrix associated with shrinkage parameters (i.e.
+          random effects in the mixed model framework); not required if
+          model formula is used.
+
+    data: the data frame, usually useful when the input is in
+          ‘formula’.
+
+  shrink: either a numeric or a character vector specifying the
+          position or the names if the variables whose coefficients are
+          to be shrunken.
+
+  weight: a vector of prior weights for each of the shrinkage
+          parameters.
+
+  family: the distribution family of ‘y’, see ‘help('family')’ for more
+          details.
+
+  lambda: the shrinkage parameter determines the amount of shrinkage.
+          Default is ‘NULL’ meaning that it is to be estimated along
+          with other model parameters.
+
+  impute: logical; specify whether missing values (genotypes) should be
+          imputed (see *Details*).
+
+ tol.err: internal tolerance level for extremely small values; default
+          value is 1e-6.
+
+tol.conv: tolerance level in convergence; default value is 1e-8.
+
+only.estimates: logical; ‘TRUE’ if hat values are to be returned.
+          Default is ‘FALSE’ and the hat values are not returned.
+
+     GPU: logical; specify whether GPU should be used in computation.
+          Note that the package ‘gputools’ is required in this case,
+          and the computer's graphic card needs to be CUDA-enabled.
+          Check e.g. NVIDIA website for more information.
+
+     ...: unused arguments
+
+Details:
+
+     The function fits ridge regression using the random effects model
+     algorithm presented in Ronnegard et al. (2010). The computational
+     intensity of the estimation depends on the number of parameters
+     but not the number of observations.
+     The model can be specified by using ‘formula’ or by design
+     matrices. If both are used then the formula interface will be
+     used. The shrink argument specifies the subset of parameters to be
+     estimated. If the model is specified by using formula and a dot
+     (.) is used in the right hand side of the formula then ‘shrink’
+     indicates the variables in the data frame. Otherwise it represents
+     the respective variable in the model formula. It is ignored it
+     model is specified by using design matrices.
+     When ‘impute = TRUE’, an easy (naive) way is used to impute the
+     missing values in the ‘Z’ matrix, i.e. missing values in each
+     column is filled in by sampling from the distribution determined
+     by the non-missing values. Note that observations with missing
+     values in the response vector ‘y’ are simply removed from the
+     analysis.
+
+Value:
+
+     Returns a list of object class ‘bigRR’ containing the following
+     values: (see *Examples* for how to use the estimated parameters
+     for a prediction purpose.)
+
+     phi: estimated residual variance.
+
+  lambda: usual ‘lambda’ parameter of the ridge regression representing
+          the amount of shrinkage.
+
+    beta: fixed effects estimates - subset of model parameters which
+          is/are not shrunk, i.e. those associated with the ‘X’ matrix.
+
+       u: random effects estimates - subset of model parameters which
+          are shrunk, i.e. those associated with the ‘Z’ matrix.
+
+leverage: hat values for the shrinkage parameters.
+
+    Call: how the bigRR was called.
+
+Author(s):
+
+     Xia Shen, Moudud Alam, Lars Ronnegard
+
+References:
+
+     Shen X, Alam M, Fikse F and Ronnegard L (2013). *A novel
+     generalized ridge regression method for quantitative genetics*.
+     _Genetics_, online before print.
+     Ronnegard L, Shen X and Alam M (2010): *hglm: A Package for
+     Fitting Hierarchical Generalized Linear Models*. _The R Journal_,
+     *2*(2), 20-28.
+
+See Also:
+
+     ‘lm.ridge’ in MASS library.
+
+Examples:
+
+     # --------------------------------------------- #  
+     #              Arabidopsis example              #
+     # --------------------------------------------- #  
+     ## Not run:
+     
+     require(bigRR)
+     data(Arabidopsis)
+     X <- matrix(1, length(y), 1)
+     
+     # fitting SNP-BLUP, i.e. a ridge regression on all the markers across the genome
+     #
+     SNP.BLUP.result <- bigRR(y = y, X = X, Z = scale(Z), 
+                              family = binomial(link = 'logit'))
+     
+     # fitting HEM, i.e. a generalized ridge regression with marker-specific shrinkage
+     #
+     HEM.result <- bigRR.update(SNP.BLUP.result, scale(Z), 
+                                family = binomial(link = 'logit'))
+     
+     # plot and compare the estimated effects from both methods
+     #
+     split.screen(c(1, 2))
+     split.screen(c(2, 1), screen = 1)
+     screen(3); plot(abs(SNP.BLUP.result$u), cex = .6, col = 'slateblue')
+     screen(4); plot(abs(HEM.result$u), cex = .6, col = 'olivedrab')
+     screen(2); plot(abs(SNP.BLUP.result$u), abs(HEM.result$u), cex = .6, pch = 19, 
+                     col = 'darkmagenta')
+     
+     # create a random new genotypes for 10 individuals with the same number of markers 
+     # and predict the outcome using the fitted HEM
+     #
+     Z.new <- matrix(sample(c(-1, 1), 10*ncol(Z), TRUE), 10)
+     y.predict <- as.numeric(HEM.result$beta + Z.new %*% HEM.result$u)
+     #
+     # NOTE: The above prediction may not be good due to the scaling in the HEM 
+     #       fitting above, and alternatively, one can either remove the scaling 
+     #       above or scale Z.new by row-binding it with the original Z matrix.
+     ## End(Not run)
+
+
+############################################################################################################
+
+
+> getAnywhere(bigRR.deafault)
+no object named ‘bigRR.deafault’ was found
+> getAnywhere(bigRR.default)
+A single object matching ‘bigRR.default’ was found
+It was found in the following places
+  registered S3 method for bigRR from namespace bigRR
+  namespace:bigRR
+with value
+
+function (formula = NULL, y, X, Z, data = NULL, shrink = NULL, 
+    weight = NULL, family = gaussian(link = identity), lambda = NULL, 
+    impute = FALSE, tol.err = 1e-06, tol.conv = 1e-08, only.estimates = FALSE, 
+    GPU = FALSE, ...) 
+{
+    Call <- match.call()
+    if (!(is.matrix(X))) 
+        stop("X should be a matrix.")
+    if (!(is.matrix(Z))) 
+        stop("Z should be a matrix.")
+    if (!(is.vector(y))) 
+        stop("y should be a vector.")
+    if (GPU & !require(gputools, quietly = TRUE)) 
+        stop("Package gputools is needed for using GPU.\n")
+    if (any(is.na(y))) {
+        naidx <- which(is.na(y))
+        y <- y[-naidx]
+        X <- X[-naidx, ]
+        Z <- Z[-naidx, ]
+    }
+    if (impute) {
+        if (any(is.na(Z))) {
+            cat("Imputing missing values...")
+            nacolidx <- which(is.na(colSums(Z)))
+            for (j in nacolidx) {
+                naidx <- which(is.na(Z[, j]))
+                Z[naidx, j] <- sample(Z[-naidx, j], length(naidx), 
+                  TRUE)
+            }
+            cat("Done.\n")
+        }
+        else {
+            cat("NOTE: no missing value exists, no need to impute.\n")
+        }
+    }
+    N <- n <- nrow(X)
+    p <- ncol(X)
+    k <- ncol(Z)
+    if (N != nrow(Z) | N != length(y)) 
+        stop("Sizes of y, X, and Z are not all equal.")
+    if (is.null(weight)) 
+        w <- rep(1, k)
+    else w <- weight
+    wZt <- sqrt(w) * t(Z)
+    if (!GPU) 
+        G <- crossprod(wZt)
+    else G <- gpuMatMult(t(wZt), wZt)
+    min.eigen <- min(eigen(G, only.values = TRUE)$values)
+    if (min.eigen < tol.err) 
+        G <- G + diag(N) * (abs(min.eigen) + tol.err)
+    invG <- solve(G)
+    L <- t(chol(G))
+    phi0 <- sa0 <- 1
+    if (is.null(lambda)) {
+        hm <- hglm(y = y, X = X, Z = L, family = family, conv = tol.conv)
+    }
+    else {
+        start.beta = c(rep(0, p))
+        start.v = c(rep(0.01, n))
+        start.lambda = lambda
+        start.sigma2e = 1
+        cat("Only 1 iteration applied for fixed lambda")
+        hm <- hglm(y = y, X = X, Z = L, family = family, startval = c(start.beta, 
+            start.v, start.lambda, start.sigma2e), maxit = 1)
+    }
+    phi <- as.numeric(hm$varFix)
+    sa <- as.numeric(hm$varRanef)
+    a <- L %*% hm$ranef
+    if (!GPU) 
+        tZinvG <- crossprod(Z, invG)
+    else tZinvG <- gpuMatMult(t(Z), invG)
+    u <- (w * tZinvG) %*% a
+    qu <- GCV <- NULL
+    if (!only.estimates) {
+        C <- rbind(cbind(crossprod(X, X), crossprod(X, L)), cbind(crossprod(L, 
+            X), G + diag(N) * phi/sa))
+        C22 <- solve(C)[(p + 1):(p + N), (p + 1):(p + N)] * phi
+        if (!GPU) 
+            transf <- tcrossprod((w * tZinvG), t(L))
+        else transf <- gpuMatMult((w * tZinvG), L)
+        qu <- hat.transf(C22, transf, vc = sa, w, k, N, tol.err = tol.err, 
+            GPU = GPU)
+        qu[qu < tol.err] <- tol.err
+        qu[qu > (1 - tol.err)] <- 1 - tol.err
+        if (family$family == "gaussian") 
+            GCV <- sum(hm$resid^2)/((n - sum(hm$hv[1:n]))^2)
+    }
+    result <- list(phi = phi, lambda = hm$varRanef, beta = hm$fixef, 
+        u = u, leverage = qu, GCV = GCV, Call = Call, y = y, 
+        X = X)
+    class(result) <- "bigRR"
+    return(result)
+}
+<environment: namespace:bigRR>
+
