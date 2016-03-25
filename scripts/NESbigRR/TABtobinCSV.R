@@ -76,6 +76,8 @@ if (mySNPs[4]==NA){
         if (mySNPs[4]==mySNPs$REF) {
           mySNPs[4]<- 0}
 }
+
+write.csv(miniMAF20, "miniMAF20.csv")
 #-------------------------------------------------------------
 #junk code
 #other ideas
