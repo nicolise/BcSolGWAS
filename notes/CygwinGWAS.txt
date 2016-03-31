@@ -1,0 +1,23 @@
+home/nesoltis/data/97_isolates_vcf.tar.gz
+
+view contents of tar
+tar -tf filename.tar.gz
+
+this didn't work
+vim filename.tar.gz
+
+extract the file
+gzip -d filename.tar.gz
+
+tar -xvf filename.tar
+
+compress the file / directory
+$tar -cvzf file.tar.gz inputfile1 inputfile2
+
+read the top few lines
+$nano filename.vcf| head
+
+kill a process
+Ctrl + Alt + Esc 
+kill
+
