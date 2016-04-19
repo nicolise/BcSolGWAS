@@ -4,7 +4,7 @@
 #------------------------------------------------------
 rm(list=ls())
 #on linux desktop
-setwd("~/Documents/GitRepos/BcSolGWAS/data/SNP_files")
+setwd("~/Documents/GitRepos/BcSolGWAS/data/SNP_files/csvPrep")
 #on laptop
 # setwd("~/Projects/BcSolGWAS/data/genome")
 #practice with mini file first
