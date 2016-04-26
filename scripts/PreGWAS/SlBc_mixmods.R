@@ -226,3 +226,18 @@ warp.lsm <- lsmeans(warp.lm, ~ tension | wool)
 #this is incorrect, replace 'Igeno' with what? 'specs' argument
 pairs(mymod.lsm) #pairs of each isolate contrasted
 myx <- lsmeans(lsmMod0, trt.vs.ctrl~PlGenoNm|Igeno, adjust="none")
+
+#library("lsmeans"); 
+#also in lmerTest
+#example(lsmeans)
+lsm.options(pbkrtest.limit = 6285)
+lsm.options(disable.pbkrtest=TRUE)
+LesIso.lsm <- lsmeans(Lesion.lm, "Igeno")
+s <- summary(LesIso.lsm)
+class(s)
+s[c("lsmean", "SE")]
+LesIso.cn <- contrast(LesIso.lsm, "trt.vs.ctrlk") #pairwise comparisons vs. UKRazz
+#not working for PlGenoNm
+
+lsmeans(fm17, "Treatment")
+pairs(.Last.value)
