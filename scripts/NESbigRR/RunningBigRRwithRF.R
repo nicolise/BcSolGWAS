@@ -185,38 +185,62 @@ library(ggplot2)
 library(grid)
 
 #Import data
-HEM.plotdata <- read.csv("LesionEccentricityPoisson.HEM.PlottingFormat.csv")#RF-this is just a reorganized file of LesionSize.HEM.csv.
+HEM.plotdata <- read.csv("Sl_LesionSizePoisson.HEM.PlotFormat.csv")#RF-this is just a reorganized file of LesionSize.HEM.csv.
 #RF-Basically it has two columns containing Chrom and pos separately instead of just one column with eg "III.57894". This is easiest to do with code below:
 #library(tidyr)
 #separate(old data, V1, into = c("Chrom", "Pos"))
 #but tidyr requires a more recent version of R to run, so you must take the file to a different comp to do this
-HEM.plotdata$Pos <- as.character(HEM.plotdata$Pos)#ensure that position data is not in scientific not
+
+HEM.plotdata$Pos <- as.character(HEM.plotdata$Pos)#ensure that position data is not in scientific notation
 
 #RF-Extract thresholds - 4 rows of 4 threshhold values, we just want the result of nonpermuted data to plot
 #HEM.Perm.Threshold <- as.vector(HEM.plotdata[1,])
 #HEM.plotdata <- HEM.plotdata[-1:4,] #already did this 
 
-
-#get threshhold values from HEM file
-HEM.thresh <- read.csv("LesionGrn.mm.2.HEM.csv")#RF-this is just a reorganized file of LesionSize.HEM.csv.
+#get threshhold values from HEM file 
+#make new file with only top 5 rows of Sl_LesionSizePoisson.HEM.csv
+HEM.thresh <- read.csv("Sl_LesionSizePoisson.HEM.Thresh.csv")
 TH99 <- HEM.thresh[3,]
-TH99_Apple517 <- as.numeric(TH99[3])
-TH99_B05.10 <- as.numeric(TH99[4])
-TH99_Supersteak <- as.numeric(TH99[5])
-TH99_UKRazz <- as.numeric(TH99[6])
+TH99_LA0410 <- as.numeric(TH99[3])
+TH99_LA0480 <- as.numeric(TH99[4])
+TH99_LA1547 <- as.numeric(TH99[5])
+TH99_LA1589 <- as.numeric(TH99[6])
+TH99_LA1684 <- as.numeric(TH99[7])
+TH99_LA2093 <- as.numeric(TH99[8])
+TH99_LA2176 <- as.numeric(TH99[9])
+TH99_LA2706 <- as.numeric(TH99[10])
+TH99_LA3008 <- as.numeric(TH99[11])
+TH99_LA3475 <- as.numeric(TH99[12])
+TH99_LA4345 <- as.numeric(TH99[13])
+TH99_LA4355 <- as.numeric(TH99[14])
 
 TH999 <- HEM.thresh[4,]
-TH999_Apple517 <- as.numeric(TH999[3])
-TH999_B05.10 <- as.numeric(TH999[4])
-TH999_Supersteak <- as.numeric(TH999[5])
-TH999_UKRazz <- as.numeric(TH999[6])
+TH999_LA0410 <- as.numeric(TH999[3])
+TH999_LA0480 <- as.numeric(TH999[4])
+TH999_LA1547 <- as.numeric(TH999[5])
+TH999_LA1589 <- as.numeric(TH999[6])
+TH999_LA1684 <- as.numeric(TH999[7])
+TH999_LA2093 <- as.numeric(TH999[8])
+TH999_LA2176 <- as.numeric(TH999[9])
+TH999_LA2706 <- as.numeric(TH999[10])
+TH999_LA3008 <- as.numeric(TH999[11])
+TH999_LA3475 <- as.numeric(TH999[12])
+TH999_LA4345 <- as.numeric(TH999[13])
+TH999_LA4355 <- as.numeric(TH999[14])
 
 TH95 <- HEM.thresh[1,]
-TH95_Apple517 <- as.numeric(TH95[3])
-TH95_B05.10 <- as.numeric(TH95[4])
-TH95_Supersteak <- as.numeric(TH95[5])
-TH95_UKRazz <- as.numeric(TH95[6])
-
+TH95_LA0410 <- as.numeric(TH95[3])
+TH95_LA0480 <- as.numeric(TH95[4])
+TH95_LA1547 <- as.numeric(TH95[5])
+TH95_LA1589 <- as.numeric(TH95[6])
+TH95_LA1684 <- as.numeric(TH95[7])
+TH95_LA2093 <- as.numeric(TH95[8])
+TH95_LA2176 <- as.numeric(TH95[9])
+TH95_LA2706 <- as.numeric(TH95[10])
+TH95_LA3008 <- as.numeric(TH95[11])
+TH95_LA3475 <- as.numeric(TH95[12])
+TH95_LA4345 <- as.numeric(TH95[13])
+TH95_LA4355 <- as.numeric(TH95[14])
 
 
 #Reformat Chromosomes and Positions
@@ -240,6 +264,7 @@ HEM.plotdata$Index=NA
 ticks = NULL
 lastbase=0
 
+##NES failing here
 #Redo the positions to make them sequencial		
 ##RFF code isn't working... replaced "Pos" with "pos"
 for (i in unique(HEM.plotdata$Chrom)) {
@@ -414,11 +439,3 @@ plot.reg <- plot.reg + geom_segment(aes(x = gene.start, y = -0.001, xend = gene.
 jpeg(filename = "PolyMorphicRegionOnChr4.jpg", width = 1500, height = 800)
 print(plot2)
 dev.off()
-
-
-
-
-
-
-
-
