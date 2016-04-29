@@ -136,6 +136,7 @@ write.csv(rbind(thresh.BLUP$"0.95Thresh",thresh.BLUP$"0.975Thresh",thresh.BLUP$"
 write.csv(rbind(thresh.HEM$"0.95Thresh",thresh.HEM$"0.975Thresh",thresh.HEM$"0.99Thresh",thresh.HEM$"0.999Thresh",outpt.HEM),"SolanumLesionSizePoisson.HEM.csv")
 
 # #This part failed for me -- NES
+# used to store upper percentile of SNPS
 # #Write just the positive positions (RF- effect size greater than .99 thresh)
 # sig.HEM <- data.frame()
 # for(i in 1:dim(outpt.HEM)[1]) {
@@ -192,63 +193,62 @@ HEM.plotdata <- read.csv("Sl_LesionSizePoisson.HEM.PlotFormat.csv")#RF-this is j
 #but tidyr requires a more recent version of R to run, so you must take the file to a different comp to do this
 
 HEM.plotdata$Pos <- as.character(HEM.plotdata$Pos)#ensure that position data is not in scientific notation
+HEM.plotdata <- HEM.plotdata[-c(1:4), -c(1:2)]
 
 #RF-Extract thresholds - 4 rows of 4 threshhold values, we just want the result of nonpermuted data to plot
 #HEM.Perm.Threshold <- as.vector(HEM.plotdata[1,])
 #HEM.plotdata <- HEM.plotdata[-1:4,] #already did this 
 
+
 #get threshhold values from HEM file 
 #make new file with only top 5 rows of Sl_LesionSizePoisson.HEM.csv
 HEM.thresh <- read.csv("Sl_LesionSizePoisson.HEM.Thresh.csv")
+HEM.thresh <- HEM.thresh[,-1]
 TH99 <- HEM.thresh[3,]
-TH99_LA0410 <- as.numeric(TH99[3])
-TH99_LA0480 <- as.numeric(TH99[4])
-TH99_LA1547 <- as.numeric(TH99[5])
-TH99_LA1589 <- as.numeric(TH99[6])
-TH99_LA1684 <- as.numeric(TH99[7])
-TH99_LA2093 <- as.numeric(TH99[8])
-TH99_LA2176 <- as.numeric(TH99[9])
-TH99_LA2706 <- as.numeric(TH99[10])
-TH99_LA3008 <- as.numeric(TH99[11])
-TH99_LA3475 <- as.numeric(TH99[12])
-TH99_LA4345 <- as.numeric(TH99[13])
-TH99_LA4355 <- as.numeric(TH99[14])
+TH99_LA0410 <- as.numeric(TH99[2])
+TH99_LA0480 <- as.numeric(TH99[3])
+TH99_LA1547 <- as.numeric(TH99[4])
+TH99_LA1589 <- as.numeric(TH99[5])
+TH99_LA1684 <- as.numeric(TH99[6])
+TH99_LA2093 <- as.numeric(TH99[7])
+TH99_LA2176 <- as.numeric(TH99[8])
+TH99_LA2706 <- as.numeric(TH99[9])
+TH99_LA3008 <- as.numeric(TH99[10])
+TH99_LA3475 <- as.numeric(TH99[11])
+TH99_LA4345 <- as.numeric(TH99[12])
+TH99_LA4355 <- as.numeric(TH99[13])
 
 TH999 <- HEM.thresh[4,]
-TH999_LA0410 <- as.numeric(TH999[3])
-TH999_LA0480 <- as.numeric(TH999[4])
-TH999_LA1547 <- as.numeric(TH999[5])
-TH999_LA1589 <- as.numeric(TH999[6])
-TH999_LA1684 <- as.numeric(TH999[7])
-TH999_LA2093 <- as.numeric(TH999[8])
-TH999_LA2176 <- as.numeric(TH999[9])
-TH999_LA2706 <- as.numeric(TH999[10])
-TH999_LA3008 <- as.numeric(TH999[11])
-TH999_LA3475 <- as.numeric(TH999[12])
-TH999_LA4345 <- as.numeric(TH999[13])
-TH999_LA4355 <- as.numeric(TH999[14])
+TH999_LA0410 <- as.numeric(TH999[2])
+TH999_LA0480 <- as.numeric(TH999[3])
+TH999_LA1547 <- as.numeric(TH999[4])
+TH999_LA1589 <- as.numeric(TH999[5])
+TH999_LA1684 <- as.numeric(TH999[6])
+TH999_LA2093 <- as.numeric(TH999[7])
+TH999_LA2176 <- as.numeric(TH999[8])
+TH999_LA2706 <- as.numeric(TH999[9])
+TH999_LA3008 <- as.numeric(TH999[10])
+TH999_LA3475 <- as.numeric(TH999[11])
+TH999_LA4345 <- as.numeric(TH999[12])
+TH999_LA4355 <- as.numeric(TH999[13])
 
 TH95 <- HEM.thresh[1,]
-TH95_LA0410 <- as.numeric(TH95[3])
-TH95_LA0480 <- as.numeric(TH95[4])
-TH95_LA1547 <- as.numeric(TH95[5])
-TH95_LA1589 <- as.numeric(TH95[6])
-TH95_LA1684 <- as.numeric(TH95[7])
-TH95_LA2093 <- as.numeric(TH95[8])
-TH95_LA2176 <- as.numeric(TH95[9])
-TH95_LA2706 <- as.numeric(TH95[10])
-TH95_LA3008 <- as.numeric(TH95[11])
-TH95_LA3475 <- as.numeric(TH95[12])
-TH95_LA4345 <- as.numeric(TH95[13])
-TH95_LA4355 <- as.numeric(TH95[14])
+TH95_LA0410 <- as.numeric(TH95[2])
+TH95_LA0480 <- as.numeric(TH95[3])
+TH95_LA1547 <- as.numeric(TH95[4])
+TH95_LA1589 <- as.numeric(TH95[5])
+TH95_LA1684 <- as.numeric(TH95[6])
+TH95_LA2093 <- as.numeric(TH95[7])
+TH95_LA2176 <- as.numeric(TH95[8])
+TH95_LA2706 <- as.numeric(TH95[9])
+TH95_LA3008 <- as.numeric(TH95[10])
+TH95_LA3475 <- as.numeric(TH95[11])
+TH95_LA4345 <- as.numeric(TH95[12])
+TH95_LA4355 <- as.numeric(TH95[13])
 
 
-#Reformat Chromosomes and Positions
-HEM.plotdata$Chrom <- gsub("IV", 4, HEM.plotdata$Chrom)
-HEM.plotdata$Chrom <- gsub("V", 5, HEM.plotdata$Chrom)
-HEM.plotdata$Chrom <- gsub("III", 3, HEM.plotdata$Chrom)
-HEM.plotdata$Chrom <- gsub("II", 2, HEM.plotdata$Chrom)
-HEM.plotdata$Chrom <- gsub("I", 1, HEM.plotdata$Chrom)
+# #Reformat Chromosomes and Positions
+HEM.plotdata$Chrom <- gsub("Chromosome", "", HEM.plotdata$Chrom)
 HEM.plotdata$Chrom <- as.numeric(as.character(HEM.plotdata$Chrom))
 HEM.plotdata$Pos <- as.numeric(as.character(HEM.plotdata$Pos))
 
@@ -265,7 +265,7 @@ ticks = NULL
 lastbase=0
 
 ##NES failing here
-#Redo the positions to make them sequencial		
+#Redo the positions to make them sequencial		-- accurate position indexing
 ##RFF code isn't working... replaced "Pos" with "pos"
 for (i in unique(HEM.plotdata$Chrom)) {
   print(i)
@@ -274,26 +274,21 @@ for (i in unique(HEM.plotdata$Chrom)) {
   }	else {
     lastbase=lastbase+tail(subset(HEM.plotdata,HEM.plotdata$Chrom==i-1)$Pos, 1)
     HEM.plotdata[HEM.plotdata$Chrom==i, ]$Index=HEM.plotdata[HEM.plotdata$Chrom==i, ]$Pos+lastbase
-   # previous = lastbase+tail(subset(HEM.plotdata,Chrom==i-1)$Pos, 1) 
-    # lastbase=lastbase+tail(subset(HEM.plotdata,Chrom==previous)$Pos, 1)
-    #lastbase=lastbase+tail(subset(HEM.plotdata,Chrom==i-1)$Pos, 1)
-   # HEM.plotdata[HEM.plotdata$Chrom==i, ]$Pos = HEM.plotdata[HEM.plotdata$Chrom==i, ]$Pos+lastbase
   }
   ticks=c(ticks, HEM.plotdata[HEM.plotdata$Chrom==i, ]$Index[floor(length(HEM.plotdata[HEM.plotdata$Chrom==i, ]$Index)/2)+1])
 }
 ticklim=c(min(HEM.plotdata$Index),max(HEM.plotdata$Index))
 
 #make plots for each phenotype
-jpeg( "LesionEccentricityPoisson_Apple517.95.ManhattanPlot.jpg")
-
-qplot(Index,abs(Lesion.0.m.eccentricity_Apple517), data=HEM.plotdata, ylab="SNP Effect Estimate" , 
-      main = "LesionEccentricityPoisson_Apple517", colour=factor(Chrom)) +
- geom_hline(yintercept=TH99_Apple517) +
-  geom_text(aes(0,TH99_Apple517, label = ".99 Threshold", vjust = 1.5, hjust = .05), col = "black") +
-geom_hline(yintercept=TH95_Apple517, colour = "blue") +
-  geom_text(aes(0,TH95_Apple517, label = ".95 Threshold", vjust = 1.5, hjust = .05), col = "blue")
-
+jpeg("Sl_LesionSize_LA0410.ManhattanPlot.jpg")
+qplot(Index,abs(LA0410), data=HEM.plotdata, ylab="SNP Effect Estimate" , 
+      main = "LesionSize_LA0410", colour=factor(Chrom)) +
+ geom_hline(yintercept=TH99_LA0410) +
+  geom_text(aes(0,TH99_LA0410, label = ".99 Threshold", vjust = 1.5, hjust = .05), col = "black") +
+geom_hline(yintercept=TH95_LA0410, colour = "blue") +
+  geom_text(aes(0,TH95_LA0410, label = ".95 Threshold", vjust = 1.5, hjust = .05), col = "blue")
 dev.off()
+
 #how many SNPs are above a certain threshhold?
 sum(HEM.plotdata$Lesion.0.m.eccentricity_Apple517 >= TH99_Apple517) #spits out number
 #Eccentricity = 597, Area = 1709, Grn = 1573
@@ -303,22 +298,15 @@ sum(HEM.plotdata$Lesion.0.m.eccentricity_Apple517 >= TH99_Apple517) #spits out n
 #        main = "Lesion.0.m.eccentricity_Apple517", colour=factor(Chrom)) +
 #  geom_hline(aes(yintercept=TH99))
 
-
- 
 sum(HEM.plotdata$Lesion.0.m.eccentricity_B05.10 >= TH99_B05.10) #spits out number
 
-
-
- 
-
-
-jpeg(file = "LesionEccentricityPoisson_UKRazz.95.ManhattanPlot.jpg")
-qplot(Index,abs(Lesion.0.m.eccentricity_UKRazz), data=HEM.plotdata, ylab="SNP Effect Estimate" , 
-      main = "LesionEccentricityPoisson_UKRazz", colour=factor(Chrom)) +
-  geom_hline(yintercept=TH99_UKRazz) +
-  geom_text(aes(0,TH99_UKRazz, label = ".99 Threshhold", vjust = 1.5, hjust = .05), col = "black") +
-geom_hline(yintercept=TH95_UKRazz, colour = "blue") +
-  geom_text(aes(0, TH95_UKRazz, label = ".95 Threshhold", vjust = 1.5, hjust = .05), col = "blue")
+jpeg("Sl_LesionSize_LA2176.ManhattanPlot.jpg")
+qplot(Index,abs(LA2176), data=HEM.plotdata, ylab="SNP Effect Estimate" , 
+      main = "LesionSize_LA2176", colour=factor(Chrom)) +
+  geom_hline(yintercept=TH99_LA2176) +
+  geom_text(aes(0,TH99_LA2176, label = ".99 Threshold", vjust = 1.5, hjust = .05), col = "black") +
+  geom_hline(yintercept=TH95_LA2176, colour = "blue") +
+  geom_text(aes(0,TH95_LA2176, label = ".95 Threshold", vjust = 1.5, hjust = .05), col = "blue")
 dev.off()
 
 #make plot with all phenos?
