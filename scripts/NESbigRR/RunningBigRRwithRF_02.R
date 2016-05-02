@@ -69,6 +69,17 @@ HEM.plotdata$Chrom <- gsub("Chromosome", "", HEM.plotdata$Chrom)
 HEM.plotdata$Chrom <- as.numeric(as.character(HEM.plotdata$Chrom))
 HEM.plotdata$Pos <- as.numeric(as.character(HEM.plotdata$Pos))
 
+#sort dataframe rows in order of Chrom, then Pos
+HEM.plotdata2 <- HEM.plotdata[with(HEM.plotdata, order(Chrom, Pos)), ]
+range(subset(HEM.plotdata,HEM.plotdata$Chrom==1)$Pos)
+min(subset(HEM.plotdata,HEM.plotdata$Chrom==1)$Pos)
+max(subset(HEM.plotdata,HEM.plotdata$Chrom==1)$Pos)
+range(subset(HEM.plotdata,HEM.plotdata$Chrom==2)$Pos)
+min(subset(HEM.plotdata,HEM.plotdata$Chrom==2)$Pos)
+max(subset(HEM.plotdata,HEM.plotdata$Chrom==2)$Pos)
+#range = min to max
+#head and tail not equivalent
+
 #Make plotting variables
 HEM.plotdata$Index = NA
 ticks = NULL
@@ -82,7 +93,8 @@ for (i in unique(HEM.plotdata$Chrom)) {
   if (i==1) {
     HEM.plotdata[HEM.plotdata$Chrom==i, ]$Index=HEM.plotdata[HEM.plotdata$Chrom==i, ]$Pos
   }	else {
-    lastbase=lastbase+tail(subset(HEM.plotdata,HEM.plotdata$Chrom==i-1)$Pos, 1)
+    #changed lastbase+tail to lastbase+max
+    lastbase=lastbase+max(subset(HEM.plotdata,HEM.plotdata$Chrom==i-1)$Pos, 1)
     HEM.plotdata[HEM.plotdata$Chrom==i, ]$Index=HEM.plotdata[HEM.plotdata$Chrom==i, ]$Pos+lastbase
   }
   ticks=c(ticks, HEM.plotdata[HEM.plotdata$Chrom==i, ]$Index[floor(length(HEM.plotdata[HEM.plotdata$Chrom==i, ]$Index)/2)+1])
@@ -108,41 +120,46 @@ dev.off()
 
 #how many SNPs are above a certain threshhold?
 sum(HEM.plotdata$LA0410 >= TH999_LA0410) #spits out number
-#6491
+#491
+
+#see top 20 SNPs for each
+HEM.plotdata$LA0410
+require(data.table)
+d <- data.table(HEM.plotdata, key="LA0410")
+dprint <- d[, head(.SD, 20), by=LA0410]
+
+maxLA0410 <- HEM.plotdata[order(HEM.plotdata$LA0410,decreasing=T)[1:20],c("Chrom","Pos","LA0410")]
+maxLA0480 <- HEM.plotdata[order(HEM.plotdata$LA0480,decreasing=T)[1:20],c("Chrom","Pos","LA0480")]
+maxLA1547 <- HEM.plotdata[order(HEM.plotdata$LA1547,decreasing=T)[1:20],c("Chrom","Pos","LA1547")]
+maxLA1589 <- HEM.plotdata[order(HEM.plotdata$LA1589,decreasing=T)[1:20],c("Chrom","Pos","LA1589")]
+maxLA1684 <- HEM.plotdata[order(HEM.plotdata$LA1684,decreasing=T)[1:20],c("Chrom","Pos","LA1684")]
+maxLA2093 <- HEM.plotdata[order(HEM.plotdata$LA2093,decreasing=T)[1:20],c("Chrom","Pos","LA2093")]
+maxLA2176 <- HEM.plotdata[order(HEM.plotdata$LA2176,decreasing=T)[1:20],c("Chrom","Pos","LA2176")]
+maxLA2706 <- HEM.plotdata[order(HEM.plotdata$LA2706,decreasing=T)[1:20],c("Chrom","Pos","LA2706")]
+maxLA3008 <- HEM.plotdata[order(HEM.plotdata$LA3008,decreasing=T)[1:20],c("Chrom","Pos","LA3008")]
+maxLA3475 <- HEM.plotdata[order(HEM.plotdata$LA3475,decreasing=T)[1:20],c("Chrom","Pos","LA3475")]
+maxLA4345 <- HEM.plotdata[order(HEM.plotdata$LA4345,decreasing=T)[1:20],c("Chrom","Pos","LA4345")]
+maxLA4355 <- HEM.plotdata[order(HEM.plotdata$LA4355,decreasing=T)[1:20],c("Chrom","Pos","LA4355")]
+
 
 #rest of plots
-jpeg("plots/Sl_LesionSize_LA4355.ManhattanPlot_99.jpg")
-qplot(Index,abs(LA4355), data=HEM.plotdata, ylab="SNP Effect Estimate" , 
-      main = "LesionSize_LA4355", colour=factor(Chrom)) +
-  geom_hline(yintercept=TH99_LA4355, colour = "black") +
-  geom_text(aes(0,TH99_LA4355, label = ".99 Threshold", vjust = 1.5, hjust = .05), col = "black")
+jpeg("plots/Sl_LesionSize_LA1547.ManhattanPlot_95.jpg")
+qplot(Index,abs(LA1547), data=HEM.plotdata, ylab="SNP Effect Estimate" , 
+      main = "LesionSize_LA1547", colour=factor(Chrom)) +
+geom_hline(yintercept=TH95_LA1547, colour = "blue") +
+  geom_text(aes(0,TH95_LA1547, label = ".95 Threshold", vjust = 1.5, hjust = .05), col = "blue")
 dev.off()
 
-#not sure why chromosomes are overlapping
+#view list of Pos indices per Chrom
 m <- ggplot(HEM.plotdata, aes(x=Index, fill=as.factor(Chrom)))
 m + geom_bar() 
 
-#indices ARE overlapping
-range(subset(HEM.plotdata,HEM.plotdata$Chrom==1)$Index)
-range(subset(HEM.plotdata,HEM.plotdata$Chrom==2)$Index)
-range(subset(HEM.plotdata,HEM.plotdata$Chrom==12)$Index)
-range(subset(HEM.plotdata,HEM.plotdata$Chrom==13)$Index)
+###############################
+###Make a BiPlot for two phenotypes (LA0410 and LA0480)
+#This code has several dependent objects from the single HEM plotting code above
 
 #set my colors
 mycols=rep(c("gray10","gray60"),max(HEM.plotdata$Chrom))
-
-#Make plot (single)
-# plot=qplot(Index,abs(Lesion.Size_Apple517.HEM),data=HEM.plotdata, ylab="SNP Effect Est" , colour=factor(Chrom))
-# plot=plot+scale_x_continuous(name="Chromosome", breaks=ticks, labels=(unique(HEM.plotdata$Chrom)))
-# plot=plot+scale_y_continuous(limits=c(0,maxy), breaks=1:maxy, labels=1:maxy)
-# plot=plot+scale_colour_manual(values=mycols)
-# plot=plot + geom_hline(yintercept=HEM.Perm.Threshold$Lesion.Size_Apple517.HEM, colour="red")
-
-
-###############################
-###Make a BiPlot for two phenotypes (Cam and Lesion)
-#This code has several dependent objects from the single HEM plotting code above
-
 
 for(k in c(3:7)) {
   #Make temp data for figure
