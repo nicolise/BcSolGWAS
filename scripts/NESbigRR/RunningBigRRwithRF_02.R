@@ -128,19 +128,58 @@ require(data.table)
 d <- data.table(HEM.plotdata, key="LA0410")
 dprint <- d[, head(.SD, 20), by=LA0410]
 
-maxLA0410 <- HEM.plotdata[order(HEM.plotdata$LA0410,decreasing=T)[1:20],c("Chrom","Pos","LA0410")]
-maxLA0480 <- HEM.plotdata[order(HEM.plotdata$LA0480,decreasing=T)[1:20],c("Chrom","Pos","LA0480")]
-maxLA1547 <- HEM.plotdata[order(HEM.plotdata$LA1547,decreasing=T)[1:20],c("Chrom","Pos","LA1547")]
-maxLA1589 <- HEM.plotdata[order(HEM.plotdata$LA1589,decreasing=T)[1:20],c("Chrom","Pos","LA1589")]
-maxLA1684 <- HEM.plotdata[order(HEM.plotdata$LA1684,decreasing=T)[1:20],c("Chrom","Pos","LA1684")]
-maxLA2093 <- HEM.plotdata[order(HEM.plotdata$LA2093,decreasing=T)[1:20],c("Chrom","Pos","LA2093")]
-maxLA2176 <- HEM.plotdata[order(HEM.plotdata$LA2176,decreasing=T)[1:20],c("Chrom","Pos","LA2176")]
-maxLA2706 <- HEM.plotdata[order(HEM.plotdata$LA2706,decreasing=T)[1:20],c("Chrom","Pos","LA2706")]
-maxLA3008 <- HEM.plotdata[order(HEM.plotdata$LA3008,decreasing=T)[1:20],c("Chrom","Pos","LA3008")]
-maxLA3475 <- HEM.plotdata[order(HEM.plotdata$LA3475,decreasing=T)[1:20],c("Chrom","Pos","LA3475")]
-maxLA4345 <- HEM.plotdata[order(HEM.plotdata$LA4345,decreasing=T)[1:20],c("Chrom","Pos","LA4345")]
-maxLA4355 <- HEM.plotdata[order(HEM.plotdata$LA4355,decreasing=T)[1:20],c("Chrom","Pos","LA4355")]
+library(plyr)
 
+maxLA0410 <- HEM.plotdata[order(HEM.plotdata$LA0410,decreasing=T)[1:20],c("Chrom","Pos","LA0410")]
+maxLA0410 <- rename(maxLA0410, c("LA0410" = "Effects"))
+maxLA0410$Geno <- "LA0410"
+maxLA0480 <- HEM.plotdata[order(HEM.plotdata$LA0480,decreasing=T)[1:20],c("Chrom","Pos","LA0480")]
+maxLA0480 <- rename(maxLA0480, c("LA0480" = "Effects"))
+maxLA0480$Geno <- "LA0480"
+maxLA1547 <- HEM.plotdata[order(HEM.plotdata$LA1547,decreasing=T)[1:20],c("Chrom","Pos","LA1547")]
+maxLA1547 <- rename(maxLA1547, c("LA1547" = "Effects"))
+maxLA1547$Geno <- "LA1547"
+maxLA1589 <- HEM.plotdata[order(HEM.plotdata$LA1589,decreasing=T)[1:20],c("Chrom","Pos","LA1589")]
+maxLA1589 <- rename(maxLA1589, c("LA1589" = "Effects"))
+maxLA1589$Geno <- "LA1589"
+maxLA1684 <- HEM.plotdata[order(HEM.plotdata$LA1684,decreasing=T)[1:20],c("Chrom","Pos","LA1684")]
+maxLA1684 <- rename(maxLA1684, c("LA1684" = "Effects"))
+maxLA1684$Geno <- "LA1684"
+maxLA2093 <- HEM.plotdata[order(HEM.plotdata$LA2093,decreasing=T)[1:20],c("Chrom","Pos","LA2093")]
+maxLA2093 <- rename(maxLA2093, c("LA2093" = "Effects"))
+maxLA2093$Geno <- "LA2093"
+maxLA2176 <- HEM.plotdata[order(HEM.plotdata$LA2176,decreasing=T)[1:20],c("Chrom","Pos","LA2176")]
+maxLA2176 <- rename(maxLA2176, c("LA2176" = "Effects"))
+maxLA2176$Geno <- "LA2176"
+maxLA2706 <- HEM.plotdata[order(HEM.plotdata$LA2706,decreasing=T)[1:20],c("Chrom","Pos","LA2706")]
+maxLA2706 <- rename(maxLA2706, c("LA2706" = "Effects"))
+maxLA2706$Geno <- "LA2706"
+maxLA3008 <- HEM.plotdata[order(HEM.plotdata$LA3008,decreasing=T)[1:20],c("Chrom","Pos","LA3008")]
+maxLA3008 <- rename(maxLA3008, c("LA3008" = "Effects"))
+maxLA3008$Geno <- "LA3008"
+maxLA3475 <- HEM.plotdata[order(HEM.plotdata$LA3475,decreasing=T)[1:20],c("Chrom","Pos","LA3475")]
+maxLA3475<- rename(maxLA3475, c("LA3475" = "Effects"))
+maxLA3475$Geno <- "LA3475"
+maxLA4345 <- HEM.plotdata[order(HEM.plotdata$LA4345,decreasing=T)[1:20],c("Chrom","Pos","LA4345")]
+maxLA4345 <- rename(maxLA4345, c("LA4345" = "Effects"))
+maxLA4345$Geno <- "LA4345"
+maxLA4355 <- HEM.plotdata[order(HEM.plotdata$LA4355,decreasing=T)[1:20],c("Chrom","Pos","LA4355")]
+maxLA4355 <- rename(maxLA4355, c("LA4355" = "Effects"))
+maxLA4355$Geno <- "LA4355"
+topSNPs <- rbind(maxLA0410,maxLA0480,maxLA1547,maxLA1589,maxLA1684,maxLA2093,maxLA2176,maxLA2706,maxLA3008,maxLA3475,maxLA4345,maxLA4355)
+topSNPs$Num <- rep(c(1:20),12)
+topSNPs$Chrom <- as.numeric(topSNPs$Chrom)
+topSNPs$Pos <- as.numeric(topSNPs$Pos)
+topSNPs$Chr.Pos <- as.numeric(paste(topSNPs$Chrom, topSNPs$Pos, sep="."))
+
+table(unique(topSNPs$Chr.Pos))
+
+hist(topSNPs$Chr.Pos)
+
+library(reshape2)
+attach(topSNPs)
+wideSNPs <- (dcast(topSNPs, Num~Geno, value.var=c('Chr.Pos'), fun=mean))
+pairs(wideSNPs)
 
 #rest of plots
 jpeg("plots/Sl_LesionSize_LA1547.ManhattanPlot_95.jpg")
