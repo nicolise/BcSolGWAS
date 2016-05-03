@@ -31,7 +31,7 @@ bigRR_update <- function (obj, Z, family = poisson(link = log), tol.err = 1e-06,
 library(bigRR) #check if version is 1.3-9
 
 #Get genotype data
-SNPs <- read.csv("binSNP_bigRR_MAF20hp.csv", row.names = 1)
+SNPs <- read.csv("data/GWAS_files/03_bigRRinput/binSNP_bigRR_MAF20hp.csv", row.names = 1)
 FullSNPs <- SNPs
 SNPs <- FullSNPs
 #add a column with position as chr.base
@@ -62,7 +62,7 @@ for(i in 1:dim(SNPs)[1]) {
 }
 
 
-Phenos <- read.csv("Sl_Pheno_bigRR.csv", row.names = 1)
+Phenos <- read.csv("data/GWAS_files/03_bigRRinput/Sl_Pheno_bigRR.csv", row.names = 1)
 dat <- as.data.frame((Phenos[,2:13]))  #INSERT PHENOTYPE COLUMNS HERE
 #e.g. LesionGreen as.data.frame(c(Phenos[,31:32],Phenos[,34:35]))
 

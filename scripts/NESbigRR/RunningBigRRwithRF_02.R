@@ -63,7 +63,6 @@ TH95_LA3475 <- as.numeric(TH95[11])
 TH95_LA4345 <- as.numeric(TH95[12])
 TH95_LA4355 <- as.numeric(TH95[13])
 
-
 # #Reformat Chromosomes and Positions
 HEM.plotdata$Chrom <- gsub("Chromosome", "", HEM.plotdata$Chrom)
 HEM.plotdata$Chrom <- as.numeric(as.character(HEM.plotdata$Chrom))
@@ -71,21 +70,12 @@ HEM.plotdata$Pos <- as.numeric(as.character(HEM.plotdata$Pos))
 
 #sort dataframe rows in order of Chrom, then Pos
 HEM.plotdata2 <- HEM.plotdata[with(HEM.plotdata, order(Chrom, Pos)), ]
-range(subset(HEM.plotdata,HEM.plotdata$Chrom==1)$Pos)
-min(subset(HEM.plotdata,HEM.plotdata$Chrom==1)$Pos)
-max(subset(HEM.plotdata,HEM.plotdata$Chrom==1)$Pos)
-range(subset(HEM.plotdata,HEM.plotdata$Chrom==2)$Pos)
-min(subset(HEM.plotdata,HEM.plotdata$Chrom==2)$Pos)
-max(subset(HEM.plotdata,HEM.plotdata$Chrom==2)$Pos)
-#range = min to max
-#head and tail not equivalent
 
 #Make plotting variables
 HEM.plotdata$Index = NA
 ticks = NULL
 lastbase = 0
 
-##NES failing here
 #Redo the positions to make them sequencial		-- accurate position indexing
 ##RFF code isn't working... replaced "Pos" with "pos"
 for (i in unique(HEM.plotdata$Chrom)) {
@@ -119,67 +109,10 @@ qplot(Index,abs(LA0410), data=HEM.plotdata, ylab="SNP Effect Estimate" ,
 dev.off()
 
 #how many SNPs are above a certain threshhold?
-sum(HEM.plotdata$LA0410 >= TH999_LA0410) #spits out number
-#491
-
-#see top 20 SNPs for each
-HEM.plotdata$LA0410
-require(data.table)
-d <- data.table(HEM.plotdata, key="LA0410")
-dprint <- d[, head(.SD, 20), by=LA0410]
-
-library(plyr)
-
-maxLA0410 <- HEM.plotdata[order(HEM.plotdata$LA0410,decreasing=T)[1:20],c("Chrom","Pos","LA0410")]
-maxLA0410 <- rename(maxLA0410, c("LA0410" = "Effects"))
-maxLA0410$Geno <- "LA0410"
-maxLA0480 <- HEM.plotdata[order(HEM.plotdata$LA0480,decreasing=T)[1:20],c("Chrom","Pos","LA0480")]
-maxLA0480 <- rename(maxLA0480, c("LA0480" = "Effects"))
-maxLA0480$Geno <- "LA0480"
-maxLA1547 <- HEM.plotdata[order(HEM.plotdata$LA1547,decreasing=T)[1:20],c("Chrom","Pos","LA1547")]
-maxLA1547 <- rename(maxLA1547, c("LA1547" = "Effects"))
-maxLA1547$Geno <- "LA1547"
-maxLA1589 <- HEM.plotdata[order(HEM.plotdata$LA1589,decreasing=T)[1:20],c("Chrom","Pos","LA1589")]
-maxLA1589 <- rename(maxLA1589, c("LA1589" = "Effects"))
-maxLA1589$Geno <- "LA1589"
-maxLA1684 <- HEM.plotdata[order(HEM.plotdata$LA1684,decreasing=T)[1:20],c("Chrom","Pos","LA1684")]
-maxLA1684 <- rename(maxLA1684, c("LA1684" = "Effects"))
-maxLA1684$Geno <- "LA1684"
-maxLA2093 <- HEM.plotdata[order(HEM.plotdata$LA2093,decreasing=T)[1:20],c("Chrom","Pos","LA2093")]
-maxLA2093 <- rename(maxLA2093, c("LA2093" = "Effects"))
-maxLA2093$Geno <- "LA2093"
-maxLA2176 <- HEM.plotdata[order(HEM.plotdata$LA2176,decreasing=T)[1:20],c("Chrom","Pos","LA2176")]
-maxLA2176 <- rename(maxLA2176, c("LA2176" = "Effects"))
-maxLA2176$Geno <- "LA2176"
-maxLA2706 <- HEM.plotdata[order(HEM.plotdata$LA2706,decreasing=T)[1:20],c("Chrom","Pos","LA2706")]
-maxLA2706 <- rename(maxLA2706, c("LA2706" = "Effects"))
-maxLA2706$Geno <- "LA2706"
-maxLA3008 <- HEM.plotdata[order(HEM.plotdata$LA3008,decreasing=T)[1:20],c("Chrom","Pos","LA3008")]
-maxLA3008 <- rename(maxLA3008, c("LA3008" = "Effects"))
-maxLA3008$Geno <- "LA3008"
-maxLA3475 <- HEM.plotdata[order(HEM.plotdata$LA3475,decreasing=T)[1:20],c("Chrom","Pos","LA3475")]
-maxLA3475<- rename(maxLA3475, c("LA3475" = "Effects"))
-maxLA3475$Geno <- "LA3475"
-maxLA4345 <- HEM.plotdata[order(HEM.plotdata$LA4345,decreasing=T)[1:20],c("Chrom","Pos","LA4345")]
-maxLA4345 <- rename(maxLA4345, c("LA4345" = "Effects"))
-maxLA4345$Geno <- "LA4345"
-maxLA4355 <- HEM.plotdata[order(HEM.plotdata$LA4355,decreasing=T)[1:20],c("Chrom","Pos","LA4355")]
-maxLA4355 <- rename(maxLA4355, c("LA4355" = "Effects"))
-maxLA4355$Geno <- "LA4355"
-topSNPs <- rbind(maxLA0410,maxLA0480,maxLA1547,maxLA1589,maxLA1684,maxLA2093,maxLA2176,maxLA2706,maxLA3008,maxLA3475,maxLA4345,maxLA4355)
-topSNPs$Num <- rep(c(1:20),12)
-topSNPs$Chrom <- as.numeric(topSNPs$Chrom)
-topSNPs$Pos <- as.numeric(topSNPs$Pos)
-topSNPs$Chr.Pos <- as.numeric(paste(topSNPs$Chrom, topSNPs$Pos, sep="."))
-
-table(unique(topSNPs$Chr.Pos))
-
-hist(topSNPs$Chr.Pos)
-
-library(reshape2)
-attach(topSNPs)
-wideSNPs <- (dcast(topSNPs, Num~Geno, value.var=c('Chr.Pos'), fun=mean))
-pairs(wideSNPs)
+topSNP <- sum(HEM.plotdata$LA0410 >= 0.001) #41
+highSNP <- sum(HEM.plotdata$LA0410 >= TH999_LA0410) #spits out number
+totalSNP <- sum(HEM.plotdata$LA0410 >= 0)
+highSNP/totalSNP*100
 
 #rest of plots
 jpeg("plots/Sl_LesionSize_LA1547.ManhattanPlot_95.jpg")
@@ -188,10 +121,6 @@ qplot(Index,abs(LA1547), data=HEM.plotdata, ylab="SNP Effect Estimate" ,
 geom_hline(yintercept=TH95_LA1547, colour = "blue") +
   geom_text(aes(0,TH95_LA1547, label = ".95 Threshold", vjust = 1.5, hjust = .05), col = "blue")
 dev.off()
-
-#view list of Pos indices per Chrom
-m <- ggplot(HEM.plotdata, aes(x=Index, fill=as.factor(Chrom)))
-m + geom_bar() 
 
 ###############################
 ###Make a BiPlot for two phenotypes (LA0410 and LA0480)
