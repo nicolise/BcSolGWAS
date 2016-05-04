@@ -247,7 +247,37 @@ SNPs$Chrom <- gsub("Chromosome", "", SNPs$X.CHROM)
 SNPs$Chrom <- as.numeric(as.character(SNPs$Chrom))
 SNPs$Pos <- as.numeric(as.character(SNPs$POS))
 
+#summary table for Chi-square
+SNPchi <- SNPs[,c(1:3,95,96)]
+myG1 <- names(SNPs) %in% c("X2.04.04","X2.04.21","X2.04.18","X2.04.14","X2.04.20","X2.04.17","X2.04.03","X2.04.09","X2.04.11","X2.04.08","X2.04.12")
+myomit <- names(SNPs) %in% c("X.CHROM","POS","REF","Chrom","Pos", "X2.04.04","X2.04.21","X2.04.18","X2.04.14","X2.04.20","X2.04.17","X2.04.03","X2.04.09","X2.04.11","X2.04.08","X2.04.12")
+
+#make a chi-square table
+#categorize by isolate
+SNPchi$sumG1 <- rowSums(SNPs[,myG1])
+SNPchi$sumAll <- rowSums(SNPs[,!myomit])
+#categorize by locus
+SNPchi$Chr.Pos <- paste(SNPchi$Chrom, SNPchi$Pos, sep=".")
+SNPchi2 <- SNPchi[SNPchi$Chr.Pos %in% topSNPs$Chr.Pos,]
+`%ni%` = Negate(`%in%`) 
+SNPchi3 <- SNPchi[SNPchi$Chr.Pos %ni% topSNPs$Chr.Pos,]
+sum(SNPchi2$sumG1)
+sum(SNPchi2$sumAll)
+sum(SNPchi3$sumG1)
+sum(SNPchi3$sumAll)
+
+myChiSq <- read.table(text = '
+otherIsos OGIsos
+7261 1452
+12770285 2244380
+', header = TRUE, stringsAsFactors = FALSE)
+row.names(myChiSq) <- c("highouts","others")
+#asks: is SNP outlier independent of isolate group?
+chisq.test(myChiSq)
+
+
 #Subset the SNPs of interest
+#keeping only certain genotypes
 SNPsub <- SNPs[, sample(ncol(SNPs[,4:94]), 5)]
 SNPsub <- cbind(SNPs[,c(95,96,3)], SNPsub)
 SNPsub <- cbind(SNPsub, SNPs[,c("X2.04.04","X2.04.21","X2.04.18","X2.04.14","X2.04.20","X2.04.17","X2.04.03","X2.04.09","X2.04.11","X2.04.08","X2.04.12")])
@@ -262,3 +292,6 @@ topSNPMatch <- topSNPs[topSNPs$Chr.Pos %in% SNPsub$Chr.Pos,] #this has all 240 s
 SNPsubMatch$Chr.Pos <- as.numeric(SNPsubMatch$Chr.Pos)
 
 #now compare organics vs. random subset of 5 isolates vs. B05.10 at these SNPs
+#add a column of sums per group per locus
+SNPsubMatch$sumG1 <- rowSums(SNPsubMatch[,c("X2.04.04","X2.04.21","X2.04.18","X2.04.14","X2.04.20","X2.04.17","X2.04.03","X2.04.09","X2.04.11","X2.04.08","X2.04.12")]) 
+SNPsubMatch$sumG2 <- rowSums(SNPsubMatch[,c("Ausubel","Gallo1", "KatieTomato","X1.04.20","X1.03.18")])
