@@ -95,8 +95,8 @@ for(i in 1:dim(dat)[2]) { #i will be each isolate
     if(p %% 10 == 0) {print(paste("Thresh sample:", p, "--", Sys.time()))}
     temp.Pheno <- sample(dat[,i], length(dat[,i]), replace = FALSE)
     try(temp.BLUP  <- bigRR(y = temp.Pheno, X = MyX, Z = SNPs, GPU = TRUE),silent = TRUE)
-    temp.HEM <- bigRR_update(temp.BLUP, SNPs) #had to change this from Jason's script - was bigRR_update(Pheno.BLUP.result...
-    perm.u.BLUP <- c(perm.u.BLUP, temp.BLUP$u) #had to change from ...c(perm.u.HEM...)
+    temp.HEM <- bigRR_update(temp.BLUP, SNPs) #REF change- was bigRR_update(Pheno.BLUP.result...
+    perm.u.BLUP <- c(perm.u.BLUP, temp.BLUP$u) #REF change- ...c(perm.u.HEM...)
     perm.u.HEM <- c(perm.u.HEM, temp.HEM$u)
     
   }

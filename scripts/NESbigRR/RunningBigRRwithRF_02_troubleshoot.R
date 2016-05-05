@@ -103,18 +103,27 @@ ticklim=c(min(HEM.plotdata$Index),max(HEM.plotdata$Index))
 
 #make plots for each phenotype
 #try a log-scaled plot
-HEM.plotdata$logLA0410 <- log(HEM.plotdata$LA0410)
-l.TH99_LA0410 <- log(TH99_LA0410)
-l.TH95_LA0410 <- log(TH95_LA0410)
+HEM.plotdata$logLA0410 <- log(HEM.plotdata$LA0410 + 1)
+l.TH99_LA0410 <- log(TH99_LA0410 + 1)
+l.TH95_LA0410 <- log(TH95_LA0410 + 1)
 #plot it!
 
-jpeg("plots/Sl_LesionSize_LA0410.log.ManhattanPlot.jpg")
-qplot(Index,abs(logLA0410), data=HEM.plotdata, ylab="SNP Effect Estimate" , 
+jpeg("plots/Sl_LesionSize_LA0410.low.ManhattanPlot.jpg")
+qplot(Index,LA0410, data=HEM.plotdata, ylab="SNP Effect Estimate" , 
       main = "LesionSize_LA0410", colour=factor(Chrom)) +
- geom_hline(yintercept=l.TH99_LA0410) +
-  geom_text(aes(0,l.TH99_LA0410, label = ".99 Threshold", vjust = 1.5, hjust = .05), col = "black") +
-geom_hline(yintercept=l.TH95_LA0410) +
-  geom_text(aes(0,l.TH95_LA0410, label = ".95 Threshold", vjust = 1.5, hjust = .05), col = "blue")
+  scale_y_continuous(limits=c(-0.002,0.002))+
+ geom_hline(yintercept=TH999_LA0410) +
+  geom_text(aes(0,TH999_LA0410, label = ".999 Threshold", vjust = 1.5, hjust = .05), col = "black") +
+ geom_hline(yintercept=TH99_LA0410) +
+  geom_text(aes(0,TH99_LA0410, label = ".99 Threshold", vjust = 1.5, hjust = .05), col = "black")
+dev.off()
+
+jpeg("plots/Sl_LesionSize_LA1547.low.ManhattanPlot.jpg")
+qplot(Index,LA1547, data=HEM.plotdata, ylab="SNP Effect Estimate" , 
+      main = "LesionSize_LA1547", colour=factor(Chrom)) +
+  scale_y_continuous(limits=c(-0.000025,0.000025))+
+  geom_hline(yintercept=TH95_LA1547) +
+  geom_text(aes(0,TH95_LA1547, label = ".95 Threshold", vjust = 1.5, hjust = .05), col = "blue")
 dev.off()
 
 #how many SNPs are above a certain threshhold?
