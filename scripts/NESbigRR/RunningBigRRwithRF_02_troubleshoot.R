@@ -5,6 +5,7 @@
 
 rm(list=ls())
 setwd("~/Documents/GitRepos/BcSolGWAS/")
+setwd("~/Projects/BcSolGWAS")
 ############################################################################
 ###Plotting the HEM results
 
@@ -101,13 +102,19 @@ for (i in unique(HEM.plotdata$Chrom)) {
 ticklim=c(min(HEM.plotdata$Index),max(HEM.plotdata$Index))
 
 #make plots for each phenotype
-jpeg("plots/Sl_LesionSize_LA0410.ManhattanPlot.jpg")
-qplot(Index,abs(LA0410), data=HEM.plotdata, ylab="SNP Effect Estimate" , 
+#try a log-scaled plot
+HEM.plotdata$logLA0410 <- log(HEM.plotdata$LA0410)
+l.TH99_LA0410 <- log(TH99_LA0410)
+l.TH95_LA0410 <- log(TH95_LA0410)
+#plot it!
+
+jpeg("plots/Sl_LesionSize_LA0410.log.ManhattanPlot.jpg")
+qplot(Index,abs(logLA0410), data=HEM.plotdata, ylab="SNP Effect Estimate" , 
       main = "LesionSize_LA0410", colour=factor(Chrom)) +
- geom_hline(yintercept=TH99_LA0410) +
-  geom_text(aes(0,TH99_LA0410, label = ".99 Threshold", vjust = 1.5, hjust = .05), col = "black") +
-geom_hline(yintercept=TH95_LA0410, colour = "blue") +
-  geom_text(aes(0,TH95_LA0410, label = ".95 Threshold", vjust = 1.5, hjust = .05), col = "blue")
+ geom_hline(yintercept=l.TH99_LA0410) +
+  geom_text(aes(0,l.TH99_LA0410, label = ".99 Threshold", vjust = 1.5, hjust = .05), col = "black") +
+geom_hline(yintercept=l.TH95_LA0410) +
+  geom_text(aes(0,l.TH95_LA0410, label = ".95 Threshold", vjust = 1.5, hjust = .05), col = "blue")
 dev.off()
 
 #how many SNPs are above a certain threshhold?
@@ -177,6 +184,8 @@ pairs(wideSNPs)
 
 table(unique(topSNPs$Index))
 hist(topSNPs$Index, breaks=200)
+
+#try running to make the plot with Effect Size scaled -- see lower peaks
 
 
 #check: are top 20 SNPs/ plant geno driven by the organic subset of isolates?
