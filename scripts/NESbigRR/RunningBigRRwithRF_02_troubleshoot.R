@@ -196,7 +196,7 @@ hist(topSNPs$Index, breaks=200)
 
 #try running to make the plot with Effect Size scaled -- see lower peaks
 
-
+library(plyr)
 #check: are top 20 SNPs/ plant geno driven by the organic subset of isolates?
 #1. list top 20 SNP positions per geno by Chrom, Pos - from  HEM.plotdata
 #2. go back to binSNP_bigRR_MAF20hp.csv and compare organics vs. random subset of 5 isolates vs. B05.10 at these SNPs
@@ -296,18 +296,31 @@ chisq.test(myChiSq)
 
 #Subset the SNPs of interest
 #keeping only certain genotypes
-SNPsub <- SNPs[, sample(ncol(SNPs[,4:94]), 5)]
+SNPsub <- SNPs[, sample(ncol(SNPs[,4:94]), 12)]
 SNPsub <- cbind(SNPs[,c(95,96,3)], SNPsub)
-SNPsub <- cbind(SNPsub, SNPs[,c("X2.04.04","X2.04.21","X2.04.18","X2.04.14","X2.04.20","X2.04.17","X2.04.03","X2.04.09","X2.04.11","X2.04.08","X2.04.12")])
+SNPsubC1 <- cbind(SNPsub, SNPs[,c("X2.04.04","X2.04.21","X2.04.18","X2.04.14","X2.04.20","X2.04.17","X2.04.03","X2.04.09","X2.04.11","X2.04.08","X2.04.12")])
+SNPsubC2 <- cbind(SNPsub, SNPs[,c("X1.02.01","X1.02.02","X1.02.06","X1.02.20","X1.02.03")])
+SNPsubC3 <- cbind(SNPsub, SNPs[,c("X1.01.06","X1.01.01","X1.01.02","X1.01.03","X1.01.04")])
+SNPsubC4 <- cbind(SNPsub, SNPs[,c("X1.04.03","X1.02.15","X1.04.04","X1.04.05")])
+SNPsubC5 <- cbind(SNPsub, SNPs[,c("Peachy","X1.04.20","X1.04.25","X1.04.21","X1.02.16")])
 
 #only keep SNPsubs that match Chr.Pos for topSNPs
-SNPsub$Chr.Pos <- paste(SNPsub$Chrom, SNPsub$Pos, sep=".")
+SNPsubC1$Chr.Pos <- paste(SNPsubC1$Chrom, SNPsubC5$Pos, sep=".")
 topSNPs$Chr.Pos <- paste(topSNPs$Chrom, topSNPs$Pos, sep = ".")
-SNPsubMatch <- SNPsub
+SNPsubMatch <- SNPsubC1
 #why am I losing so many? Should have 240 matches, only get 198
 SNPsubMatch <- SNPsubMatch[SNPsubMatch$Chr.Pos %in% topSNPs$Chr.Pos,]
 topSNPMatch <- topSNPs[topSNPs$Chr.Pos %in% SNPsub$Chr.Pos,] #this has all 240 so that's good...
 SNPsubMatch$Chr.Pos <- as.numeric(SNPsubMatch$Chr.Pos)
+topSNPMatch$Chr.Pos <- as.numeric(topSNPMatch$Chr.Pos)
+
+#add Geno column to SNPsubMatch based on matching value in Index with topSNPs
+topSNPmini <- topSNPs[,c("Chr.Pos","Geno")]
+SNPsubMatch <- merge(SNPsubMatch, topSNPmini, by="Chr.Pos")
+
+
+write.csv(SNPsubMatch, "data/GWAS_files/04_bigRRoutput/High20subsetC1.csv")
+write.csv(topSNPMatch, "data/GWAS_files/04_bigRRoutput/High20SNPs.csv")
 
 #now compare organics vs. random subset of 5 isolates vs. B05.10 at these SNPs
 #add a column of sums per group per locus
