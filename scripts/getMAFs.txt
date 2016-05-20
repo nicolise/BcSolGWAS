@@ -1,0 +1,4 @@
+cd Documents/GitRepos/BcSolGWAS/
+tar -xvzf data/97_isolates_vcf.tar.gz
+vcftools --vcf big_set_v97iso_SNPs.vcf --freq  --out freq_analysis
+
