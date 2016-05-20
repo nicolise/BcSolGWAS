@@ -1,0 +1,33 @@
+[1] "Model: fullmod1 <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|Species/PlGenoNm/IndPlant/Leaf) + AorB , data = ModDat)"
+[1] "2016-05-19 17:37:00 PDT"
+Analysis of Random effects Table:
+                                 Chi.sq Chi.DF p.value    
+ExpBlock                       1.30e-09      1       1    
+ExpBlock/AgFlat                9.51e+02      2  <2e-16 ***
+Species/PlGenoNm/IndPlant/Leaf 3.63e+01      4   3e-07 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+Analysis of Deviance Table (Type II Wald chisquare tests)
+
+Response: Scale.LS
+                          Chisq  Df Pr(>Chisq)    
+Igeno                  953.7216  96    < 2e-16 ***
+Species                  0.0486   1    0.82547    
+AorB                     5.5603   1    0.01837 *  
+Species:PlGenoNm         2.2193  10    0.99437    
+Igeno:Species           91.8783  96    0.60006    
+Igeno:Species:PlGenoNm 813.8200 960    0.99977    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+Analysis of Variance Table of type III  with  Satterthwaite 
+approximation for degrees of freedom
+                        Sum Sq Mean Sq NumDF  DenDF F.value  Pr(>F)    
+Igeno                  192.129 2.00134    96 4932.8  9.5125 < 2e-16 ***
+Species                  0.010 0.00997     1    0.0  0.0474            
+AorB                     1.170 1.16985     1 4842.5  5.5603 0.01841 *  
+Species:PlGenoNm         0.435 0.04349    10    0.0  0.2067            
+Igeno:Species           20.859 0.21728    96 4893.4  1.0327 0.39410    
+Igeno:Species:PlGenoNm 171.221 0.17836   960 4902.5  0.8477 0.99940    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+[1] "2016-05-19 18:49:19 PDT"
