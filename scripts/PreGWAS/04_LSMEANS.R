@@ -4,7 +4,7 @@
 rm(list=ls())
 setwd("~/Projects/BcSolGWAS/data")
 #read in file from SlBc_mixmods.csv
-ModDat <- read.csv("SlBcDATAFRAME.csv")
+ModDat <- read.csv("SlBc_ModelData.csv")
 
 #----------------------------------------------------------------------
 

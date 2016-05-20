@@ -10,6 +10,8 @@ setwd("~/Documents/GitRepos/BcSolGWAS/")
 # This makes the bigRR_update run through the GPU
 # You need to do this first to mask the native 'bigRR_update' in the bigRR package
 # one alternative to family = gaussian(link = identity) is family = poisson(link = log)
+
+## RAN WITH POISSON. TRY RUNNING WITH GAUSSIAN
 bigRR_update <- function (obj, Z, family = poisson(link = log), tol.err = 1e-06, 
                           tol.conv = 1e-08) 
 {
