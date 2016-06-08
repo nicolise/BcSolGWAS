@@ -3,9 +3,9 @@
 
 #-----------------------------------------------------------
 rm(list=ls())
-setwd("~/Documents/GitRepos/BcSolGWAS/data/SNP_files/csvPrep")
+setwd("~/Documents/GitRepos/BcSolGWAS/data/GWAS_files")
 #for laptop setwd("~/Projects/BcSolGWAS/data/genome")
-SNPs <- read.csv("hp_binaryMAF20.csv", row.names = 1)
+SNPs <- read.csv("02_csvPrep/hp_binaryMAF20.csv", row.names = 1)
 #SNPs <- read.csv("miniSNP_practice.csv") 
 #SNPsDF <- SNPs
 #SNPsDF <- SNPsDF[c(1:2),]

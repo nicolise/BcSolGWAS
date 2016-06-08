@@ -4,7 +4,7 @@
 #---------------------------------------------------------------
 
 rm(list=ls())
-setwd("~/Documents/GitRepos/BcSolGWAS/")
+setwd("~/Documents/GitRepos/BcSolGWAS/data/GWAS_files/")
 
 #########################
 # This makes the bigRR_update run through the GPU
@@ -33,7 +33,7 @@ bigRR_update <- function (obj, Z, family = poisson(link = log), tol.err = 1e-06,
 library(bigRR) #check if version is 1.3-9
 
 #Get genotype data
-SNPs <- read.csv("data/GWAS_files/03_bigRRinput/binSNP_bigRR_MAF20hp.csv", row.names = 1)
+SNPs <- read.csv("03_bigRRinput/binSNP_bigRR_MAF20hp.csv", row.names = 1)
 FullSNPs <- SNPs
 SNPs <- FullSNPs
 #add a column with position as chr.base
@@ -103,14 +103,14 @@ for(i in 1:dim(dat)[2]) { #i will be each isolate
     
   }
   #write.csv(perm.u.HEM, paste("PermEffects_",colnames(dat)[i],".csv",sep=""))
-  thresh.BLUP$"0.95Thresh"[i] <- quantile(perm.u.BLUP,0.95)
-  thresh.BLUP$"0.975Thresh"[i] <- quantile(perm.u.BLUP,0.975)
-  thresh.BLUP$"0.99Thresh"[i] <- quantile(perm.u.BLUP,0.99)
-  thresh.BLUP$"0.999Thresh"[i] <- quantile(perm.u.BLUP,0.999)
-  thresh.HEM$"0.95Thresh"[i] <- quantile(perm.u.HEM,0.95)
-  thresh.HEM$"0.975Thresh"[i] <- quantile(perm.u.HEM,0.975)
-  thresh.HEM$"0.99Thresh"[i] <- quantile(perm.u.HEM,0.99)
-  thresh.HEM$"0.999Thresh"[i] <- quantile(perm.u.HEM,0.999)
+  thresh.BLUP$"0.95Thresh"[i] <- quantile(abs(perm.u.BLUP),0.95)
+  thresh.BLUP$"0.975Thresh"[i] <- quantile(abs(perm.u.BLUP),0.975)
+  thresh.BLUP$"0.99Thresh"[i] <- quantile(abs(perm.u.BLUP),0.99)
+  thresh.BLUP$"0.999Thresh"[i] <- quantile(abs(perm.u.BLUP),0.999)
+  thresh.HEM$"0.95Thresh"[i] <- quantile(abs(perm.u.HEM),0.95)
+  thresh.HEM$"0.975Thresh"[i] <- quantile(abs(perm.u.HEM),0.975)
+  thresh.HEM$"0.99Thresh"[i] <- quantile(abs(perm.u.HEM),0.99)
+  thresh.HEM$"0.999Thresh"[i] <- quantile(abs(perm.u.HEM),0.999)
   colnames(outpt.BLUP)[i+1] <- paste(colnames(dat)[i],"BLUP",sep=".")
   colnames(outpt.HEM)[i+1] <- paste(colnames(dat)[i],"HEM",sep=".")
 }
@@ -131,41 +131,5 @@ thresh.HEM$"0.99Thresh" <- c("0.99 Thresh", thresh.HEM$"0.99Thresh")
 thresh.HEM$"0.999Thresh" <- c("0.999 Thresh", thresh.HEM$"0.999Thresh")
 
 #Write results to output
-write.csv(rbind(thresh.BLUP$"0.95Thresh",thresh.BLUP$"0.975Thresh",thresh.BLUP$"0.99Thresh",thresh.BLUP$"0.999Thresh",outpt.BLUP),"SolanumLesionSizePoisson.BLUP.csv")
-write.csv(rbind(thresh.HEM$"0.95Thresh",thresh.HEM$"0.975Thresh",thresh.HEM$"0.99Thresh",thresh.HEM$"0.999Thresh",outpt.HEM),"SolanumLesionSizePoisson.HEM.csv")
-
-# #This part failed for me -- NES
-# used to store upper percentile of SNPS
-# #Write just the positive positions (RF- effect size greater than .99 thresh)
-# sig.HEM <- data.frame()
-# for(i in 1:dim(outpt.HEM)[1]) {
-#   if(i %% 1000 == 0) {print(paste(i, "--", Sys.time()))}
-#   if(any(abs(as.numeric(outpt.HEM[i,2:5]))-abs(as.numeric(thresh.HEM$"0.99Thresh"[2:5]))>0)) { 
-#     # change output.HEM[1,2:5] to appropriate column dims
-#     sig.HEM <- unname(as.matrix(rbind(sig.HEM,outpt.HEM[i,])))
-#   }
-# }
-# colnames(sig.HEM) <- colnames(outpt.HEM)
-# write.csv(rbind(thresh.HEM$"0.99Thresh",sig.HEM),"SolanumLesionSizePoisson.HEM.99Sig.csv")
-
-# Phenos[13,] -> Col0.LSMeans
-# Phenos[-13,] -> Phenos
-# 
-# MyX <- matrix(1, dim(Phenos)[1], 1)
-# 
-# Pheno.BLUP.result <- bigRR(y = Phenos[,1], X = MyX, Z = SNPs)
-# 
-# Pheno.HEM.result <- bigRR_update(Pheno.BLUP.result, SNPs)
-
-#RF the code below generates plots comparing .BLUP and .HEM methods - not necessary
-
-split.screen(c(1, 2))
-split.screen(c(2, 1), screen = 1)
-screen(3); plot(abs(Pheno.BLUP.result$u), cex = .6, col = 'slateblue')
-screen(4); plot(abs(Pheno.HEM.result$u), cex = .6, col = 'olivedrab')
-screen(2); plot(abs(Pheno.BLUP.result$u), abs(Pheno.HEM.result$u), cex = .6, pch = 19, col = 'darkmagenta')
-
-split.screen(c(1, 2))
-split.screen(c(2, 1), screen = 1)
-screen(3); plot(abs(Pheno.BLUP.result$leverage), cex = .6, col = 'slateblue')
-screen(4); plot(abs(Pheno.HEM.result$leverage), cex = .6, col = 'olivedrab')
+write.csv(rbind(thresh.BLUP$"0.95Thresh",thresh.BLUP$"0.975Thresh",thresh.BLUP$"0.99Thresh",thresh.BLUP$"0.999Thresh",outpt.BLUP),"Sl_LesionSize.BLUP.csv")
+write.csv(rbind(thresh.HEM$"0.95Thresh",thresh.HEM$"0.975Thresh",thresh.HEM$"0.99Thresh",thresh.HEM$"0.999Thresh",outpt.HEM),"Sl_LesionSize.HEM.csv")

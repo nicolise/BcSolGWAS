@@ -3,6 +3,7 @@
 #-------------------------------------------------------------
 rm(list=ls())
 setwd("~/Projects/BcSolGWAS/data")
+setwd("~/Documents/GitRepos/BcSolGWAS/data/preGWAS")
 ModDat <- read.csv("SlBc_ModelData.csv")
 
 #-----------------------------------------------------
@@ -93,21 +94,32 @@ library(lme4); library(car); library(lmerTest)
 #this model is consistent with the lsmeans model:
 #Lesion.lm <- lmer(Scale.LS ~ Igeno + Plant/Leaf/AorB + (1|Exp), data=out[[i]])
 Sys.time()
+<<<<<<< HEAD
 fullmod <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|Species/PlGenoNm/IndPlant) , data = ModDat)
+=======
+fullmod1 <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|Species/PlGenoNm/IndPlant/Leaf) + AorB , data = ModDat)
+>>>>>>> 4f685a14a122a6ef79dc0b780d992a88a0525041
 Sys.time()
-sink(file='output021716.txt')
-print("Model: ")
+sink(file='output_fullmod1_051916.txt')
+print("Model: fullmod1 <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|Species/PlGenoNm/IndPlant/Leaf) + AorB , data = ModDat)")
 Sys.time()
 #summary(fullmod) # the code generating output
-rand(fullmod)
-Anova(fullmod, type=2)
-anova(fullmod)
+rand(fullmod1)
+Anova(fullmod1, type=2)
+anova(fullmod1)
 Sys.time()
 sink()
 
+#drop Leaf
+fullmod2<- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|Species/PlGenoNm/IndPlant) + AorB , data = ModDat)
+#drop IndPlant
+fullmod3<- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + AorB , data = ModDat)
 
+<<<<<<< HEAD
 #this model is consistent with the lsmeans model, but IndPlant does not make sense without nesting
 fullmod <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
+=======
+>>>>>>> 4f685a14a122a6ef79dc0b780d992a88a0525041
 
 #trying by species: LesionWpi.lm and LesionWOpi.lm
 #LesionWpi.lm <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
