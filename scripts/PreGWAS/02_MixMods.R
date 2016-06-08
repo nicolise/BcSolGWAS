@@ -93,7 +93,7 @@ library(lme4); library(car); library(lmerTest)
 #this model is consistent with the lsmeans model:
 #Lesion.lm <- lmer(Scale.LS ~ Igeno + Plant/Leaf/AorB + (1|Exp), data=out[[i]])
 Sys.time()
-fullmod <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|Species/PlGenoNm/IndPlant/ , data = ModDat)
+fullmod <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|Species/PlGenoNm/IndPlant) , data = ModDat)
 Sys.time()
 sink(file='output021716.txt')
 print("Model: ")
@@ -106,7 +106,7 @@ Sys.time()
 sink()
 
 
-#this model is consistent with the lsmeans model!
+#this model is consistent with the lsmeans model, but IndPlant does not make sense without nesting
 fullmod <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
 
 #trying by species: LesionWpi.lm and LesionWOpi.lm
