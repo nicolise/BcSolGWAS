@@ -11,8 +11,8 @@ setwd("~/Documents/GitRepos/BcSolGWAS/data/GWAS_files/")
 # You need to do this first to mask the native 'bigRR_update' in the bigRR package
 # one alternative to family = gaussian(link = identity) is family = poisson(link = log)
 
-## RAN WITH POISSON. TRY RUNNING WITH GAUSSIAN
-bigRR_update <- function (obj, Z, family = poisson(link = log), tol.err = 1e-06, 
+## RAN first time WITH POISSON. Lesion size expected to be Gaussian
+bigRR_update <- function (obj, Z, family = gaussian(link = identity), tol.err = 1e-06, 
                           tol.conv = 1e-08) 
 {
   w <- as.numeric(obj$u^2/(1 - obj$leverage))
@@ -39,32 +39,18 @@ SNPs <- FullSNPs
 #add a column with position as chr.base
 SNPs$Chr.Base <- do.call(paste, c(SNPs[c("X.CHROM","POS")], sep="."))
 
-#Rachel's attempt------------------=====================================
+rownames(SNPs) <- SNPs[,96] #set the new column of chrom.base as rownames - this could maybe be written as: rownames(SNPs) <- SNPs$Chr.Base?
+any(duplicated(SNPs$Chr.Base))#check that none are duplicated
+SNPs <- SNPs[,4:95] #take out first three cols (X.CHROM, POS, REF) and new last col (Chr.Base). dim(SNPs) should now be [345485, 91], colnames(SNPs) are all Bc Isolates, rownames(SNPs) are all Chr.Base
 
-rownames(SNPs) <- SNPs[,95] #set the new column of chrom.base as rownames - this could maybe be written as: rownames(SNPs) <- SNPs$Chr.Base?
-SNPs <- SNPs[,4:94] #take out first three cols (X.CHROM, POS, REF) and new last col (Chr.Base). dim(SNPs) should now be [345485, 91], colnames(SNPs) are all Bc Isolates, rownames(SNPs) are all Chr.Base
-
-#Rachel's attempt ----FIN-----============================================
-
-#--Rachel commented out--SNPs <- SNPs[,-1]
-#make SNPs numeric
-# myconvert <- colnames(SNPs[1:91])
-# for (i in myconvert)
-#   {
-#   SNPs[[i]] <- as.numeric(SNPs[[i]])
-# }
-
-
-#what does this do? 
-#loads SNP dataframe as a matrix?
 #makes SNP states numeric (also transposes SNP matrix)
 SNPs <- as.matrix(t(SNPs))
 for(i in 1:dim(SNPs)[1]) {
   SNPs[i,] <- as.numeric(SNPs[i,])
 }
 
-
-Phenos <- read.csv("data/GWAS_files/03_bigRRinput/Sl_Pheno_bigRR.csv", row.names = 1)
+#read in phenotype data
+Phenos <- read.csv("03_bigRRinput/Sl_Pheno_bigRR_MAF20.csv", row.names = 1)
 dat <- as.data.frame((Phenos[,2:13]))  #INSERT PHENOTYPE COLUMNS HERE
 #e.g. LesionGreen as.data.frame(c(Phenos[,31:32],Phenos[,34:35]))
 
@@ -72,13 +58,10 @@ dat <- as.data.frame((Phenos[,2:13]))  #INSERT PHENOTYPE COLUMNS HERE
 # B05.10.Phenos <- dat[64,]
 # dat <- dat[-64,]
 
-
-outpt.BLUP <- colnames(SNPs)
 outpt.HEM <- colnames(SNPs)
-thresh.BLUP <- list("0.95Thresh" = NA, "0.975Thresh" = NA, "0.99Thresh" = NA, "0.999Thresh" = NA)
 thresh.HEM <- list("0.95Thresh" = NA, "0.975Thresh" = NA, "0.99Thresh" = NA, "0.999Thresh" = NA)
 
-#Calculate BLUP and HEMs for all phenotypes
+#Calculate HEMs for all phenotypes
 for(i in 1:dim(dat)[2]) { #i will be each isolate
   print(colnames(dat)[i])
   MyX <- matrix(1, dim(dat)[1], 1)
@@ -86,16 +69,13 @@ for(i in 1:dim(dat)[2]) { #i will be each isolate
   Pheno.BLUP.result <- bigRR(y = dat[,i], X = MyX, Z = SNPs, GPU = TRUE)
   Pheno.HEM.result <- bigRR_update(Pheno.BLUP.result, SNPs)
   
-  
-  outpt.BLUP <- cbind(outpt.BLUP, Pheno.BLUP.result$u)
   outpt.HEM <- cbind(outpt.HEM, Pheno.HEM.result$u)
   
   #Permute Thresholds for Phenos - this is what takes forever
-  perm.u.BLUP <- vector()
   perm.u.HEM <- vector()
   for(p in 1:1000) {  
     if(p %% 10 == 0) {print(paste("Thresh sample:", p, "--", Sys.time()))}
-    temp.Pheno <- sample(dat[,i], length(dat[,i]), replace = FALSE)
+    try(temp.Pheno <- sample(dat[,i], length(dat[,i]), replace = FALSE))
     try(temp.BLUP  <- bigRR(y = temp.Pheno, X = MyX, Z = SNPs, GPU = TRUE),silent = TRUE)
     temp.HEM <- bigRR_update(temp.BLUP, SNPs) #REF change- was bigRR_update(Pheno.BLUP.result...
     perm.u.HEM <- c(perm.u.HEM, temp.HEM$u)
@@ -121,4 +101,4 @@ thresh.HEM$"0.99Thresh" <- c("0.99 Thresh", thresh.HEM$"0.99Thresh")
 thresh.HEM$"0.999Thresh" <- c("0.999 Thresh", thresh.HEM$"0.999Thresh")
 
 #Write results to output
-write.csv(rbind(thresh.HEM$"0.95Thresh",thresh.HEM$"0.975Thresh",thresh.HEM$"0.99Thresh",thresh.HEM$"0.999Thresh",outpt.HEM),"Sl_LesionSize.HEM.csv")
+write.csv(rbind(thresh.HEM$"0.95Thresh",thresh.HEM$"0.975Thresh",thresh.HEM$"0.99Thresh",thresh.HEM$"0.999Thresh",outpt.HEM),"Sl_LesionSize_MAF20.HEM.csv")
