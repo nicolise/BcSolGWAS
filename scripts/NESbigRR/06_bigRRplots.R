@@ -5,6 +5,7 @@
 
 rm(list=ls())
 setwd("~/Documents/GitRepos/BcSolGWAS/")
+setwd("~/Projects/BcSolGWAS/")
 ############################################################################
 ###Plotting the HEM results
 
@@ -13,55 +14,28 @@ library(ggplot2)
 library(grid)
 
 #Import data (reorganized from script ReformatBigRRouts.R)
-HEM.plotdata <- read.csv("data/GWAS_files/04_bigRRoutput/Sl_LesionSize.HEM.PlotFormat.csv")
+HEM.plotdata <- read.csv("data/GWAS_files/04_bigRRoutput/Sl_LesionSize_MAF20.HEM.PlotFormat.csv")
 
 HEM.plotdata$Pos <- as.character(HEM.plotdata$Pos)#ensure that position data is not in scientific notation
 HEM.plotdata <- HEM.plotdata[-c(1:2)]
 
 #get threshhold values 
-HEM.thresh <- read.csv("data/GWAS_files/04_bigRRoutput/Sl_LesionSize.HEM.Thresh.csv")
+HEM.thresh <- read.csv("data/GWAS_files/04_bigRRoutput/Sl_LesionSize_MAF20.HEM.Thresh.csv")
 HEM.thresh <- HEM.thresh[,-c(1:2)]
 TH99 <- HEM.thresh[3,]
-TH99_LA0410 <- as.numeric(TH99[2])
-TH99_LA0480 <- as.numeric(TH99[3])
-TH99_LA1547 <- as.numeric(TH99[4])
-TH99_LA1589 <- as.numeric(TH99[5])
-TH99_LA1684 <- as.numeric(TH99[6])
-TH99_LA2093 <- as.numeric(TH99[7])
-TH99_LA2176 <- as.numeric(TH99[8])
-TH99_LA2706 <- as.numeric(TH99[9])
-TH99_LA3008 <- as.numeric(TH99[10])
-TH99_LA3475 <- as.numeric(TH99[11])
-TH99_LA4345 <- as.numeric(TH99[12])
-TH99_LA4355 <- as.numeric(TH99[13])
+for (i in 2:ncol(TH99)){
+  assign(paste("TH99_", names(TH99[i]), sep=""),as.numeric(TH99[i]))
+}
 
 TH999 <- HEM.thresh[4,]
-TH999_LA0410 <- as.numeric(TH999[2])
-TH999_LA0480 <- as.numeric(TH999[3])
-TH999_LA1547 <- as.numeric(TH999[4])
-TH999_LA1589 <- as.numeric(TH999[5])
-TH999_LA1684 <- as.numeric(TH999[6])
-TH999_LA2093 <- as.numeric(TH999[7])
-TH999_LA2176 <- as.numeric(TH999[8])
-TH999_LA2706 <- as.numeric(TH999[9])
-TH999_LA3008 <- as.numeric(TH999[10])
-TH999_LA3475 <- as.numeric(TH999[11])
-TH999_LA4345 <- as.numeric(TH999[12])
-TH999_LA4355 <- as.numeric(TH999[13])
+for (i in 2:ncol(TH999)){
+  assign(paste("TH999_", names(TH999[i]), sep=""),as.numeric(TH999[i]))
+}
 
 TH95 <- HEM.thresh[1,]
-TH95_LA0410 <- as.numeric(TH95[2])
-TH95_LA0480 <- as.numeric(TH95[3])
-TH95_LA1547 <- as.numeric(TH95[4])
-TH95_LA1589 <- as.numeric(TH95[5])
-TH95_LA1684 <- as.numeric(TH95[6])
-TH95_LA2093 <- as.numeric(TH95[7])
-TH95_LA2176 <- as.numeric(TH95[8])
-TH95_LA2706 <- as.numeric(TH95[9])
-TH95_LA3008 <- as.numeric(TH95[10])
-TH95_LA3475 <- as.numeric(TH95[11])
-TH95_LA4345 <- as.numeric(TH95[12])
-TH95_LA4355 <- as.numeric(TH95[13])
+for (i in 2:ncol(TH95)){
+  assign(paste("TH95_", names(TH95[i]), sep=""),as.numeric(TH95[i]))
+}
 
 # #Reformat Chromosomes and Positions
 HEM.plotdata$Chrom <- gsub("Chromosome", "", HEM.plotdata$Chrom)
@@ -76,15 +50,15 @@ HEM.plotdata$Index = NA
 ticks = NULL
 lastbase = 0
 
-#Redo the positions to make them sequencial		-- accurate position indexing
-##RFF code isn't working... replaced "Pos" with "pos"
+#want to figure out where to add +500 to draw breaks between chromosomes
+#Redo the positions to make them sequential		-- accurate position indexing
 for (i in unique(HEM.plotdata$Chrom)) {
   print(i)
   if (i==1) {
     HEM.plotdata[HEM.plotdata$Chrom==i, ]$Index=HEM.plotdata[HEM.plotdata$Chrom==i, ]$Pos
   }	else {
     #changed lastbase+tail to lastbase+max
-    lastbase=lastbase+max(subset(HEM.plotdata,HEM.plotdata$Chrom==i-1)$Pos, 1)
+    lastbase=+lastbase+max(subset(HEM.plotdata,HEM.plotdata$Chrom==i-1)$Pos, 1)
     HEM.plotdata[HEM.plotdata$Chrom==i, ]$Index=HEM.plotdata[HEM.plotdata$Chrom==i, ]$Pos+lastbase
   }
   ticks=c(ticks, HEM.plotdata[HEM.plotdata$Chrom==i, ]$Index[floor(length(HEM.plotdata[HEM.plotdata$Chrom==i, ]$Index)/2)+1])
@@ -92,14 +66,29 @@ for (i in unique(HEM.plotdata$Chrom)) {
 ticklim=c(min(HEM.plotdata$Index),max(HEM.plotdata$Index))
 
 #make plots for each phenotype
-jpeg("plots/Sl_LesionSize_LA0410.ManhattanPlot.jpg")
-qplot(Index,abs(LA0410), data=HEM.plotdata, ylab="SNP Effect Estimate" , 
-      main = "LesionSize_LA0410", colour=factor(Chrom)) +
- geom_hline(yintercept=TH99_LA0410) +
-  geom_text(aes(0,TH99_LA0410, label = ".99 Threshold", vjust = 1.5, hjust = .05), col = "black") +
-geom_hline(yintercept=TH95_LA0410, colour = "blue") +
-  geom_text(aes(0,TH95_LA0410, label = ".95 Threshold", vjust = 1.5, hjust = .05), col = "blue")
+for (y in 3:ncol(HEM.plotdata)){
+  jpeg(paste("plots/Sl_LesionSize_MAF20_", names(HEM.plotdata[i]), ".ManhattanPlot.jpg", sep="" )
+       qplot(Index, abs(HEM.plotdata[i]), data=HEM.plotdata, ylab="SNP Effect Estimate", 
+             main = paste("LesionSize_", names(HEM.plotdata[i]), sep=""), colour=factor(Chrom))+
+         geom_hline(yintercept=TH99_[i]) #this part is obviously wrong
+
+}
+
+#or just do them each by hand
+jpeg("plots/Sl_LesionSize_MAF20_LA4355.ManhattanPlot.jpg", width=6, height=5, units='in', res=300)
+qplot(Index,abs(LA4355), data=HEM.plotdata, ylab="SNP Effect Estimate" , 
+      main = "LesionSize_LA4355", colour=factor(Chrom)) +
+  geom_hline(yintercept=TH95_LA4355, colour = "blue") +
+  geom_text(aes(0,TH95_LA4355, label = ".95 Threshold", vjust = 1.5, hjust = .05), col = "blue")+
+  geom_hline(yintercept=TH99_LA4355) +
+  geom_text(aes(0,TH99_LA4355, label = ".99 Threshold", vjust = 1.5, hjust = .05), col = "black")
 dev.off()
+
+geom_hline(yintercept=TH999_LA3475) +
+  geom_text(aes(0,TH999_LA3475, label = ".999 Threshold", vjust = 1.5, hjust = .05), col = "black")
+
+
+
 
 jpeg("plots/Sl_LesionSize_LA0410.ManhattanPlot_999.jpg")
 qplot(Index,abs(LA0410), data=HEM.plotdata, ylab="SNP Effect Estimate" , 

@@ -3,5 +3,6 @@
 .RData
 <<<<<<< HEAD
 =======
-data
+data/
+plots/
 >>>>>>> origin/master
