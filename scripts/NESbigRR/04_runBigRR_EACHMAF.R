@@ -53,7 +53,7 @@ for(i in 1:dim(dat)[2]) { #i will be each isolate
   perm.u.HEM <- vector()
   for(p in 1:1000) {  
     if(p %% 10 == 0) {print(paste("Thresh sample:", p, "--", Sys.time()))}
-    try(temp.Pheno <- sample(dat[,i], length(dat[,i]), replace = FALSE), silent=T)
+    temp.Pheno <- sample(dat[,i], length(dat[,i]), replace = FALSE)
     try(temp.BLUP  <- bigRR(y = temp.Pheno, X = MyX, Z = SNPs, GPU = TRUE),silent = TRUE)
     temp.HEM <- bigRR_update(temp.BLUP, SNPs) #REF change- was bigRR_update(Pheno.BLUP.result...
     perm.u.HEM <- c(perm.u.HEM, temp.HEM$u)
@@ -81,6 +81,7 @@ write.csv(rbind(thresh.HEM$"0.95Thresh",thresh.HEM$"0.975Thresh",thresh.HEM$"0.9
 
 ###########################################------------------------------------
 #MAF10
+
 
 rm(list=ls())
 setwd("~/Documents/GitRepos/BcSolGWAS/data/GWAS_files/")
@@ -135,7 +136,7 @@ for(i in 1:dim(dat)[2]) { #i will be each isolate
     if(p %% 10 == 0) {print(paste("Thresh sample:", p, "--", Sys.time()))}
     temp.Pheno <- sample(dat[,i], length(dat[,i]), replace = FALSE)
     try(temp.BLUP  <- bigRR(y = temp.Pheno, X = MyX, Z = SNPs, GPU = TRUE),silent = TRUE)
-    temp.HEM <- bigRR_update(temp.BLUP, SNPs) #REF change- was bigRR_update(Pheno.BLUP.result...
+    try(temp.HEM <- bigRR_update(temp.BLUP, SNPs), silent=T) #REF change- was bigRR_update(Pheno.BLUP.result...
     perm.u.HEM <- c(perm.u.HEM, temp.HEM$u)
   }
   #write.csv(perm.u.HEM, paste("PermEffects_",colnames(dat)[i],".csv",sep=""))
@@ -158,7 +159,6 @@ thresh.HEM$"0.999Thresh" <- c("0.999 Thresh", thresh.HEM$"0.999Thresh")
 
 #Write results to output
 write.csv(rbind(thresh.HEM$"0.95Thresh",thresh.HEM$"0.975Thresh",thresh.HEM$"0.99Thresh",thresh.HEM$"0.999Thresh",outpt.HEM),"04_bigRRoutput/Sl_LesionSize_MAF10.HEM.csv")
-
 ###########################################------------------------------------
 #MAF5
 
