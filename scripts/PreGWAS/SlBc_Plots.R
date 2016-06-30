@@ -2,30 +2,24 @@
 #101315
 #-------------------------------------------------------------
 rm(list=ls())
-setwd("~/Projects/BcSolGWAS/data")
-ModDat <- read.csv("SlBcDATAFRAME.csv")
+setwd("~/Projects/BcSolGWAS")
+ModDat <- read.csv("data/SlBcDATAFRAME.csv")
 #-------------------------------------------------
-#bean plot by tray
-names(ModDat)
-library(ggplot2)
-p <- ggplot(ModDat, aes(factor(AgFlat), Scale.LS))
-p + geom_violin()
-library("beanplot")
-beanplot(Scale.LS ~ AgFlat, data=ModDat, las=3)
-text(srt=45)
 
 #plot my data: scatterplot!
 names(ModDat)
 attach(ModDat)
 #add PlantNum as an integer sorted by mean lesion size
+library(plyr)
 FigDat3 <- ddply(ModDat, c("PlGenoNm", "Igeno", "Species", "IsoColor"), summarise,
                  mLS   = mean(Scale.LS))
 MDmeans <- ddply(ModDat, c("PlGenoNm","Species"), summarise, mean=mean(Scale.LS))
 MDmeans <- MDmeans[order(MDmeans$Species, MDmeans$mean),] 
-MDmeans$PlNum <- c(1,2,3,4,5,6,1,2,3,4,5,6)
+MDmeans$PlantNum <- c(1,2,3,4,5,6,7,8,9,10,11,12)
+#MDmeans$PlNum <- c(1,2,3,4,5,6,1,2,3,4,5,6)
 FigDat3 <- merge(FigDat3, MDmeans, by="PlGenoNm")
 FigDat3 <- dplyr::select(FigDat3, Plnum = mean, matches("."))
-FigDat3$PlantNum <- as.numeric(FigDat3$PlNum)
+FigDat3$PlantNum <- as.numeric(FigDat3$PlantNum)
 library(ggplot2)
 attach(FigDat3)
 names(FigDat3)
@@ -37,18 +31,43 @@ FigDat3$SpLabs <- factor(FigDat3$Species.x, labels = c("Domesticated", "Wild"))
 FigDat3$mmLS <- ave(FigDat3$mLS, FigDat3$Igeno)
 attach(FigDat3)
 FigDat3 <- FigDat3[order(mmLS),]
-ggplot(FigDat3, aes(x = PlNum, y = mLS))+
-  geom_point()+
-  theme_bw()+
-  geom_line(size=1, aes(color=factor(mmLS), group=factor(Igeno)), show.legend=F)+
-  scale_x_discrete(breaks=c("1","2","3", "4", "5", "6", "1", "2", "3", "4", "5", "6"),
-                   labels=c("LA4345", "LA3008", "LA4355", "LA2706", "LA3475", 
-                    "LA0410", "LA1547", "LA2093", "LA1684", "LA1589", "LA0480", "LA2176"))+
-  facet_grid(~SpLabs, scales="fixed", space="free_x")+
-  theme(text = element_text(size=24), axis.text.x = element_text(angle = 45, hjust = 1))+
-  labs(y=expression(Lesion ~ Area ~ (cm^{2})), x=element_blank())
-#+geom_smooth(aes(group = 2), size = 2, method = "lm", se = T)
 
+#make x axis labels that actually work
+library(plyr)
+FigDat3$Plant.Label <- mapvalues(FigDat3$PlantNum, 
+                                 c("1","2","3", "4", "5", "6", "7", "8", "9", "10", "11", "12"),
+                                 c("LA4345", "LA3008", "LA4355", "LA2706", "LA3475", "LA0410", "LA1547", "LA2093", "LA1684", "LA1589", "LA0480", "LA2176"))
+FigDat3$Plant.Lab.Ord <- factor(FigDat3$Plant.Label, levels = c("LA4345", "LA3008", "LA4355", "LA2706", "LA3475", "LA0410", "LA1547", "LA2093", "LA1684", "LA1589", "LA0480", "LA2176"))
+
+#plot it
+tiff("plots/Sl_LesionSize_rainbowIntx.tiff", width=10, height=6, units='in', res=600)
+ggplot(FigDat3, aes(x = Plant.Lab.Ord, y = mLS))+
+  theme_bw()+
+  geom_line(size=1, aes(color=factor(mmLS), group=factor(Igeno)), show.legend=F, alpha=0.6)+
+  facet_grid(.~SpLabs, scales="free_x")+
+  theme(text = element_text(size=24), axis.text.x = element_text(angle = 45, hjust = 1), strip.background = element_blank())+
+  labs(y=expression(Lesion ~ Area ~ (cm^{2})), x=element_blank())
+dev.off()
+ 
+#----------------------------------------------------------- 
+#scatter plot with subset of isolates colored in
+
+#get list of isolate groups
+IsoGroups <- read.csv("data/IsolateGroups.csv")
+IsoGroups <- IsoGroups[,1:2]
+FigDat3 <- merge(FigDat3, IsoGroups, by="Igeno")
+
+#plots
+tiff("plots/Sl_LesionSize_greyIntx.tiff", width=6, height=4, units='in', res=600)
+ggplot(FigDat3, aes(x = Plant.Lab.Ord, y = mLS))+
+  theme_bw()+
+  #order: all, b05.10, high10, intx, low10
+  scale_color_manual(values = c("gray70", "gray70",  "black", "gray70", "gray70"))+
+  geom_line(size=1, aes(color=factor(Group), group=factor(Igeno)), show.legend=F, alpha=0.4)+
+  facet_grid(.~SpLabs, scales="free_x")+
+  theme(text = element_text(size=14), axis.text.x = element_text(angle = 45, hjust = 1), strip.background = element_blank())+
+  labs(y=expression(Lesion ~ Area ~ (cm^{2})), x=element_blank())
+dev.off()
 #-------------------------------------------------------
 #barplot with average lesion size by genotype
 #and SE bars
@@ -72,6 +91,19 @@ ggplot(FigDat2, aes(x = factor(PlGenoNm), y = mean))+
   geom_errorbar(limits, width=0.25)+
   facet_grid(.~SpLabs, scales="free")
 
+
+#instead, I'll do this as violin plots
+ModDat$SpLabs <- factor(ModDat$Species, labels = c("Domesticated", "Wild"))
+
+tiff("plots/Sl_LesionSize_beanplots.tiff", width=6, height=4, units='in', res=600)
+ggplot(ModDat, aes(x = factor(PlGenoNm), y = Scale.LS)) + 
+  theme_bw() +
+  geom_violin(fill = "gray70") + #aes(fill = factor(cyl))
+  facet_grid(.~SpLabs, scales="free") +
+  geom_boxplot(width = 0.2) +
+  theme(text = element_text(size=14), axis.text.x = element_text(size = 14, angle = 45, hjust = 1), axis.text.y = element_text(size = 14), strip.text.x = element_text(size = 14))+
+  labs(y = expression (Mean ~ Lesion ~ Area ~ (cm^{2})), x=element_blank())
+dev.off()
 #---------------------------------------------------------
 #scatterplot: mean of each isolate on each host // domestication level
 ModDat$SbyI <- paste(ModDat$Species, ModDat$Igeno, sep='') 
@@ -116,7 +148,7 @@ ggplot(FigDat5, aes(x = Species, y = SpMean, group=Igeno))+
   labs(y=expression(Mean ~ Lesion ~ Area ~ per ~ Isolate ~ (cm^{2})), x=element_blank())+
   scale_x_discrete(labels=c("Domesticated","Wild"))
 
-#---------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------
 
 library(ggplot2)
 ggplot (data = ModDat, 
@@ -150,3 +182,13 @@ x2 <- MyPlotcc$bigH[MyPlotcc$GenFx=="Plant"]
 x3 <- MyPlotcc$bigH[MyPlotcc$GenFx=="PbyI"]
 vioplot(x1, x2, x3, names=c("Isolate", "Plant", "PbyI"), 
         col="green")
+
+#-----------------------------------------------------
+#bean plot by tray
+names(ModDat)
+library(ggplot2)
+p <- ggplot(ModDat, aes(factor(AgFlat), Scale.LS))
+p + geom_violin()
+library("beanplot")
+beanplot(Scale.LS ~ AgFlat, data=ModDat, las=3)
+text(srt=45)

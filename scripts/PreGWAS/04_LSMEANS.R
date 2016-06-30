@@ -2,9 +2,9 @@
 #101315
 #-------------------------------------------------------------
 rm(list=ls())
-setwd("~/Projects/BcSolGWAS/data")
+setwd("~/Projects/BcSolGWAS")
 #read in file from SlBc_mixmods.csv
-ModDat <- read.csv("SlBc_ModelData.csv")
+ModDat <- read.csv("data/SlBc_ModelData.csv")
 
 #----------------------------------------------------------------------
 
@@ -15,44 +15,19 @@ ModDat <- ModDat[,c("ExpBlock", "Igeno", "AorB", "Leaf", "Plant", "AgFlat", "Spe
 names(ModDat)
 ModDat <- dplyr::select(ModDat, Exp = ExpBlock, Block = PExpRep.x, Pgeno = PlGenoNm, matches("."))
 
-#Anova(Mod, type=2)
-#anova(Mod)
-#Variance output of summary(Mod) gives you SS for the random factors
-#rand(Mod) gives Chi-sq  and P values for random factors in packages lmerTest
-#summary(fullmod) # the code generating output
-#Sys.time()
-#sink()
+#remove the isolates missing from one experiment
+SlSumm <- as.data.frame(with(ModDat, table(Igeno,Exp)))
+#missing Exps: Gallo3 (96a), 94.1 (96b)
+OgDat <- ModDat
+ModDat <- subset(ModDat, Igeno != "Gallo3")
+ModDat <- subset(ModDat, Igeno != "94.1")
 
-#linear model
-#nesting: B within A as A/B or A + A:B
-#fixed effects: PInLflt
-#random effects: PPlant, Isolate, PInPlant, PInLeaf, Pexp
-#ExpBlock and AgFlat as random effects
-#but maybe include a random term for "bench" = PExpRep.x??
-#ExpBlock/Bench/AgFlat
-#AgFlat is nested within ExpBlock
-#and both are random
-#Leaf is nested within Plant
-#and both are random
-#And we can consider Pgeno to be nested within Species
-#Igeno, Species, Pgeno, AorB are fixed
-#nesting terms are already included- don't need to add Species as a separate term BUT for random effects (ExpBlock alone) do need a separate term
-#PlGenoNm is a term nested within Species (but not CODED as if nested within Species = it's not an implicitly nested factor)
-#AgFlat IS implicitly nested within ExpBlock -- let's fix this
-#non-numeric factors to use: Igeno, PlGenoNm, Species, ExpBlock, AgFlat
-#optional to fix: coding of AgFlat so that it is not implicitly nested
-
-#fullmod <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
-
-#------------------------------------------------------------------------------
 #lsmeans calculations
 
 #removed just igeno * plant interactions
 #ideally: Igeno, Species, PlGenoNm, AorB are fixed
 #ExpBlock, AgFlat, and all their interactions are random
 #Igeno with PlGenoNm interaction, PlGenoNm nested within Species, AgFlat nested within ExpBlock, interaction between ExpBlock and PlGenoNm as well as ExpBlock and Igeno
-
-
 
 #run model per isolate WITHIN each plant genotype
 #so include no species terms or plant genotype terms
@@ -62,46 +37,49 @@ head(out[[1]]) #100 elements, max. 69 obs per isolate
 
 #Using a for loop, iterate over the list of data frames in out[[]]
 #sink(file='ModelsBYISO_030816rand.txt')
-#adding AorB or Plant or Leaf: error
-sink(file="LSMeans032116.txt")
+#fails to converge with igeno, plant/leaf/aorb, exp, exp/igeno
+#cannot include exp/igeno
+#also fails if drop aorb
+#and if drop aorb and leaf
+
+#version LSMeans061316.txt has fixed fx for AorB
+d=NULL
+library(data.table)
 for (i in c(1:12)) {
   print(unique(out[[i]]$Pgeno))
-  Lesion.lm <- lmer(Scale.LS ~ Igeno + Plant/Leaf/AorB + (1|Exp), data=out[[i]])
+  Lesion.lm <- lmer(Scale.LS ~ Igeno + (1|Exp) + (1|IndPlant/Leaf/AorB) + (1|Exp:Igeno), data=out[[i]])
+  #Lesion.lm.2 <- lmer(Scale.LS ~ Igeno + (1|Exp) + (IndPlant/Leaf/AorB), data=out[[i]])
   Lesion.lsm <- lsmeans(Lesion.lm, "Igeno")
-  print(Lesion.lsm)
+  df <- as.data.frame(print(Lesion.lsm))
+  setDT(df, keep.rownames = T)[]
+  df$Plant <- unique(out[[i]]$Pgeno)
+  d = rbind(d, df)
 }
-sink()
+#add a column to d for domesticated/ wild
+d$Species <- ifelse(d$Plant == "LA410", "Domesticated",
+             ifelse(d$Plant == "LA4355", "Domesticated",
+             ifelse(d$Plant == "LA2706", "Domesticated",
+             ifelse(d$Plant == "LA4345", "Domesticated",
+             ifelse(d$Plant == "LA3475", "Domesticated",
+             ifelse(d$Plant == "LA3008", "Domesticated",
+                    "Wild"))))))
+write.csv(d, "output/lsmeans/BcSlGWAS_lsmeans.csv")
 
-Lesion.lm.01 <- lmer(Scale.LS ~ Igeno + Species + Species/PlGenoNm + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|Species/PlGenoNm/IndPlant) + AorB + (1|ExpBlock:PlGenoNm) + (1|ExpBlock:Igeno), data = ModDat)
-#error: fixed-effect model matrix is rank deficient so dropping XXX columns / coefficients
-
-#try calculating lsm separately within each plant genotype
-Lesion.lm <- lmer(Scale.LS ~ Igeno + Species + Species/PlGenoNm + ExpBlock + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
-
-#library("lsmeans"); 
-#also in lmerTest
-#example(lsmeans)
-lsm.options(pbkrtest.limit = 6285)
-lsm.options(disable.pbkrtest=TRUE)
-LesIso.lsm <- lsmeans(Lesion.lm, "Igeno")
-s <- summary(LesIso.lsm)
-class(s)
-s[c("lsmean", "SE")]
-LesIso.cn <- contrast(LesIso.lsm, "trt.vs.ctrlk") #pairwise comparisons vs. UKRazz
-#not working for PlGenoNm
-
-lsmeans(fm17, "Treatment")
-pairs(.Last.value)
-
-summary(LesIso.co)
-lsmeans (mymod.lsm, 'Igeno', contr = "trt.vs.ctrlk")
-#this is incorrect, replace 'Igeno' with what? 'specs' argument
-pairs(mymod.lsm) #pairs of each isolate contrasted
-
-mymod.lsm.Pl <- lsmeans(lsmMod0, "PlGenoNm")
-contrast(mymod.lsm.Pl, "trt.vs.ctrlk") #pairwise comparisons
-lsmeans (mymod.lsm, 'PlGenoNm', contr = "trt.vs.ctrlk")
-warp.lsm <- lsmeans(warp.lm, ~ tension | wool)
-#this is incorrect, replace 'Igeno' with what? 'specs' argument
-pairs(mymod.lsm) #pairs of each isolate contrasted
-myx <- lsmeans(lsmMod0, trt.vs.ctrl~PlGenoNm|Igeno, adjust="none")
+#now: levene's test within domesticated vs. within wild plant genos
+#split dataset by isolate
+lsmeans <- read.csv("output/lsmeans/BcSlGWAS_lsmeans.csv")
+attach(lsmeans)
+out <- split( lsmeans , f = lsmeans$Igeno)
+head(out[[1]])
+d2 = NULL
+#95 levels, one for each isolate
+#errors out for 2 isolates in a row after running for 4???
+for (i in c(1:95)) {
+  print(unique(out[[i]]$Igeno))
+  Ltest <- leveneTest(out[[i]]$Estimate, out[[i]]$Species)
+  df2 <- as.data.frame(print(Ltest))
+  setDT(df2, keep.rownames = T)[]
+  df2$Isolate <- unique(out[[i]]$Igeno)
+  d2 = rbind(d2, df2)
+}
+write.csv(d2, "output/lsmeans/BcSlGWAS_LeveneTest.csv")
