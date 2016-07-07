@@ -111,16 +111,16 @@ fullmod1 <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + 
 #fails when including leaf AND AorB AND both exp:I exp:P terms
 fullmod2a <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|Species/PlGenoNm/IndPlant) + (1|ExpBlock:Igeno) + (1|ExpBlock:PlGenoNm), data = ModDat)
 
-#trying this: remove indplant. remove agflat.
-fullmod2b <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock:Igeno) + (1|ExpBlock/Species/PlGenoNm), data = ModDat)
+#trying this: remove indplant. this one works.
+fullmod2b <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|ExpBlock:Igeno) + (1|ExpBlock/Species/PlGenoNm), data = ModDat)
 
 #or this: remove agflat. this one fails.
 fullmod3 <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|Species/PlGenoNm/IndPlant) + (1|ExpBlock:Igeno) + (1|ExpBlock:PlGenoNm), data = ModDat)
 
 #this one works
 Sys.time()
-sink(file='output/fullmod2b_062416.txt')
-print("Model: fullmod2b <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock:Igeno) + (1|ExpBlock/Species/PlGenoNm), data = ModDat)")
+sink(file='output_fullmod2b_062416.txt')
+print("Model: fullmod2b <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|ExpBlock:Igeno) + (1|ExpBlock/Species/PlGenoNm), data = ModDat)")
 Sys.time()
 #summary(fullmod) # the code generating output
 rand(fullmod2b)
@@ -140,3 +140,71 @@ fullmod <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + I
 #trying by species: LesionWpi.lm and LesionWOpi.lm
 #LesionWpi.lm <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
 #LesionWOpi.lm <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species + ExpBlock + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
+
+#extract p values for each individual predictor variable from anova
+anova(lm)$P
+# Function to extract the overall ANOVA p-value out of a linear model object
+lmp <- function (modelobject) {
+  +     if (class(modelobject) != "lm") stop("Not an object of class 'lm' ")
+  +     f <- summary(modelobject)$fstatistic
+  +     p <- pf(f[1],f[2],f[3],lower.tail=F)
+  +     attributes(p) <- NULL
+  +     return(p)
+  + }
+lmp(lm) #extracts p-value for F-test
+
+#------------------------------------------------------------------------------
+#lsmeans calculations
+
+#removed just igeno * plant interactions
+#ideally: Igeno, Species, PlGenoNm, AorB are fixed
+#ExpBlock, AgFlat, and all their interactions are random
+#Igeno with PlGenoNm interaction, PlGenoNm nested within Species, AgFlat nested within ExpBlock, interaction between ExpBlock and PlGenoNm as well as ExpBlock and Igeno
+Lesion.lm.01 <- lmer(Scale.LS ~ Igeno + Species + Species/PlGenoNm + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|Species/PlGenoNm/IndPlant) + AorB + (1|ExpBlock:PlGenoNm) + (1|ExpBlock:Igeno), data = ModDat)
+#error: fixed-effect model matrix is rank deficient so dropping XXX columns / coefficients
+
+#try calculating lsm separately within each plant genotype
+Lesion.lm <- lmer(Scale.LS ~ Igeno + Species + Species/PlGenoNm + ExpBlock + (1|ExpBlock/AgFlat) + (1|IndPlant) + AorB , data = ModDat)
+
+#library("lsmeans"); 
+#also in lmerTest
+#example(lsmeans)
+lsm.options(pbkrtest.limit = 6285)
+lsm.options(disable.pbkrtest=TRUE)
+LesIso.lsm <- lsmeans(Lesion.lm, "Igeno")
+s <- summary(LesIso.lsm)
+class(s)
+s[c("lsmean", "SE")]
+LesIso.cn <- contrast(LesIso.lsm, "trt.vs.ctrlk") #pairwise comparisons vs. UKRazz
+#not working for PlGenoNm
+
+lsmeans(fm17, "Treatment")
+pairs(.Last.value)
+
+summary(LesIso.co)
+lsmeans (mymod.lsm, 'Igeno', contr = "trt.vs.ctrlk")
+#this is incorrect, replace 'Igeno' with what? 'specs' argument
+pairs(mymod.lsm) #pairs of each isolate contrasted
+
+mymod.lsm.Pl <- lsmeans(lsmMod0, "PlGenoNm")
+contrast(mymod.lsm.Pl, "trt.vs.ctrlk") #pairwise comparisons
+lsmeans (mymod.lsm, 'PlGenoNm', contr = "trt.vs.ctrlk")
+warp.lsm <- lsmeans(warp.lm, ~ tension | wool)
+#this is incorrect, replace 'Igeno' with what? 'specs' argument
+pairs(mymod.lsm) #pairs of each isolate contrasted
+myx <- lsmeans(lsmMod0, trt.vs.ctrl~PlGenoNm|Igeno, adjust="none")
+
+#library("lsmeans"); 
+#also in lmerTest
+#example(lsmeans)
+lsm.options(pbkrtest.limit = 6285)
+lsm.options(disable.pbkrtest=TRUE)
+LesIso.lsm <- lsmeans(Lesion.lm, "Igeno")
+s <- summary(LesIso.lsm)
+class(s)
+s[c("lsmean", "SE")]
+LesIso.cn <- contrast(LesIso.lsm, "trt.vs.ctrlk") #pairwise comparisons vs. UKRazz
+#not working for PlGenoNm
+
+lsmeans(fm17, "Treatment")
+pairs(.Last.value)

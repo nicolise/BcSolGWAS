@@ -4,10 +4,10 @@
 #--------------------------------------------------------
 rm(list=ls())
 #setwd("~/Documents/GitRepos/BcSolGWAS/data/SNP_files")
-setwd("~/Projects/BcSolGWAS/data/bigRRout")
+setwd("~/Projects/BcSolGWAS/data/GWAS_files/04_bigRRoutput")
 #Import data
 #reorganize file Sl_LesionSize.HEM.csv
-HEMdat <- read.csv("Sl_LesionSize.HEM.csv")
+HEMdat <- read.csv("Sl_LesionSize_MAF20.HEM.csv")
 
 #first remove first 4 rows (threshold data)
 HEMthresh <- HEMdat[1:4,]
@@ -21,12 +21,10 @@ names(HEMdat)
 #my problem: some are formatted as Chromosome1.252
 #others are formatted as Chromosome1.1.252
 
-HEMpractice <- HEMdat[c(1:200,50000:50300),]
-unique(HEMpractice$X.1)
-
-grx <- glob2rx("Chromosome*.*.*")
-HEMsub <- HEMdat[grep(grx, HEMpractice$X.1),]
-HEMpractice2 <- HEMpractice
+#this bit does not work
+#grx <- glob2rx("Chromosome*.*.*")
+#HEMsub <- HEMdat2[grep(grx, HEMdat2$X.1),]
+#HEMpractice2 <- HEMpractice
 
 HEMdat2$X.1 <- gsub(pattern = "Chromosome1\\.[0-9]\\.", replacement = "Chromosome1.", HEMdat2$X.1)
 HEMdat2$X.1 <- gsub(pattern = "Chromosome2\\.[0-9]\\.", replacement = "Chromosome2.", HEMdat2$X.1)
@@ -47,7 +45,10 @@ HEMdat2$X.1 <- gsub(pattern = "Chromosome16\\.[0-9]\\.", replacement = "Chromoso
 HEMdat2$X.1 <- gsub(pattern = "Chromosome16\\.[0-9][0-9]\\.", replacement = "Chromosome16.", HEMdat2$X.1)
 
 HEMdat3 <- separate (HEMdat2, X.1, into = c("Chrom", "Pos") )
+#double check
+unique(HEMdat3$Chrom)
+plot(HEMdat3$Pos)
 
-write.csv(HEMdat3, "Sl_LesionSize.HEM.PlotFormat.csv") 
-write.csv(HEMthresh, "Sl_LesionSize.HEM.Thresh.csv")
+write.csv(HEMdat3, "Sl_LesionSize_MAF20.HEM.PlotFormat.csv") 
+write.csv(HEMthresh, "Sl_LesionSize_MAF20.HEM.Thresh.csv")
 #read in to RunningBigRRwithRF.R, line 172
