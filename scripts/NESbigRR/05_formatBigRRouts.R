@@ -51,4 +51,4 @@ plot(HEMdat3$Pos)
 
 write.csv(HEMdat3, "Sl_LesionSize_MAF20.HEM.PlotFormat.csv") 
 write.csv(HEMthresh, "Sl_LesionSize_MAF20.HEM.Thresh.csv")
-#read in to RunningBigRRwithRF.R, line 172
+#read in to 06_plots
