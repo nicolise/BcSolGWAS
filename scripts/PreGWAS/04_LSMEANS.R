@@ -65,6 +65,15 @@ d$Species <- ifelse(d$Plant == "LA410", "Domesticated",
                     "Wild"))))))
 write.csv(d, "output/lsmeans/BcSlGWAS_lsmeans.csv")
 
+#make a file ready for bigRR
+lsmdat <- read.csv("output/lsmeans/BcSlGWAS_lsmeans.csv")
+names(lsmdat)
+head(lsmdat)
+lsmdat <- lsmdat[,c("Igeno", "Estimate", "Plant")]
+library(tidyr)
+data_wide <- spread(lsmdat, "Plant", "Estimate")
+write.csv(data_wide, "output/lsmeans/BcSl_lsmeans_forbigRR.csv")
+
 #now: levene's test within domesticated vs. within wild plant genos
 #split dataset by isolate
 lsmeans <- read.csv("output/lsmeans/BcSlGWAS_lsmeans.csv")

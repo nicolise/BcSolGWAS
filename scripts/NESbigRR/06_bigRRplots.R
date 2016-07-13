@@ -66,26 +66,56 @@ for (i in unique(HEM.plotdata$Chrom)) {
 ticklim=c(min(HEM.plotdata$Index),max(HEM.plotdata$Index))
 
 #make plots for each phenotype
-for (y in 3:ncol(HEM.plotdata)){
-  jpeg(paste("plots/Sl_LesionSize_MAF20_", names(HEM.plotdata[i]), ".ManhattanPlot.jpg", sep="" )
-       qplot(Index, abs(HEM.plotdata[i]), data=HEM.plotdata, ylab="SNP Effect Estimate", 
-             main = paste("LesionSize_", names(HEM.plotdata[i]), sep=""), colour=factor(Chrom))+
-         geom_hline(yintercept=TH99_[i]) #this part is obviously wrong
-
+#it isn't working with the loop for some reason
+3:ncol(HEM.plotdata)
+for (y in names(HEM.plotdata[,3:14])){
+print(y)
 }
 
-#or just do them each by hand
-jpeg("plots/Sl_LesionSize_MAF20_LA4355.ManhattanPlot.jpg", width=6, height=5, units='in', res=300)
-qplot(Index,abs(LA4355), data=HEM.plotdata, ylab="SNP Effect Estimate" , 
-      main = "LesionSize_LA4355", colour=factor(Chrom)) +
-  geom_hline(yintercept=TH95_LA4355, colour = "blue") +
-  geom_text(aes(0,TH95_LA4355, label = ".95 Threshold", vjust = 1.5, hjust = .05), col = "blue")+
-  geom_hline(yintercept=TH99_LA4355) +
-  geom_text(aes(0,TH99_LA4355, label = ".99 Threshold", vjust = 1.5, hjust = .05), col = "black")
+#without the loop
+for (y in 3:14){
+jpeg(paste("plots/MultiPlot/Sl_LesionSize_MAF20_lowTR_", names(HEM.plotdata[y]), ".ManhattanPlot.jpg", sep=""), width=8, height=4, units='in', res=600)
+  ggplot(HEM.plotdata, aes(x=Index, y=abs(HEM.plotdata[y])))+
+    theme_bw()+
+    geom_point(aes(color = factor(Chrom)))+
+    labs(list(y="SNP Effect Estimate", x="Chromosome position", title=paste("Lesion Size on ", names(HEM.plotdata[y]))))+
+    guides(col = guide_legend(nrow = 8, title="Chromosome"))+
+    geom_hline(yintercept=get(paste("TH95_", names(HEM.plotdata[y]), sep="")), colour = "blue") +
+    geom_text(aes(0,get(paste("TH95_", names(HEM.plotdata[y]), sep="")), label = ".95 Threshold", vjust = 1.5, hjust = .05), col = "blue")+
+   # geom_hline(yintercept=get(paste("TH99_", names(HEM.plotdata[8]), sep=""))) +
+   # geom_text(aes(0,get(paste("TH99_", names(HEM.plotdata[8]), sep="")), label = ".99 Threshold", vjust = 1.5, hjust = .05), col = "black")+
+   expand_limits(y=0)
 dev.off()
 
-geom_hline(yintercept=TH999_LA3475) +
-  geom_text(aes(0,TH999_LA3475, label = ".999 Threshold", vjust = 1.5, hjust = .05), col = "black")
+jpeg(paste("plots/MultiPlot/Sl_LesionSize_MAF20_highTR_", names(HEM.plotdata[14]), ".ManhattanPlot.jpg", sep=""), width=8, height=4, units='in', res=600)
+ggplot(HEM.plotdata, aes(x=Index, y=abs(HEM.plotdata[14])))+
+  theme_bw()+
+  geom_point(aes(color = factor(Chrom)))+
+  labs(list(y="SNP Effect Estimate", x="Chromosome position", title=paste("Lesion Size on ", names(HEM.plotdata[14]))))+
+  guides(col = guide_legend(nrow = 8, title="Chromosome"))+
+  geom_hline(yintercept=get(paste("TH999_", names(HEM.plotdata[14]), sep=""))) +
+  geom_text(aes(0,get(paste("TH999_", names(HEM.plotdata[14]), sep="")), label =
+  ".999 Threshold", vjust = 1.5, hjust = .05), col = "black")+
+  expand_limits(y=-0.001)
+dev.off()
+}
+#stop [3]
+
+#or just do them each by hand
+jpeg("plots/Sl_LesionSize_greyIntx.jpeg", width=6, height=4, units='in', res=600)
+ggplot(HEM.plotdata, aes(x=Index, y=abs(LA4345)))+
+  labs(list(y="SNP Effect Estimate", title = "Lesion Size on LA4345", x="Chromosome position"))+
+  theme_bw()+
+  geom_point(aes(color = factor(Chrom)))+
+  guides(col = guide_legend(nrow = 8, title="Chromosome"))+
+  geom_hline(yintercept=TH95_LA4345, colour = "blue") +
+  geom_text(aes(0,TH95_LA4345, label = ".95 Threshold", vjust = 1.5, hjust = .05), col = "blue")+
+  geom_hline(yintercept=TH99_LA4345) +
+  geom_text(aes(0,TH99_LA4345, label = ".99 Threshold", vjust = 1.5, hjust = .05), col = "black")
+dev.off()
+
+#geom_hline(yintercept=TH999_LA3475) +
+#  geom_text(aes(0,TH999_LA3475, label = ".999 Threshold", vjust = 1.5, hjust = .05), col = "black")
 
 
 
