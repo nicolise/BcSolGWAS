@@ -20,14 +20,14 @@ bigRR_update <- function (obj, Z, family = gaussian(link = identity), tol.err = 
 library(bigRR) #check if version is 1.3-9
 
 #Get genotype data
-SNPs <- read.csv("03_bigRRinput/binSNP_bigRR_MAF20hp.csv", row.names = 1)
+SNPs <- read.csv("03_bigRRinput/NewModel0711/binSNP_bigRR_MAF20hp.csv", row.names = 1)
 FullSNPs <- SNPs
 SNPs <- FullSNPs
 #add a column with position as chr.base
 SNPs$Chr.Base <- do.call(paste, c(SNPs[c("X.CHROM","POS")], sep="."))
 
-rownames(SNPs) <- SNPs[,96] #set the new column of chrom.base as rownames - this could maybe be written as: rownames(SNPs) <- SNPs$Chr.Base?
-SNPs <- SNPs[,4:95] #take out first three cols (X.CHROM, POS, REF) and new last col (Chr.Base)
+rownames(SNPs) <- SNPs$Chr.Base #set the new column of chrom.base as rownames - this could maybe be written as: rownames(SNPs) <- SNPs$Chr.Base?
+SNPs <- SNPs[,4:96] #take out first three cols (X.CHROM, POS, REF) and new last col (Chr.Base)
 
 #makes SNP states numeric (also transposes SNP matrix)
 SNPs <- as.matrix(t(SNPs))
@@ -36,7 +36,7 @@ for(i in 1:dim(SNPs)[1]) {
 }
 
 #read in phenotype data
-Phenos <- read.csv("03_bigRRinput/Sl_Pheno_bigRR_MAF20.csv", row.names = 1)
+Phenos <- read.csv("03_bigRRinput/NewModel0711/Sl_Pheno_bigRR_MAF20.csv", row.names = 1)
 dat <- as.data.frame((Phenos[,2:13]))  #INSERT PHENOTYPE COLUMNS HERE
 
 outpt.HEM <- colnames(SNPs)
@@ -77,7 +77,7 @@ thresh.HEM$"0.99Thresh" <- c("0.99 Thresh", thresh.HEM$"0.99Thresh")
 thresh.HEM$"0.999Thresh" <- c("0.999 Thresh", thresh.HEM$"0.999Thresh")
 
 #Write results to output
-write.csv(rbind(thresh.HEM$"0.95Thresh",thresh.HEM$"0.975Thresh",thresh.HEM$"0.99Thresh",thresh.HEM$"0.999Thresh",outpt.HEM),"04_bigRRoutput/Sl_LesionSize_MAF20.HEM.csv")
+write.csv(rbind(thresh.HEM$"0.95Thresh",thresh.HEM$"0.975Thresh",thresh.HEM$"0.99Thresh",thresh.HEM$"0.999Thresh",outpt.HEM),"04_bigRRoutput/NewModel0711/Sl_LesionSize_MAF20.HEM.csv")
 
 ###########################################------------------------------------
 #MAF10
@@ -101,14 +101,15 @@ bigRR_update <- function (obj, Z, family = gaussian(link = identity), tol.err = 
 library(bigRR) #check if version is 1.3-9
 
 #Get genotype data
-SNPs <- read.csv("03_bigRRinput/binSNP_bigRR_MAF10hp.csv", row.names = 1)
+SNPs <- read.csv("03_bigRRinput/NewModel0711/binSNP_bigRR_MAF10hp.csv", row.names = 1)
 FullSNPs <- SNPs
 SNPs <- FullSNPs
 #add a column with position as chr.base
 SNPs$Chr.Base <- do.call(paste, c(SNPs[c("X.CHROM","POS")], sep="."))
 
-rownames(SNPs) <- SNPs[,96] #set the new column of chrom.base as rownames - this could maybe be written as: rownames(SNPs) <- SNPs$Chr.Base?
-SNPs <- SNPs[,4:95] #take out first three cols (X.CHROM, POS, REF) and new last col (Chr.Base)
+rownames(SNPs) <- SNPs$Chr.Base #set the new column of chrom.base as rownames - this could maybe be written as: rownames(SNPs) <- SNPs$Chr.Base?
+SNPs <- SNPs[,4:96] #take out first three cols (X.CHROM, POS, REF) and new last col (Chr.Base)
+FullSNPs <- SNPs
 
 #makes SNP states numeric (also transposes SNP matrix)
 SNPs <- as.matrix(t(SNPs))
@@ -117,7 +118,7 @@ for(i in 1:dim(SNPs)[1]) {
 }
 
 #read in phenotype data
-Phenos <- read.csv("03_bigRRinput/Sl_Pheno_bigRR_MAF10.csv", row.names = 1)
+Phenos <- read.csv("03_bigRRinput/NewModel0711/Sl_Pheno_bigRR_MAF10.csv", row.names = 1)
 dat <- as.data.frame((Phenos[,2:13]))  #INSERT PHENOTYPE COLUMNS HERE
 
 outpt.HEM <- colnames(SNPs)
@@ -158,7 +159,7 @@ thresh.HEM$"0.99Thresh" <- c("0.99 Thresh", thresh.HEM$"0.99Thresh")
 thresh.HEM$"0.999Thresh" <- c("0.999 Thresh", thresh.HEM$"0.999Thresh")
 
 #Write results to output
-write.csv(rbind(thresh.HEM$"0.95Thresh",thresh.HEM$"0.975Thresh",thresh.HEM$"0.99Thresh",thresh.HEM$"0.999Thresh",outpt.HEM),"04_bigRRoutput/Sl_LesionSize_MAF10.HEM.csv")
+write.csv(rbind(thresh.HEM$"0.95Thresh",thresh.HEM$"0.975Thresh",thresh.HEM$"0.99Thresh",thresh.HEM$"0.999Thresh",outpt.HEM),"04_bigRRoutput/NewModel0711/Sl_LesionSize_MAF10.HEM.csv")
 ###########################################------------------------------------
 #MAF5
 

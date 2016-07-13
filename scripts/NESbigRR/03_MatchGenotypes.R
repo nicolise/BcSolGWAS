@@ -5,7 +5,7 @@
 rm(list=ls())
 setwd("~/Documents/GitRepos/BcSolGWAS/data/GWAS_files")
 #for laptop setwd("~/Projects/BcSolGWAS/data/genome")
-SNPs <- read.csv("02_csvPrep/hp_binaryMAF20.csv", row.names = 1)
+SNPs <- read.csv("02_csvPrep/hp_binaryMAF10.csv", row.names = 1)
 #SNPs <- read.csv("miniSNP_practice.csv") 
 #SNPsDF <- SNPs
 #SNPsDF <- SNPsDF[c(1:2),]
@@ -15,7 +15,7 @@ SNPs_rename <- SNPs
 SNPnames <- read.csv("02_csvPrep/Key_SNPnames.csv")
 SNPnames <- SNPnames[c(2,4)]
 #Phenos <- read.csv("LSMforbigRR_est_Xnames.csv")
-Phenos <- read.csv("02_csvPrep/phenos/LSMforbigRR_est.csv")
+Phenos <- read.csv("02_csvPrep/phenos/NewModel0711/BcSl_lsmeans_forbigRR.csv")
 
 #change names from genotype file to match phenotype file
 #File SNPs_rename has columns of isolate genotypes that I want to rename
@@ -49,8 +49,8 @@ SNPMatch2 <- SNPMatch2[,-9]
 PhenoMatch2 <- PhenoMatch[order(PhenoMatch$Igeno),] 
 
 #save them files
-write.csv(SNPMatch2, "03_bigRRinput/binSNP_bigRR_MAF20hp.csv")
-write.csv(PhenoMatch2, "03_bigRRinput/Sl_Pheno_bigRR_MAF20.csv")
+write.csv(SNPMatch2, "03_bigRRinput/NewModel0711/binSNP_bigRR_MAF10hp.csv")
+write.csv(PhenoMatch2, "03_bigRRinput/NewModel0711/Sl_Pheno_bigRR_MAF10.csv")
 #------------------------------------------------------------------------------
 #extra things
 #miniSNPs <- as.data.frame(t(miniSNPs))
