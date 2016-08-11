@@ -1,10 +1,10 @@
-#Preliminary data analysis Solanum spp. x Botrytis cinerea lesions
+h#Preliminary data analysis Solanum spp. x Botrytis cinerea lesions
 #101315
 #-------------------------------------------------------------
 rm(list=ls())
-setwd("~/Projects/BcSolGWAS/data")
+setwd("~/Projects/BcSolGWAS")
 setwd("~/Documents/GitRepos/BcSolGWAS/data/preGWAS")
-ModDat <- read.csv("SlBc_ModelData.csv")
+ModDat <- read.csv("data/SlBc_ModelData.csv")
 
 #-----------------------------------------------------
 #ASSUMPTIONS BEFORE STATISTICS!
@@ -73,6 +73,48 @@ OgDat <- ModDat
 ModDat <- subset(ModDat, Igeno != "Gallo3")
 ModDat <- subset(ModDat, Igeno != "94.1")
 
+#-------------------------------------------------------
+#test for effects of agar flat
+names(ModDat)
+library(plyr)
+SummDat.I <- ddply(ModDat, c("Igeno", "Species", "ExpBlock"), summarise,
+                 mLS   = mean(Scale.LS),
+                 sdLS = sd(Scale.LS))
+SummDat.I$cvLS <- SummDat.I$sdLS / SummDat.I$mLS
+plot(SummDat.I$Igeno, SummDat.I$cvLS)
+
+SummDat.P <- ddply(ModDat, c("PlGenoNm", "Species", "ExpBlock"), summarise,
+                   mLS   = mean(Scale.LS),
+                   sdLS = sd(Scale.LS))
+SummDat.P$cvLS <- SummDat.P$sdLS / SummDat.P$mLS
+plot(SummDat.P$PlGenoNm, SummDat.P$cvLS)
+
+SummDat <- ddply(ModDat, c("PlGenoNm", "Igeno", "Species", "ExpBlock"), summarise,
+                   mLS   = mean(Scale.LS),
+                   sdLS = sd(Scale.LS))
+SummDat$cvLS <- SummDat$sdLS / SummDat$mLS
+SummDat$PbyI <- paste(SummDat$PlGenoNm, SummDat$Igeno, sep=".")
+
+
+flatmod <- lmer(Scale.LS ~ (1|ExpBlock) + (1|ExpBlock/PExpRep.x) + (1|ExpBlock/PExpRep.x/AgFlat) , data = ModDat)
+flatmod2 <- lmer(Scale.LS ~ Igeno + Species + Species/PlGenoNm + (1|ExpBlock) + (1|ExpBlock/PExpRep.x) + (1|ExpBlock/PExpRep.x/AgFlat) , data = ModDat)
+
+sink(file='output/flat_effects.txt')
+print("flatmod <- lmer(Scale.LS ~ (1|ExpBlock) + (1|ExpBlock/PExpRep.x) + (1|ExpBlock/PExpRep.x/AgFlat) , data = ModDat)")
+rand(flatmod)
+Anova(flatmod, type=2)
+anova(flatmod)
+
+print("flatmod2 <- lmer(Scale.LS ~ Igeno + Species + Species/PlGenoNm + (1|ExpBlock) + (1|ExpBlock/PExpRep.x) + (1|ExpBlock/PExpRep.x/AgFlat) , data = ModDat)")
+rand(flatmod2)
+Anova(flatmod2, type=2)
+anova(flatmod2)
+
+sink()
+
+#-----------------------------------------------------------
+#GLMS for ANOVA
+
 #Anova(Mod, type=2)
 #anova(Mod)
 #Variance output of summary(Mod) gives you SS for the random factors
@@ -128,6 +170,24 @@ Anova(fullmod2b, type=2)
 anova(fullmod2b)
 Sys.time()
 sink()
+
+#this one works
+Sys.time()
+fullmod1 <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat), data = ModDat)
+Sys.time()
+sink(file='output/fullmod1_072816.txt')
+#dropping AorB... don't need it and model fails
+#fails to converge with species/plgeno/indplant/leaf
+#and with species/ plgeno/indplant
+print("fullmod1 <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|Species/PlGenoNm/IndPlant), data = ModDat)")
+Sys.time()
+#summary(fullmod) # the code generating output
+rand(fullmod1)
+Anova(fullmod1, type=2)
+anova(fullmod1)
+Sys.time()
+sink()
+
 
 #drop Leaf
 fullmod2<- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat) + (1|Species/PlGenoNm/IndPlant) + AorB , data = ModDat)
