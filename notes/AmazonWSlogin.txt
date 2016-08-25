@@ -1,8 +1,13 @@
 AWS account ID 676126487047
 nesoltis
-starf password
+starf password wiht CAPS
 
 https://your_aws_account_id.signin.aws.amazon.com/console/
 
 
 https://676126487047.signin.aws.amazon.com/console/
+
+
+How to set up ssh keys:
+http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/get-set-up-for-amazon-ec2.html#create-a-key-pair
+
