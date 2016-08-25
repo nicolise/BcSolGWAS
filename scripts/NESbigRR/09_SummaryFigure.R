@@ -3,8 +3,57 @@
 #-------------------------------------------------------------
 rm(list=ls())
 setwd("~/Projects/BcSolGWAS")
-SNPlist <- read.csv("data/GWAS_files/04_bigRRoutput/NewModel0711/Sl_LesionSize_MAF20.HEM.PlotFormat.csv")
-Thresh <- read.csv("data/GWAS_files/04_bigRRoutput/NewModel0711/Sl_LesionSize_MAF20.HEM.Thresh.csv")
+SNPlist <- read.csv("data/GWAS_files/04_bigRRoutput/NewModel0711/Sl_LesionSize_MAF20.HEM.csv")
+
+Thresh <- SNPlist[c(1:4),]
+SNPlist <- SNPlist[-c(1:4),]
+SNPlist2 <- SNPlist
+
+library(tidyr)
+
+#first, need to change Chromosome1.number to Chromosome1.0.number etc.
+
+#I'll change everything to 1.0.(1.)number
+
+SNPlist2$X.1 <- gsub(pattern = "Chromosome1\\.", replacement = "Chromosome1.0.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome2\\.", replacement = "Chromosome2.0.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome3\\.", replacement = "Chromosome3.0.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome4\\.", replacement = "Chromosome4.0.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome5\\.", replacement = "Chromosome5.0.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome6\\.", replacement = "Chromosome6.0.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome7\\.", replacement = "Chromosome7.0.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome8\\.", replacement = "Chromosome8.0.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome9\\.", replacement = "Chromosome9.0.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome10\\.", replacement = "Chromosome10.0.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome11\\.", replacement = "Chromosome11.0.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome12\\.", replacement = "Chromosome12.0.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome13\\.", replacement = "Chromosome13.0.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome14\\.", replacement = "Chromosome14.0.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome15\\.", replacement = "Chromosome15.0.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome16\\.", replacement = "Chromosome16.0.", SNPlist2$X.1)
+
+#Then everything with 1.0.(1.)number I'll change to 1.(1.)number
+
+HEMdat2$X.1 <- gsub(pattern = "Chromosome1\\.0\\.[0-9]\\.", replacement = "Chromosome1.", HEMdat2$X.1)
+HEMdat2$X.1 <- gsub(pattern = "Chromosome2\\.[0-9]\\.", replacement = "Chromosome2.", HEMdat2$X.1)
+HEMdat2$X.1 <- gsub(pattern = "Chromosome3\\.[0-9]\\.", replacement = "Chromosome3.", HEMdat2$X.1)
+HEMdat2$X.1 <- gsub(pattern = "Chromosome4\\.[0-9]\\.", replacement = "Chromosome4.", HEMdat2$X.1)
+HEMdat2$X.1 <- gsub(pattern = "Chromosome5\\.[0-9]\\.", replacement = "Chromosome5.", HEMdat2$X.1)
+HEMdat2$X.1 <- gsub(pattern = "Chromosome6\\.[0-9]\\.", replacement = "Chromosome6.", HEMdat2$X.1)
+HEMdat2$X.1 <- gsub(pattern = "Chromosome7\\.[0-9]\\.", replacement = "Chromosome7.", HEMdat2$X.1)
+HEMdat2$X.1 <- gsub(pattern = "Chromosome8\\.[0-9]\\.", replacement = "Chromosome8.", HEMdat2$X.1)
+HEMdat2$X.1 <- gsub(pattern = "Chromosome9\\.[0-9]\\.", replacement = "Chromosome9.", HEMdat2$X.1)
+HEMdat2$X.1 <- gsub(pattern = "Chromosome10\\.[0-9]\\.", replacement = "Chromosome10.", HEMdat2$X.1)
+HEMdat2$X.1 <- gsub(pattern = "Chromosome11\\.[0-9]\\.", replacement = "Chromosome11.", HEMdat2$X.1)
+HEMdat2$X.1 <- gsub(pattern = "Chromosome12\\.[0-9]\\.", replacement = "Chromosome12.", HEMdat2$X.1)
+HEMdat2$X.1 <- gsub(pattern = "Chromosome13\\.[0-9]\\.", replacement = "Chromosome13.", HEMdat2$X.1)
+HEMdat2$X.1 <- gsub(pattern = "Chromosome14\\.[0-9]\\.", replacement = "Chromosome14.", HEMdat2$X.1)
+HEMdat2$X.1 <- gsub(pattern = "Chromosome15\\.[0-9]\\.", replacement = "Chromosome15.", HEMdat2$X.1)
+HEMdat2$X.1 <- gsub(pattern = "Chromosome16\\.[0-9]\\.", replacement = "Chromosome16.", HEMdat2$X.1)
+HEMdat2$X.1 <- gsub(pattern = "Chromosome16\\.[0-9][0-9]\\.", replacement = "Chromosome16.", HEMdat2$X.1)
+
+HEMdat3 <- separate (HEMdat2, X.1, into = c("Chrom", "Pos") )
+
 
 names(SNPlist)
 SNPlist <- SNPlist[,c(3:16)]
