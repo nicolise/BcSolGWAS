@@ -3,6 +3,7 @@
 #-------------------------------------------------------------
 rm(list=ls())
 setwd("~/Projects/BcSolGWAS")
+setwd("~/Documents/GitRepos/BcSolGWAS")
 SNPlist <- read.csv("data/GWAS_files/04_bigRRoutput/NewModel0711/Sl_LesionSize_MAF20.HEM.csv")
 
 Thresh <- SNPlist[c(1:4),]
@@ -34,36 +35,58 @@ SNPlist2$X.1 <- gsub(pattern = "Chromosome16\\.", replacement = "Chromosome16.0.
 
 #Then everything with 1.0.(1.)number I'll change to 1.(1.)number
 
-HEMdat2$X.1 <- gsub(pattern = "Chromosome1\\.0\\.[0-9]\\.", replacement = "Chromosome1.", HEMdat2$X.1)
-HEMdat2$X.1 <- gsub(pattern = "Chromosome2\\.[0-9]\\.", replacement = "Chromosome2.", HEMdat2$X.1)
-HEMdat2$X.1 <- gsub(pattern = "Chromosome3\\.[0-9]\\.", replacement = "Chromosome3.", HEMdat2$X.1)
-HEMdat2$X.1 <- gsub(pattern = "Chromosome4\\.[0-9]\\.", replacement = "Chromosome4.", HEMdat2$X.1)
-HEMdat2$X.1 <- gsub(pattern = "Chromosome5\\.[0-9]\\.", replacement = "Chromosome5.", HEMdat2$X.1)
-HEMdat2$X.1 <- gsub(pattern = "Chromosome6\\.[0-9]\\.", replacement = "Chromosome6.", HEMdat2$X.1)
-HEMdat2$X.1 <- gsub(pattern = "Chromosome7\\.[0-9]\\.", replacement = "Chromosome7.", HEMdat2$X.1)
-HEMdat2$X.1 <- gsub(pattern = "Chromosome8\\.[0-9]\\.", replacement = "Chromosome8.", HEMdat2$X.1)
-HEMdat2$X.1 <- gsub(pattern = "Chromosome9\\.[0-9]\\.", replacement = "Chromosome9.", HEMdat2$X.1)
-HEMdat2$X.1 <- gsub(pattern = "Chromosome10\\.[0-9]\\.", replacement = "Chromosome10.", HEMdat2$X.1)
-HEMdat2$X.1 <- gsub(pattern = "Chromosome11\\.[0-9]\\.", replacement = "Chromosome11.", HEMdat2$X.1)
-HEMdat2$X.1 <- gsub(pattern = "Chromosome12\\.[0-9]\\.", replacement = "Chromosome12.", HEMdat2$X.1)
-HEMdat2$X.1 <- gsub(pattern = "Chromosome13\\.[0-9]\\.", replacement = "Chromosome13.", HEMdat2$X.1)
-HEMdat2$X.1 <- gsub(pattern = "Chromosome14\\.[0-9]\\.", replacement = "Chromosome14.", HEMdat2$X.1)
-HEMdat2$X.1 <- gsub(pattern = "Chromosome15\\.[0-9]\\.", replacement = "Chromosome15.", HEMdat2$X.1)
-HEMdat2$X.1 <- gsub(pattern = "Chromosome16\\.[0-9]\\.", replacement = "Chromosome16.", HEMdat2$X.1)
-HEMdat2$X.1 <- gsub(pattern = "Chromosome16\\.[0-9][0-9]\\.", replacement = "Chromosome16.", HEMdat2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome1\\.0\\.1\\.", replacement = "Chromosome1.1.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome2\\.0\\.1\\.", replacement = "Chromosome2.1.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome2\\.0\\.2\\.", replacement = "Chromosome2.2.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome2\\.0\\.3\\.", replacement = "Chromosome2.3.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome2\\.0\\.4\\.", replacement = "Chromosome2.4.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome2\\.0\\.5\\.", replacement = "Chromosome2.5.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome3\\.0\\.1\\.", replacement = "Chromosome3.1.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome3\\.0\\.2\\.", replacement = "Chromosome3.2.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome4\\.0\\.1\\.", replacement = "Chromosome4.1.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome5\\.0\\.1\\.", replacement = "Chromosome5.1.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome6\\.0\\.1\\.", replacement = "Chromosome6.1.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome6\\.0\\.2\\.", replacement = "Chromosome6.2.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome6\\.0\\.3\\.", replacement = "Chromosome6.3.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome7\\.0\\.1\\.", replacement = "Chromosome7.1.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome7\\.0\\.2\\.", replacement = "Chromosome7.2.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome8\\.0\\.1\\.", replacement = "Chromosome8.1.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome8\\.0\\.2\\.", replacement = "Chromosome8.2.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome9\\.0\\.1\\.", replacement = "Chromosome9.1.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome10\\.0\\.1\\.", replacement = "Chromosome10.1.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome11\\.0\\.1\\.", replacement = "Chromosome11.1.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome12\\.0\\.1\\.", replacement = "Chromosome12.1.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome13\\.0\\.1\\.", replacement = "Chromosome13.1.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome13\\.0\\.2\\.", replacement = "Chromosome13.2.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome14\\.0\\.1\\.", replacement = "Chromosome14.1.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome14\\.0\\.2\\.", replacement = "Chromosome14.2.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome15\\.0\\.1\\.", replacement = "Chromosome15.1.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome15\\.0\\.2\\.", replacement = "Chromosome15.2.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome15\\.0\\.3\\.", replacement = "Chromosome15.3.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome15\\.0\\.4\\.", replacement = "Chromosome15.4.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome16\\.0\\.1\\.", replacement = "Chromosome16.1.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome16\\.0\\.2\\.", replacement = "Chromosome16.2.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome16\\.0\\.3\\.", replacement = "Chromosome16.3.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome16\\.0\\.4\\.", replacement = "Chromosome16.4.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome16\\.0\\.5\\.", replacement = "Chromosome16.5.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome16\\.0\\.6\\.", replacement = "Chromosome16.6.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome16\\.0\\.7\\.", replacement = "Chromosome16.7.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome16\\.0\\.8\\.", replacement = "Chromosome16.8.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome16\\.0\\.9\\.", replacement = "Chromosome16.9.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome16\\.0\\.10\\.", replacement = "Chromosome16.10.", SNPlist2$X.1)
+SNPlist2$X.1 <- gsub(pattern = "Chromosome16\\.0\\.11\\.", replacement = "Chromosome16.11.", SNPlist2$X.1)
 
-HEMdat3 <- separate (HEMdat2, X.1, into = c("Chrom", "Pos") )
+SNPlist3 <- separate (SNPlist2, X.1, into = c("Chrom", "Segment", "Pos") )
 
-
+SNPlist <- SNPlist3
 names(SNPlist)
-SNPlist <- SNPlist[,c(3:16)]
+SNPlist <- SNPlist[,c(2:16)]
 names(Thresh)
-Thresh <- Thresh[,c(3:15)]
+Thresh <- Thresh[,c(2:14)]
 
 #0.999 Threshold: LA0410, LA0480, LA1589, LA1684, LA2093, LA2176, LA2706
 #SNPlist2 <- SNPlist[,c("Chrom", "Pos", "LA410", "LA480", "LA1589", "LA1684", "LA2093", "LA2176", "LA2706")]
 #but can do with all. Will just get all zeros for the others.
-
 
 Threshval <- Thresh[4,]
 names(Threshval)
@@ -97,7 +120,7 @@ SNPbin$LA480 <- ifelse(SNPlist$LA480 > Thresh_480, 1, 0)
 
 #now create a summation column
 names(SNPbin)
-SNPbin$SUMM <- rowSums(SNPbin[,c(3:14)])
+SNPbin$SUMM <- rowSums(SNPbin[,c(4:15)])
 SNPbin$SUMM
 
 SUMM.plot <- SNPbin
@@ -105,10 +128,16 @@ SUMM.plot <- SNPbin
 # #Reformat Chromosomes and Positions
 SUMM.plot$Chrom <- gsub("Chromosome", "", SUMM.plot$Chrom)
 SUMM.plot$Chrom <- as.numeric(as.character(SUMM.plot$Chrom))
+SUMM.plot$Segment <- as.numeric(as.character(SUMM.plot$Segment))
 SUMM.plot$Pos <- as.numeric(as.character(SUMM.plot$Pos))
 
 #sort dataframe rows in order of Chrom, then Pos
-SUMM.plot <- SUMM.plot[with(SUMM.plot, order(Chrom, Pos)), ]
+SUMM.plot <- SUMM.plot[with(SUMM.plot, order(Chrom, Segment, Pos)), ]
+#now make segments line up consecutively
+SUMM.plot$Chrom.Seg <- paste(SUMM.plot$Chrom, SUMM.plot$Segment, sep=".")
+SUMM.plot$Chrom.Seg <- as.numeric(SUMM.plot$Chrom.Seg)
+
+write.csv(SUMM.plot, "data/genome/SummaryManhattanPlot_data.csv")
 
 #Make plotting variables
 SUMM.plot$Index = NA
@@ -117,16 +146,16 @@ lastbase = 0
 
 #want to figure out where to add +500 to draw breaks between chromosomes
 #Redo the positions to make them sequential		-- accurate position indexing
-for (i in unique(SUMM.plot$Chrom)) {
+for (i in unique(SUMM.plot$Chrom.Seg)) {
   print(i)
   if (i==1) {
-    SUMM.plot[SUMM.plot$Chrom==i, ]$Index=SUMM.plot[SUMM.plot$Chrom==i, ]$Pos
+    SUMM.plot[SUMM.plot$Chrom.Seg==i, ]$Index=SUMM.plot[SUMM.plot$Chrom.Seg==i, ]$Pos
   }	else {
     #changed lastbase+tail to lastbase+max
-    lastbase=+lastbase+max(subset(SUMM.plot,SUMM.plot$Chrom==i-1)$Pos, 1)
-    SUMM.plot[SUMM.plot$Chrom==i, ]$Index=SUMM.plot[SUMM.plot$Chrom==i, ]$Pos+lastbase
+    lastbase=+lastbase+max(subset(SUMM.plot,SUMM.plot$Chrom.Seg==i-1)$Pos, 1)
+    SUMM.plot[SUMM.plot$Chrom.Seg==i, ]$Index=SUMM.plot[SUMM.plot$Chrom.Seg==i, ]$Pos+lastbase
   }
-  ticks=c(ticks, SUMM.plot[SUMM.plot$Chrom==i, ]$Index[floor(length(SUMM.plot[SUMM.plot$Chrom==i, ]$Index)/2)+1])
+  ticks=c(ticks, SUMM.plot[SUMM.plot$Chrom.Seg==i, ]$Index[floor(length(SUMM.plot[SUMM.plot$Chrom==i, ]$Index)/2)+1])
 }
 ticklim=c(min(SUMM.plot$Index),max(SUMM.plot$Index))
 
