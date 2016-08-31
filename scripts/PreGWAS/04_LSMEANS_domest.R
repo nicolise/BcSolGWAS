@@ -45,34 +45,27 @@ head(out[[1]]) #100 elements, max. 69 obs per isolate
 #version LSMeans061316.txt has fixed fx for AorB
 d=NULL
 library(data.table)
-for (i in c(1:12)) {
-  print(unique(out[[i]]$Pgeno))
+for (i in c(1:2)) {
+  print(unique(out[[i]]$Species))
   Lesion.lm <- lmer(Scale.LS ~ Igeno + (1|Exp) + (1|IndPlant/Leaf/AorB) + (1|Exp:Igeno), data=out[[i]])
   #Lesion.lm.2 <- lmer(Scale.LS ~ Igeno + (1|Exp) + (IndPlant/Leaf/AorB), data=out[[i]])
   Lesion.lsm <- lsmeans(Lesion.lm, "Igeno")
   df <- as.data.frame(print(Lesion.lsm))
   setDT(df, keep.rownames = T)[]
-  df$Plant <- unique(out[[i]]$Pgeno)
+  df$Species <- unique(out[[i]]$Species)
   d = rbind(d, df)
 }
-#add a column to d for domesticated/ wild
-d$Species <- ifelse(d$Plant == "LA410", "Domesticated",
-             ifelse(d$Plant == "LA4355", "Domesticated",
-             ifelse(d$Plant == "LA2706", "Domesticated",
-             ifelse(d$Plant == "LA4345", "Domesticated",
-             ifelse(d$Plant == "LA3475", "Domesticated",
-             ifelse(d$Plant == "LA3008", "Domesticated",
-                    "Wild"))))))
-write.csv(d, "output/lsmeans/BcSlGWAS_lsmeans.csv")
+
+write.csv(d, "output/lsmeans/BcSlGWAS_lsmeans_domest.csv")
 
 #make a file ready for bigRR
-lsmdat <- read.csv("output/lsmeans/BcSlGWAS_lsmeans.csv")
+lsmdat <- read.csv("output/lsmeans/BcSlGWAS_lsmeans_domest.csv")
 names(lsmdat)
 head(lsmdat)
-lsmdat <- lsmdat[,c("Igeno", "Estimate", "Plant")]
+lsmdat <- lsmdat[,c("Igeno", "Estimate", "Species")]
 library(tidyr)
-data_wide <- spread(lsmdat, "Plant", "Estimate")
-write.csv(data_wide, "output/lsmeans/BcSl_lsmeans_forbigRR.csv")
+data_wide <- spread(lsmdat, "Species", "Estimate")
+write.csv(data_wide, "output/lsmeans/BcSl_lsmeans_domest_forbigRR.csv")
 
 #now: levene's test within domesticated vs. within wild plant genos
 #split dataset by isolate
