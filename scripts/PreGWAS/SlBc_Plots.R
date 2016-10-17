@@ -276,6 +276,11 @@ IsoGroups <- read.csv("data/IsolateGroups.csv")
 IsoGroups <- IsoGroups[,1:2]
 FigDat4 <- merge(FigDat4, IsoGroups, by="Igeno")
 
+FigDatD <- FigDat4[which(FigDat4$Species=="Dm"),]
+FigDatW <- FigDat4[which(FigDat4$Species =="Wl"),]
+
+wilcox.test(FigDatD$cvLS, FigDatW$cvLS, paired=T)
+
 #add a column of mmLS (mean of mean lesion size) per isolate
 #sort dataframe by mmLS 
 #then color by the new factor mmLS
