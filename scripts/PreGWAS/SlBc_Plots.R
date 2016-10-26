@@ -55,7 +55,8 @@ FigDat3$Plant.Lab.Ord <- factor(FigDat3$Plant.Label, levels = c("LA4345", "LA300
 
 #get list of isolate groups
 IsoGroups <- read.csv("data/IsolateGroups.csv")
-IsoGroups <- IsoGroups[,1:3]
+names(IsoGroups)
+IsoGroups <- IsoGroups[,1:7]
 FigDat3 <- merge(FigDat3, IsoGroups, by="Igeno")
 
 # #plots
@@ -136,6 +137,38 @@ p6 <- ggplot(FigDat3, aes(x = Plant.Lab.Ord, y = mLS))+
 #############################
 #the color version
 #plot as panels
+names(FigDat3)
+#plot for species fx
+p0 <- ggplot(FigDat3, aes(x = Plant.Lab.Ord, y = mLS))+
+  theme_bw()+
+  #order: all, b05.10, high10, low10
+  scale_color_manual(values = c("turquoise4", "darkorchid3","chartreuse3", "grey80"))+
+  geom_line(size=0.5, aes(color=factor(FdrSpp), group=factor(Igeno)), show.legend=F, alpha=0.8)+
+  facet_grid(.~SpLabs, scales="free_x")+
+  theme(text = element_text(size=14), axis.text.x = element_text(angle=45, hjust=1), axis.title.y = element_text(), strip.background = element_blank(), axis.title.x=element_text(color=NA), aspect.ratio=1/1)+ 
+  labs(y=expression(Lesion ~ Area ~ (cm^{2})))
+
+tiff("plots/poster/Sl_LesionSize_SPintx.tif", width=6, height=3, units='in', res=600)
+p0
+dev.off()
+
+p9 <- ggplot(FigDat3, aes(x = Plant.Lab.Ord, y = mLS))+
+  theme_bw()+
+  #order: all, b05.10, high10, low10
+  scale_color_manual(values = c("turquoise4", "darkorchid3","chartreuse3", "darkgoldenrod1", "orange", "indianred1", "deeppink", "black", "blue", "coral4", "grey80"))+
+  geom_line(size=0.5, aes(color=factor(SpeciesFx), group=factor(Igeno)), show.legend=F, alpha=0.8)+
+  facet_grid(.~SpLabs, scales="free_x")+
+  theme(text = element_text(size=14), axis.text.x = element_text(angle=45, hjust=1), axis.title.y = element_text(), strip.background = element_blank(), axis.title.x=element_text(color=NA), aspect.ratio=1/1)+ 
+  labs(y=expression(Lesion ~ Area ~ (cm^{2})))
+
+#color list: "darkturquoise" "darkorchid3"   "goldenrod1"    "orangered"     "chartreuse2"
+#alternates: "indianred1"   "orchid3"    "darkgoldenrod1"  "orange" "chartreuse3"
+
+
+tiff("plots/poster/Sl_LesionSize_SPintx_noFDR.tif", width=6, height=3, units='in', res=600)
+p9
+dev.off()
+
 #first panel: all
 
 p1 <- ggplot(FigDat3, aes(x = Plant.Lab.Ord, y = mLS))+ 
