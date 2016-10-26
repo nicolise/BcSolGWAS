@@ -65,10 +65,10 @@ SeqIO.parse(inFile, 'fasta'):
 #copy and paste this one
 from Bio import SeqIO
 inFile = open("suziT4.fasta",'r')
-fw = open("ch1results_C10s1.fasta",'w')
+fw = open("ToBLAST/SNPresults_C16s11.fasta",'w')
 s = 0
 for record in SeqIO.parse(inFile, 'fasta'):
-     record.seq = record.seq[2275636:2277636]
+     record.seq = record.seq[777841:779841]
      SeqIO.write(record, fw, "fasta")
 
 http://biopython.org/DIST/docs/tutorial/Tutorial.html#chapter:Bio.SeqIO
