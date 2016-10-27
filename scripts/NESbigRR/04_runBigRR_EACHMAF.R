@@ -16,8 +16,18 @@ bigRR_update <- function (obj, Z, family = gaussian(link = identity), tol.err = 
   bigRR(y = obj$y, X = obj$X, Z = Z, family = family, weight = w, 
         tol.err = tol.err, tol.conv = tol.conv, GPU = TRUE )
 }
+########################
+#NOTE1 FROM RACHEL:  we need bigRR1.3-9 to get GPU option
+# must download R-Forge version bigRR1.3-9tar.gz and manually install
+# https://r-forge.r-project.org/R/?group_id=1301
+# install.packages("bigRR", repos="http://R-Forge.R-project.org")
+
+#NOTE2 FROM RACHEL: need package 'gputools' but CRAN version fails to install
+# must first install Nvidia's CUDA toolkit -current version is 7.5
+# installed from developer.nvidia.com/cuda-downloads
 
 library(bigRR) #check if version is 1.3-9
+#also need library(gputools)
 
 #Get genotype data
 SNPs <- read.csv("03_bigRRinput/NewModel0711/binSNP_bigRR_MAF20hp.csv", row.names = 1)
