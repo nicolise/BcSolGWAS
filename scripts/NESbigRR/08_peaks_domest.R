@@ -55,15 +55,15 @@ HEM.DmWoD <- rename(HEM.DmWoD, c("DmWoD" ="Effect"))
 HEM.DmWoD$Trait <- "DmWoD"
 
 Top50SNP <- rbind(HEM.Domesticated, HEM.Wild, HEM.DmWoD)
+
+Top50SNP$Chrom <- gsub("Chromosome", "", Top50SNP$Chrom)
+Top50SNP$Chrom <- as.numeric(as.character(Top50SNP$Chrom))
+Top50SNP$Pos <- as.numeric(as.character(Top50SNP$Pos))
 write.csv(Top50SNP, "data/GWAS_files/04_bigRRoutput/domestication/TopSNPs_domest.csv")
 
 #max pos is 1001108
 
 Top50SNP$Plot <- (Top50SNP$Chrom*1000000 + Top50SNP$Pos)
-
-Top50SNP$Chrom <- gsub("Chromosome", "", Top50SNP$Chrom)
-Top50SNP$Chrom <- as.numeric(as.character(Top50SNP$Chrom))
-Top50SNP$Pos <- as.numeric(as.character(Top50SNP$Pos))
 
 #sort dataframe rows in order of Chrom, then Pos
 Top50SNP <- Top50SNP[with(Top50SNP, order(Chrom, Pos)), ]
