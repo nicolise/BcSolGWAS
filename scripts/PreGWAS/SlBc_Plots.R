@@ -11,6 +11,8 @@ names(ModDat)
 attach(ModDat)
 names(ModDat)
 
+ModDat$SpLabs <- factor(ModDat$Species, labels = c("Domesticated", "Wild"))
+ModDat$SpLabs <- factor(ModDat$SpLabs, levels =c("Wild", "Domesticated"))
 #add PlantNum as an integer sorted by mean lesion size
 library(plyr)
 FigDat3 <- ddply(ModDat, c("PlGenoNm", "Igeno", "Species", "IsoColor"), summarise,
@@ -255,7 +257,7 @@ p6
 dev.off()
 
 library(gridExtra)
-tiff("plots/poster/Sl_LesionSize_PANELS.tif", width=12, height=8, units='in', res=600)
+tiff("plots/paper/DomestRight/Sl_LesionSize_PANELS.tif", width=12, height=8, units='in', res=600)
 grid.arrange(p1, p2, p3, p4, p5, p6, ncol=2)
 dev.off()
 par(opar)
@@ -270,11 +272,17 @@ FigDat4 <- ddply(ModDat, c("Igeno", "Species", "Spec.Iso", "IsoColor"), summaris
 FigDat4$cvLS <- FigDat4$sdLS / FigDat4$mLS
 MDmeans <- ddply(ModDat, c("PlGenoNm","Species"), summarise, mean=mean(Scale.LS))
 FigDat4$SpLabs <- factor(FigDat4$Species, labels = c("Domesticated", "Wild"))
+FigDat4$SpLabs <- factor(FigDat4$SpLabs, levels = c("Wild", "Domesticated"))
 
 #get list of isolate groups
 IsoGroups <- read.csv("data/IsolateGroups.csv")
 IsoGroups <- IsoGroups[,1:2]
 FigDat4 <- merge(FigDat4, IsoGroups, by="Igeno")
+
+FigDatD <- FigDat4[which(FigDat4$Species=="Dm"),]
+FigDatW <- FigDat4[which(FigDat4$Species =="Wl"),]
+
+wilcox.test(FigDatD$cvLS, FigDatW$cvLS, paired=T)
 
 #add a column of mmLS (mean of mean lesion size) per isolate
 #sort dataframe by mmLS 
@@ -283,7 +291,7 @@ FigDat4 <- merge(FigDat4, IsoGroups, by="Igeno")
 #attach(FigDat3)
 #FigDat3 <- FigDat3[order(mmLS),]
 
-tiff("plots/Sl_LesionSize_IntMean_DW.tif", width=6, height=4, units='in', res=600)
+tiff("plots/paper/DomestRight/Sl_LesionSize_IntMean_DW.tif", width=6, height=4, units='in', res=600)
 ggplot(FigDat4, aes(x = SpLabs, y = mLS, group=factor(Igeno)))+
   theme_bw()+
   geom_line(size=0.5, alpha=0.4, show.legend = F)+
@@ -305,10 +313,22 @@ dev.off()
 ModDat$SpLabs <- factor(ModDat$Species, labels = c("Domesticated", "Wild"))
 ModDat2 <- ddply(ModDat, c("Igeno", "SpLabs", "Pgeno"), summarise,
                  mLS   = mean(Scale.LS))
+ModDat2$SpLabs <- factor(ModDat2$SpLabs, levels=c("Wild", "Domesticated"))
+
 tiff("plots/poster/Sl_LesionSize_vio_DW.tif", width=4, height=4, units='in', res=600)
 ggplot(ModDat2, aes(x = SpLabs, y = mLS))+
   theme_bw() +
   geom_violin(fill = "darkturquoise")+
+  geom_boxplot(width = 0.2) +
+  ylim(0,1.7) + 
+  theme(text = element_text(size=14), axis.text.x = element_text(size = 14, hjust = 1), axis.text.y = element_text(size = 14), aspect.ratio=1.5/1)+
+  labs(y = expression (Mean ~ Lesion ~ Area ~ (cm^{2})), x=element_blank())
+dev.off()
+
+tiff("plots/paper/DomestRight/Sl_LesionSize_vio_DW.tif", width=4, height=4, units='in', res=600)
+ggplot(ModDat2, aes(x = SpLabs, y = mLS))+
+  theme_bw() +
+  geom_violin(fill = "grey60")+
   geom_boxplot(width = 0.2) +
   ylim(0,1.7) + 
   theme(text = element_text(size=14), axis.text.x = element_text(size = 14, hjust = 1), axis.text.y = element_text(size = 14), aspect.ratio=1.5/1)+
@@ -370,9 +390,8 @@ ggplot(FigDat2, aes(x = factor(PlGenoNm), y = mean))+
 
 
 #instead, I'll do this as violin plots
-ModDat$SpLabs <- factor(ModDat$Species, labels = c("Domesticated", "Wild"))
 #fill = gray70 for b&w, darkturquoise for color
-tiff("plots/paper/Sl_LesionSize_beanplots.tiff", width=6, height=4, units='in', res=600)
+tiff("plots/paper/DomestRight/Sl_LesionSize_beanplots.tiff", width=6, height=4, units='in', res=600)
 ggplot(ModDat, aes(x = factor(PlGenoNm), y = Scale.LS)) + 
   theme_bw() +
   geom_violin(fill = "gray70") + #aes(fill = factor(cyl))
@@ -383,20 +402,7 @@ ggplot(ModDat, aes(x = factor(PlGenoNm), y = Scale.LS)) +
 dev.off()
 #---------------------------------------------------------
 #scatterplot: mean of each isolate on each host // domestication level
-ModDat$SbyI <- paste(ModDat$Species, ModDat$Igeno, sep='') 
-FigDat4 <- ddply(ModDat, c("Pgeno", "Igeno", "Species", "SbyI","PbyI"), summarise,PlMean   = mean(Scale.LS))
-FDmeans <- ddply(ModDat, c("SbyI"), summarise, SpMean=mean(Scale.LS))
-FigDat4 <- merge(FigDat4, FDmeans, by="SbyI")
-attach(FigDat4)
-ggplot(FigDat4, aes(x = PlMean, y = SpMean, color=Species, group=Pgeno))+
-  geom_point()+
-  geom_line()+
-  theme_bw()+
-  geom_line(size=1, aes(color=factor(Igeno)), show_guide=F)+
-  labs(y=expression(Lesion ~ Area ~ (cm^{2})), x="Plant Genotype")+
-  theme(axis.text.x = element_blank())
 
-#or more simply...
 # mean lesion size per domestication status
 names(FigDat4)
 FigDat5 <- FigDat4[!duplicated(FigDat4$PbyI), ]
@@ -420,7 +426,7 @@ FigDat5 <- merge(FigDat5, FigDat7, by="Igeno")
 names(FigDat5)
 ggplot(FigDat5, aes(x = Species, y = SpMean, group=Igeno))+
   geom_point()+
-  geom_line(size=1, aes(color=factor(Direction)), show_guide=F)+
+  geom_line(size=1, aes(color=factor(Direction)), show.legend=F)+
   theme_bw()+
   labs(y=expression(Mean ~ Lesion ~ Area ~ per ~ Isolate ~ (cm^{2})), x=element_blank())+
   scale_x_discrete(labels=c("Domesticated","Wild"))
@@ -436,8 +442,3 @@ ggplot(SinIsos, aes(x=Sum.Sq, fill=rn))+
   theme_bw()+
   labs(y=expression(Density), x=expression(Sum ~ of ~ Squares))+
   guide_legend()
-  
-#---------------------------------------------------------------------
-#plot % variance of lesion size for isolate:Domestication
-#and % variance of lesion size for isolate:Genotype(Domestication)
-

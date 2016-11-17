@@ -45,6 +45,19 @@ ModDat3 <- ddply(ModDat, c("Igeno", "Tomato"), summarise,
                  meanLS = mean(Scale.LS))
 t.test(ModDat3$meanLS ~ ModDat3$Tomato)
 
+#CV of lesion size between wild vs. domesticated tomato 
+#wilcoxon signed-rank test
+ModDat.cv <- ddply(ModDat, c("Igeno", "Species"), summarise, 
+                   mLS = mean(Scale.LS),
+                   sdLS = sd(Scale.LS))
+ModDat.cv$cvLS <- ModDat.cv$sdLS/ModDat.cv$mLS
+ModDat.cv$Species.Num <- as.numeric(ModDat.cv$Species)
+t.test(ModDat.cv$cvLS, ModDat.cv$Species.Num)
+wilcox.test(ModDat.cv$cvLS, ModDat.cv$Species.Num)
+
+ModDat.cv <- ddply(ModDat, c("PlGenoNm", "Species"), summarise, 
+                   mLS = mean(Scale.LS),
+                   sdLS = sd(Scale.LS))
 
 #----------------------------------------------------
 #stuff from plotting I may not actually need here

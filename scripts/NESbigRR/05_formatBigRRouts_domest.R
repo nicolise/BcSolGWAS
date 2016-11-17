@@ -7,7 +7,7 @@ rm(list=ls())
 setwd("~/Projects/BcSolGWAS/data/GWAS_files/04_bigRRoutput")
 #Import data
 #reorganize file Sl_LesionSize.HEM.csv
-HEMdat <- read.csv("NewModel0711/Sl_LesionSize_MAF20.HEM.csv")
+HEMdat <- read.csv("domestication/Sl_DomesticationLS_MAF20.HEM.csv")
 
 #first remove first 4 rows (threshold data)
 HEMthresh <- HEMdat[1:4,]
@@ -97,6 +97,6 @@ HEMdat2 <- separate (HEMdat, X.1, into = c("Chrom", "Segment", "Pos") )
 unique(HEMdat2$Chrom)
 unique(HEMdat2$Segment)
 
-write.csv(HEMdat2, "NewModel0711/Sl_LesionSize_MAF20.HEM.PlotFormat.csv") 
-write.csv(HEMthresh, "NewModel0711/Sl_LesionSize_MAF20.HEM.Thresh.csv")
+write.csv(HEMdat2, "domestication/Sl_DomesticationLS_MAF20.HEM.PlotFormat.csv") 
+write.csv(HEMthresh, "domestication//Sl_DomesticationLS_MAF20.HEM.Thresh.csv")
 #read in to 06_plots
