@@ -1,0 +1,119 @@
+$python
+or 
+$python3
+
+print working directory
+> import os;
+>print os.getcwd();
+
+change working directory
+os.chdir('path_to_dir')
+os.chdir('/home/nesoltis/Documents/GitRepos/BcSolGWAS/data/genome/')
+
+>>> for seq_record in SeqIO.parse("suziT4.fasta", "fasta"):
+...      print(seq_record.id)
+...      print(len(seq_record))
+
+don't forget... Python counts from zero!
+
+from Bio import SeqIO
+inFile = open("suziT4.fasta",'r')
+fw = open("domestication/Ch3.0rb4.fasta",'w')
+s=0
+for record in SeqIO.parse(inFile, 'fasta'):
+ record.seq = record.seq[39427:41427]
+ SeqIO.write(record, fw, "fasta")
+
+#the following works EXCEPT it prints outputs for ALL chromosomes. Want to do JUST for chromosome 1 etc.
+
+from Bio import SeqIO
+inFile = open(“suziT4.fasta",'r')
+fw = open("ch1results.fasta",'w')
+s = 0
+for record in SeqIO.parse(inFile, 'fasta'):
+     record.seq = record.seq[0:1698]
+     SeqIO.write(record, fw, "fasta")
+
+and take sequences to:
+https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch
+
+----Figuring out how to only do one chromosome:
+http://biopython.org/DIST/docs/tutorial/Tutorial.html#chapter:Bio.SeqIO
+
+records = list(SeqIO.parse("suziT4.fasta", "fasta"))
+
+record_iterator = SeqIO.parse("suziT4.fasta", "fasta")
+first_record = next(record_iterator)
+
+--------------------------------------------------
+from Bio import SeqIO
+inFile = open("suziT4.fasta",'r')
+fw = open("ch1results3.fasta",'w')
+s = 0
+for record[1] in SeqIO.parse(inFile, 'fasta'):
+     record.seq = record.seq[0:1698]
+     SeqIO.write(record, fw, "fasta")
+
+or maybe this:
+from Bio import SeqIO
+inFile = open("suziT4.fasta",'r')
+fw = open("ch1results3.fasta",'w')
+s = 0
+SeqIO.parse(inFile, 'fasta'):
+     record = SOMETHING HERE
+     record.seq = record.seq[0:1698]
+     SeqIO.write(record, fw, "fasta")
+
+
+#copy and paste this one
+from Bio import SeqIO
+inFile = open("suziT4.fasta",'r')
+fw = open("ToBLAST/SNPresults_C16s11.fasta",'w')
+s = 0
+for record in SeqIO.parse(inFile, 'fasta'):
+     record.seq = record.seq[777841:779841]
+     SeqIO.write(record, fw, "fasta")
+
+http://biopython.org/DIST/docs/tutorial/Tutorial.html#chapter:Bio.SeqIO
+https://www.biostars.org/p/710/
+https://www.biostars.org/p/15084/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
