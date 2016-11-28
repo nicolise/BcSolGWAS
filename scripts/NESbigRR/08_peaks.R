@@ -27,14 +27,14 @@ HEM.thresh <- HEM.thresh[,-c(1:2)]
 library(plyr)
 
 #LA0410: 0.999
-HEM.LA0410 <- subset(HEM.plotdata, LA0410 > 6.285562e-04, 
+HEM.LA0410 <- subset(HEM.plotdata, LA0410 > 0.000586503, 
                                 select=c(Chrom,Pos,LA0410))
 HEM.LA0410 <- rename(HEM.LA0410, c("LA0410" = "Effect"))
 HEM.LA0410$Plant <- "LA0410"
 HEM.LA0410 <- head(arrange(HEM.LA0410,desc(Effect)), n = 50)
 
 #LA0480: 0.999
-HEM.LA0480 <- subset(HEM.plotdata, LA0480 > 4.766540e-04, 
+HEM.LA0480 <- subset(HEM.plotdata, LA0480 > 0.0005156, 
                      select=c(Chrom,Pos,LA0480))
 HEM.LA0480 <- rename(HEM.LA0480, c("LA0480" = "Effect"))
 HEM.LA0480$Plant <- "LA0480"
@@ -91,14 +91,14 @@ HEM.LA3475 <- rename(HEM.LA3475, c("LA3475" = "Effect"))
 HEM.LA3475$Plant <- "LA3475"
 HEM.LA3475 <- head(arrange(HEM.LA3475,desc(Effect)), n = 50)
 
-#LA4345: 0.99 !!
+#LA4345: 0.999
 HEM.LA4345 <- subset(HEM.plotdata, LA4345 > 1.992580e-05, 
                      select=c(Chrom,Pos,LA4345))
 HEM.LA4345 <- rename(HEM.LA4345, c("LA4345" = "Effect"))
 HEM.LA4345$Plant <- "LA4345"
 HEM.LA4345 <- head(arrange(HEM.LA4345,desc(Effect)), n = 50)
 
-#LA4355: 0.99 !! or 0.95 to actually get 50
+#LA4355: 0.99 !! or 0.95 to actually get 50. Only 1 SNP > 0.99
 HEM.LA4355 <- subset(HEM.plotdata, LA4355 > 2.980794e-05, 
                      select=c(Chrom,Pos,LA4355))
 HEM.LA4355 <- rename(HEM.LA4355, c("LA4355" = "Effect"))

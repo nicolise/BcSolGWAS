@@ -9,6 +9,8 @@ setwd("~/Projects/BcSolGWAS/")
 ############################################################################
 ###Plotting the HEM results
 
+#NEED TO CHECK CONTIGS FOR THIS
+
 #Load plotting package
 library(ggplot2)
 library(grid)
@@ -40,10 +42,11 @@ for (i in 2:ncol(TH95)){
 # #Reformat Chromosomes and Positions
 HEM.plotdata$Chrom <- gsub("Chromosome", "", HEM.plotdata$Chrom)
 HEM.plotdata$Chrom <- as.numeric(as.character(HEM.plotdata$Chrom))
+HEM.plotdata$Segment <- as.numeric(as.character(HEM.plotdata$Segment))
 HEM.plotdata$Pos <- as.numeric(as.character(HEM.plotdata$Pos))
 
 #sort dataframe rows in order of Chrom, then Pos
-HEM.plotdata2 <- HEM.plotdata[with(HEM.plotdata, order(Chrom, Pos)), ]
+HEM.plotdata2 <- HEM.plotdata[with(HEM.plotdata, order(Chrom, Segment, Pos)), ]
 
 #Make plotting variables
 HEM.plotdata$Index = NA
@@ -52,6 +55,7 @@ lastbase = 0
 
 #want to figure out where to add +500 to draw breaks between chromosomes
 #Redo the positions to make them sequential		-- accurate position indexing
+#still need to fix plotting so that CONTIGS are sequential (HEM.plotdata$Segment)
 for (i in unique(HEM.plotdata$Chrom)) {
   print(i)
   if (i==1) {
@@ -67,34 +71,43 @@ ticklim=c(min(HEM.plotdata$Index),max(HEM.plotdata$Index))
 
 #make plots for each phenotype
 #it isn't working with the loop for some reason
-3:ncol(HEM.plotdata)
-for (y in names(HEM.plotdata[,3:14])){
+4:ncol(HEM.plotdata)
+for (y in names(HEM.plotdata[,4:15])){
 print(y)
 }
 
+#create a custom color scale
+myColors <- c("grey40", "grey60", "grey40", "grey60", "grey40", "grey60", "grey40", "grey60", "grey40", "grey60", "grey40", "grey60", "grey40", "grey60", "grey40", "grey60")
+names(myColors) <- levels(HEM.plotdata$Chrom)
+colScale <- scale_colour_manual(name = "Chrom",values = myColors)
+
 #without the loop
-for (y in 3:14){
-jpeg(paste("plots/MultiPlot/NewModel0711/Sl_LesionSize_MAF20_lowTR_", names(HEM.plotdata[y]), ".ManhattanPlot.jpg", sep=""), width=8, height=4, units='in', res=600)
-  ggplot(HEM.plotdata, aes(x=Index, y=abs(HEM.plotdata[y])))+
+for (y in 4:15){
+  #start [14]
+jpeg(paste("plots/MultiPlot/NewModel0711b/Sl_LesionSize_MAF20_lowTR_", names(HEM.plotdata[14]), ".ManhattanPlot.jpg", sep=""), width=8, height=4, units='in', res=600)
+  ggplot(HEM.plotdata, aes(x=Index, y=abs(HEM.plotdata[14])))+
     theme_bw()+
+    colScale+
     geom_point(aes(color = factor(Chrom)))+
-    labs(list(y="SNP Effect Estimate", x="Chromosome position", title=paste("Lesion Size on ", names(HEM.plotdata[y]))))+
+    labs(list(y="SNP Effect Estimate", x="Chromosome position", title=paste("Lesion Size on ", names(HEM.plotdata[14]))))+
     guides(col = guide_legend(nrow = 8, title="Chromosome"))+
-    geom_hline(yintercept=get(paste("TH95_", names(HEM.plotdata[y]), sep="")), colour = "blue") +
-    geom_text(aes(0,get(paste("TH95_", names(HEM.plotdata[y]), sep="")), label = ".95 Threshold", vjust = 1.5, hjust = .05), col = "blue")+
-   # geom_hline(yintercept=get(paste("TH99_", names(HEM.plotdata[8]), sep=""))) +
-   # geom_text(aes(0,get(paste("TH99_", names(HEM.plotdata[8]), sep="")), label = ".99 Threshold", vjust = 1.5, hjust = .05), col = "black")+
+    geom_hline(yintercept=get(paste("TH95_", names(HEM.plotdata[14]), sep="")), colour = "black") +
+    geom_text(aes(0,get(paste("TH95_", names(HEM.plotdata[14]), sep="")), label = ".95 Threshold", vjust = 1.5, hjust = .05), col = "black")+
+    geom_hline(yintercept=get(paste("TH99_", names(HEM.plotdata[14]), sep=""))) +
+    geom_text(aes(0,get(paste("TH99_", names(HEM.plotdata[14]), sep="")), label = ".99 Threshold", vjust = 1.5, hjust = .05), col = "black")+
    expand_limits(y=0)
 dev.off()
+#stop [14]
 
-jpeg(paste("plots/MultiPlot/Sl_LesionSize_MAF20_highTR_", names(HEM.plotdata[14]), ".ManhattanPlot.jpg", sep=""), width=8, height=4, units='in', res=600)
-ggplot(HEM.plotdata, aes(x=Index, y=abs(HEM.plotdata[14])))+
+jpeg(paste("plots/MultiPlot/NewModel0711b/Sl_LesionSize_MAF20_highTR_", names(HEM.plotdata[13]), ".ManhattanPlot.jpg", sep=""), width=8, height=4, units='in', res=600)
+ggplot(HEM.plotdata, aes(x=Index, y=abs(HEM.plotdata[13])))+
   theme_bw()+
+  colScale+
   geom_point(aes(color = factor(Chrom)))+
-  labs(list(y="SNP Effect Estimate", x="Chromosome position", title=paste("Lesion Size on ", names(HEM.plotdata[14]))))+
+  labs(list(y="SNP Effect Estimate", x="Chromosome position", title=paste("Lesion Size on ", names(HEM.plotdata[13]))))+
   guides(col = guide_legend(nrow = 8, title="Chromosome"))+
-  geom_hline(yintercept=get(paste("TH999_", names(HEM.plotdata[14]), sep=""))) +
-  geom_text(aes(0,get(paste("TH999_", names(HEM.plotdata[14]), sep="")), label =
+  geom_hline(yintercept=get(paste("TH999_", names(HEM.plotdata[13]), sep=""))) +
+  geom_text(aes(0,get(paste("TH999_", names(HEM.plotdata[13]), sep="")), label =
   ".999 Threshold", vjust = 1.5, hjust = .05), col = "black")+
   expand_limits(y=-0.001)
 dev.off()
