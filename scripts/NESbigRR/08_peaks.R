@@ -14,13 +14,13 @@ library(ggplot2)
 library(grid)
 
 #Import data (reorganized from script ReformatBigRRouts.R)
-HEM.plotdata <- read.csv("data/GWAS_files/04_bigRRoutput/Sl_LesionSize_MAF20.HEM.PlotFormat.csv")
+HEM.plotdata <- read.csv("data/GWAS_files/04_bigRRoutput/NewModel0711/Sl_LesionSize_MAF20.HEM.PlotFormat.csv")
 
 HEM.plotdata$Pos <- as.character(HEM.plotdata$Pos)#ensure that position data is not in scientific notation
 HEM.plotdata <- HEM.plotdata[-c(1:2)]
 
 #get threshhold values 
-HEM.thresh <- read.csv("data/GWAS_files/04_bigRRoutput/Sl_LesionSize_MAF20.HEM.Thresh.csv")
+HEM.thresh <- read.csv("data/GWAS_files/04_bigRRoutput/NewModel0711/Sl_LesionSize_MAF20.HEM.Thresh.csv")
 HEM.thresh <- HEM.thresh[,-c(1:2)]
 
 #take the top 50 over the threshold for each phenotype
@@ -143,5 +143,5 @@ plot1 <- ggplot(Top50SNP, aes(x=Index, y=Effect))
 plot1 + geom_point(aes(color=factor(Plant)))+
   theme_bw()
  
-  write.csv(Top50SNP, "Top50SNP.csv")
+  write.csv(Top50SNP, "data/GWAS_files/04_bigRRoutput/NewModel0711/TopSNPs_alltraits.csv")
   

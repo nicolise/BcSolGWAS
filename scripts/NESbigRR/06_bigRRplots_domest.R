@@ -72,12 +72,19 @@ for (y in names(HEM.plotdata[,4:6])){
 print(y)
 }
 
+#create a custom color scale
+library(RColorBrewer)
+myColors <- c("grey20", "grey60", "grey20", "grey60", "grey20", "grey60", "grey20", "grey80", "grey20", "grey80", "grey20", "grey80", "grey20", "grey80", "grey20", "grey80")
+names(myColors) <- levels(HEM.plotdata$Chrom)
+colScale <- scale_colour_manual(name = "Chrom",values = myColors)
+
 #without the loop [6]
 for (y in 4:6){
-jpeg(paste("plots/MultiPlot/domest/Sl_LesionSize_MAF20_lowTR_", names(HEM.plotdata[6]), ".ManhattanPlot.jpg", sep=""), width=8, height=4, units='in', res=600)
+jpeg(paste("plots/MultiPlot/domest/Sl_LesionSize_MAF20_lowTR_bw_", names(HEM.plotdata[6]), ".ManhattanPlot.jpg", sep=""), width=8, height=4, units='in', res=600)
   ggplot(HEM.plotdata, aes(x=Index, y=abs(HEM.plotdata[6])))+
     theme_bw()+
     geom_point(aes(color = factor(Chrom)))+
+    colScale+
     labs(list(y="SNP Effect Estimate", x="Chromosome position", title=paste("Lesion Size on ", names(HEM.plotdata[6]))))+
     guides(col = guide_legend(nrow = 8, title="Chromosome"))+
     geom_hline(yintercept=get(paste("TH95_", names(HEM.plotdata[6]), sep="")), colour = "blue") +

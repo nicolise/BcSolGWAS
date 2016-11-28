@@ -14,13 +14,13 @@ library(ggplot2)
 library(grid)
 
 #Import data (reorganized from script ReformatBigRRouts.R)
-HEM.plotdata <- read.csv("data/GWAS_files/04_bigRRoutput/Sl_LesionSize_MAF20.HEM.PlotFormat.csv")
+HEM.plotdata <- read.csv("data/GWAS_files/04_bigRRoutput/NewModel0711/Sl_LesionSize_MAF20.HEM.PlotFormat.csv")
 
 HEM.plotdata$Pos <- as.character(HEM.plotdata$Pos)#ensure that position data is not in scientific notation
 HEM.plotdata <- HEM.plotdata[-c(1:2)]
 
 #get threshhold values 
-HEM.thresh <- read.csv("data/GWAS_files/04_bigRRoutput/Sl_LesionSize_MAF20.HEM.Thresh.csv")
+HEM.thresh <- read.csv("data/GWAS_files/04_bigRRoutput/NewModel0711/Sl_LesionSize_MAF20.HEM.Thresh.csv")
 HEM.thresh <- HEM.thresh[,-c(1:2)]
 TH99 <- HEM.thresh[3,]
 for (i in 2:ncol(TH99)){
@@ -74,7 +74,7 @@ print(y)
 
 #without the loop
 for (y in 3:14){
-jpeg(paste("plots/MultiPlot/Sl_LesionSize_MAF20_lowTR_", names(HEM.plotdata[y]), ".ManhattanPlot.jpg", sep=""), width=8, height=4, units='in', res=600)
+jpeg(paste("plots/MultiPlot/NewModel0711/Sl_LesionSize_MAF20_lowTR_", names(HEM.plotdata[y]), ".ManhattanPlot.jpg", sep=""), width=8, height=4, units='in', res=600)
   ggplot(HEM.plotdata, aes(x=Index, y=abs(HEM.plotdata[y])))+
     theme_bw()+
     geom_point(aes(color = factor(Chrom)))+
