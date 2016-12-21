@@ -117,3 +117,13 @@ fit <- eulerr(c(Do=74, Wi=93, Di=129, "Do&Wi" = 56,
                 "Do&Wi&Di" = 30))
 plot(fit, fill_opacity=0.3)
 dev.off()
+
+#summarize gene annotations
+GeneDat <- read.csv("data/GWAS_files/04_bigRRoutput/domestication/TopSNPs_domest_geneannot_forR.csv")
+names(GeneDat)
+GeneDat2 <- reshape(GeneDat, idvar = c("Chrom","Segment","Pos","Gene","TotalTraits","Annot1","Annot2","Class"), timevar = "Trait", direction = "wide")
+write.csv(GeneDat2, "data/GWAS_files/04_bigRRoutput/domestication/TopSNPs_domest_genesummarized.csv")
+
+GeneDat3 <- GeneDat2[,c("Chrom","Segment","Pos","Gene","Annot1","Annot2","Class")]
+GeneDat3 <- reshape(GeneDat3, idvar = c("Chrom","Segment","Gene","Annot1","Annot2","Class"), timevar = "Pos", direction = "wide")
+write.csv(GeneDat3, "data/GWAS_files/04_bigRRoutput/domestication/TopSNPs_domest_justGenes.csv")

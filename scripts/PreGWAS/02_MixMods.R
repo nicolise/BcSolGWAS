@@ -161,13 +161,14 @@ fullmod3 <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + 
 
 #this one works
 Sys.time()
-sink(file='output/fullmod2b_062416.txt')
-print("Model: fullmod2b <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock:Igeno) + (1|ExpBlock/Species/PlGenoNm), data = ModDat)")
+fullmod <- lm(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + ExpBlock:Igeno + ExpBlock:Species/PlGenoNm, data = ModDat)
+Sys.time()
+sink(file='output/newANOVA/fullmod_121716.txt')
+print("Model: (Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + ExpBlock:Igeno + ExpBlock:Species/PlGenoNm, data = ModDat)")
 Sys.time()
 #summary(fullmod) # the code generating output
-rand(fullmod2b)
-Anova(fullmod2b, type=2)
-anova(fullmod2b)
+Anova(fullmod, type=2)
+anova(fullmod)
 Sys.time()
 sink()
 
