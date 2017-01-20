@@ -1,11 +1,15 @@
-#Nicole E Soltis 
-#from script by Jason A Corwin, Modified by Rachel Fordyce
-#to run bigRR on Linux GPU for GWAS
+#Nicole E Soltis
+#plotting from bigRR on Linux GPU for GWAS
 #---------------------------------------------------------------
 
 rm(list=ls())
 setwd("~/Documents/GitRepos/BcSolGWAS/")
 setwd("~/Projects/BcSolGWAS/")
+
+#Input file: Sl_LesionSize_MAF20.HEM.PlotFormat.csv AND Sl_LesionSize_MAF20.HEM.Thresh.csv
+#Output file: TopSNPs_alltraits.csv
+#Plots: NONE
+
 ############################################################################
 ###Plotting the HEM results
 

@@ -1,13 +1,18 @@
-#Nicole E Soltis 
-#from script by Jason A Corwin, Modified by Rachel Fordyce
-#to run bigRR on Linux GPU for GWAS
+#Nicole E Soltis
+#plotting from bigRR on Linux GPU for GWAS
 #---------------------------------------------------------------
 
 rm(list=ls())
 setwd("~/Documents/GitRepos/BcSolGWAS/")
 setwd("~/Projects/BcSolGWAS/")
+
+#Input file: TopSNPs_alltraits_golong.csv
+#Output file: TopSNPs_alltraits_Indexed.csv AND TopSNPs_alltraits_wide.csv AND TopSNPs_domest_genesummarized.csv AND TopSNPs_domest_justGenes.csv AND TopSNPs_domestONLY_wide.csv
+#Plots: Sl_LesionSize_MAF20_meta.ManhattanPlot.jpg AKA the Manhattan plot with Phenotypes > threshold for Domestication phenos vs. Single geno phenos vs. Both
+#AND Sl_LesionSize_MAF20_Domestmeta.ManhattanPlot.jpg AKA the Manhattan plot with DmWoD vs. Domesticated vs. Wild
+#AND Venn Diagrams for SNP overlaps between these lists
 ############################################################################
-###Plotting the HEM results
+#Plotting the HEM results
 
 #NEED TO CHECK CONTIGS FOR THIS
 
@@ -73,7 +78,7 @@ write.csv(plotdata.wide, "data/GWAS_files/04_bigRRoutput/SNP_overlap/TopSNPs_all
 #myColors <- c("grey40", "grey60", "grey40", "grey60", "grey40", "grey60", "grey40", "grey60", "grey40", "grey60", "grey40", "grey60", "grey40", "grey60", "grey40", "grey60")
 #names(myColors) <- levels(HEM.plotdata$Chrom)
 #colScale <- scale_colour_manual(name = "Chrom",values = myColors)
-
+plotdata.wide <- read.csv("data/GWAS_files/04_bigRRoutput/SNP_overlap/TopSNPs_alltraits_wide.csv")
 names(plotdata.wide)
 #without the loop: all traits
 jpeg("plots/MultiPlot/meta/Sl_LesionSize_MAF20_meta.ManhattanPlot.jpg", width=8, height=4, units='in', res=600)
@@ -99,6 +104,11 @@ ggplot(plotdata.wide)+
   expand_limits(y=0)
 dev.off()
 
+#keep a subset of rows only if they have Domestication phenotypes
+#Phenos column =/= IndPlants
+d<-d[!(d$A=="B" & d$E==0),]
+plotdata.wide.domest <- plotdata.wide[!(plotdata.wide$Phenos=="IndPlants"),]
+write.csv(plotdata.wide.domest, "data/GWAS_files/04_bigRRoutput/SNP_overlap/TopSNPs_domestONLY_wide.csv")
 tapply(HEM.plotdata$Trait, HEM.plotdata$Trait, length)
 
 install.packages("eulerr")

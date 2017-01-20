@@ -1,13 +1,16 @@
-#Nicole E Soltis 
-#from script by Jason A Corwin, Modified by Rachel Fordyce
-#to run bigRR on Linux GPU for GWAS
+#Nicole E Soltis
+#plotting from bigRR on Linux GPU for GWAS
 #---------------------------------------------------------------
 
 rm(list=ls())
 setwd("~/Projects/BcSolGWAS/")
 #setwd("~/Projects/BcSolGWAS/")
-############################################################################
-###Plotting the HEM results
+
+#Input file: Sl_DomesticationLS_MAF20.HEM.PlotFormat.csv AND Sl_DomesticationLS_MAF20.HEM.Thresh.csv
+#Output file: NONE
+#Plots: Basic and greyscale domestication Manhattan plots
+###########################################################################
+#Plotting the HEM results
 
 #Load plotting package
 library(ggplot2)
@@ -77,6 +80,8 @@ library(RColorBrewer)
 myColors <- c("grey20", "grey60", "grey20", "grey60", "grey20", "grey60", "grey20", "grey80", "grey20", "grey80", "grey20", "grey80", "grey20", "grey80", "grey20", "grey80")
 names(myColors) <- levels(HEM.plotdata$Chrom)
 colScale <- scale_colour_manual(name = "Chrom",values = myColors)
+
+#when plotting, add +colScale + as a line
 
 #without the loop [6]
 for (y in 4:6){
