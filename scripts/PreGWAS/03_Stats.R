@@ -39,6 +39,7 @@ ModDat2D <- ModDat2[ModDat2$Species=="Dm",]
 ModDat2W <- ModDat2[ModDat2$Species=="Wl",]
 t.test(ModDat2D$meanLS ~ ModDat2D$Tomato)
 t.test(ModDat2W$meanLS ~ ModDat2W$Tomato)
+t.test(ModDat2$meanLS ~ ModDat2$Tomato)
 #can't do multiple observations per isolate (pool D and W directly?)
 #does no better when 1 mean per isolate
 ModDat3 <- ddply(ModDat, c("Igeno", "Tomato"), summarise,
@@ -59,35 +60,10 @@ ModDat.cv <- ddply(ModDat, c("PlGenoNm", "Species"), summarise,
                    mLS = mean(Scale.LS),
                    sdLS = sd(Scale.LS))
 
-#----------------------------------------------------
-#stuff from plotting I may not actually need here
-#add PlantNum as an integer sorted by mean lesion size
-library(plyr)
-FigDat3 <- ddply(ModDat, c("PlGenoNm", "Igeno", "Species", "IsoColor"), summarise,
-                 mLS   = mean(Scale.LS))
-MDmeans <- ddply(ModDat, c("PlGenoNm","Species"), summarise, mean=mean(Scale.LS))
-MDmeans <- MDmeans[order(MDmeans$Species, MDmeans$mean),] 
-MDmeans$PlantNum <- c(1,2,3,4,5,6,7,8,9,10,11,12)
-#MDmeans$PlNum <- c(1,2,3,4,5,6,1,2,3,4,5,6)
-FigDat3 <- merge(FigDat3, MDmeans, by="PlGenoNm")
-FigDat3 <- dplyr::select(FigDat3, Plnum = mean, matches("."))
-FigDat3$PlantNum <- as.numeric(FigDat3$PlantNum)
-library(ggplot2)
-attach(FigDat3)
-names(FigDat3)
-FigDat3$SpLabs <- factor(FigDat3$Species.x, labels = c("Domesticated", "Wild"))
-#add a column of mmLS (mean of mean lesion size) per isolate
-#sort dataframe by mmLS 
-#then color by the new factor mmLS
-FigDat3$mmLS <- ave(FigDat3$mLS, FigDat3$Igeno)
-attach(FigDat3)
-FigDat3 <- FigDat3[order(mmLS),]
-
-#make x axis labels that actually work
-library(plyr)
-FigDat3$Plant.Label <- mapvalues(FigDat3$PlantNum, 
-                                 c("1","2","3", "4", "5", "6", "7", "8", "9", "10", "11", "12"),
-                                 c("LA4345", "LA3008", "LA4355", "LA2706", "LA3475", "LA0410", "LA1547", "LA2093", "LA1684", "LA1589", "LA0480", "LA2176"))
-FigDat3$Plant.Lab.Ord <- factor(FigDat3$Plant.Label, levels = c("LA4345", "LA3008", "LA4355", "LA2706", "LA3475", "LA0410", "LA1547", "LA2093", "LA1684", "LA1589", "LA0480", "LA2176"))
-
-
+#alternate way to do this: F-test for equality of variance of lesion size data between domesticated and wild
+dbottle <- lm(Scale.LS ~ Igeno * Species, data=ModDat)
+anova(dbottle)
+summary(anova(dbottle))
+library(car)
+leveneTest(Scale.LS ~ Species, data=ModDat)
+leveneTest(Scale.LS ~ Igeno * Species, data=ModDat)

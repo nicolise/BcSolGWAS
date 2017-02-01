@@ -18,7 +18,8 @@ out <- split( ModDat , f = ModDat$Igeno )
 head(out[[1]]) #100 elements, max. 69 obs per isolate
 
 #Using a for loop, iterate over the list of data frames in out[[]]
-sink(file='output/ModelsBYISO_072716rand.txt')
+#sink(file='output/IsoSpecific/ModelsBYISO_072716rand.txt')
+sink(file='output/IsoSpecific/ModelsBYISO_012717FIX.txt')
 #skip 13: blank, 59: 94.1, 68: blank, 77: Gallo3, 99: blank
 #adding AgFlat makes model worse
 #PExpRep does better than AgFlat as single term
@@ -27,11 +28,12 @@ sink(file='output/ModelsBYISO_072716rand.txt')
 # or to add 1|ExpBlock/Species
 for (i in c(1:12,14:58,60:67,69:76, 78:98, 100)) {
   print(unique(out[[i]]$Igeno))
-  Mod <- lmer(Scale.LS ~ Species/PlGenoNm + (1|ExpBlock), data=out[[i]])
+  #Mod <- lmer(Scale.LS ~ Species/PlGenoNm + (1|ExpBlock), data=out[[i]])
+  Mod <- lm(Scale.LS ~ Species/PlGenoNm + ExpBlock, data=out[[i]])
   result <- anova(Mod)
-  random <- rand(Mod)
+  #random <- rand(Mod)
   print(result)
-  print(random)
+  #print(random)
 }
 sink()
 
@@ -43,24 +45,26 @@ library(data.table)
 #skip 58: 94.1, 75: Gallo3, 99: blank
 for (i in c(1:57, 59:74, 76:97)) {
   print(unique(out[[i]]$Igeno))
-  Mod <- lmer(Scale.LS ~ Species + Species/PlGenoNm + (1|ExpBlock), data=out[[i]])
+#  Mod <- lmer(Scale.LS ~ Species + Species/PlGenoNm + (1|ExpBlock), data=out[[i]])
+  Mod <- lm(Scale.LS ~ Species/PlGenoNm + ExpBlock, data=out[[i]]) 
   result <- anova(Mod)
-  random <- rand(Mod)
+  #random <- rand(Mod)
   df <- as.data.frame(print(result))
   setDT(df, keep.rownames = T)[]
   df$Isolate <- unique(out[[i]]$Igeno)
   d = rbind(d, df)
-  rf <- as.data.frame(print(random))
-  setDT(rf, keep.rownames=T)[]
-  rf$Isolate <- unique(out[[i]]$Igeno)
-  r=rbind(r, rf)
+ # rf <- as.data.frame(print(random))
+ # setDT(rf, keep.rownames=T)[]
+ # rf$Isolate <- unique(out[[i]]$Igeno)
+ # r=rbind(r, rf)
 }
 d.Species <- d[which(d$rn=='Species'),]
 d.Plant <- d[which(d$rn=='Species:PlGenoNm'),]
-p.adjust(d.Species$`Pr(>F)`, method="fdr")
+p.adjust(d.Species$`Pr(>F)`, method="fdr") #None with fdr
 
-write.csv(d, "output/IsoSpecific/fixANOVA_072716.csv")
-write.csv(r, "output/IsoSpecific/randfx_072716.csv")
+#write.csv(d, "output/IsoSpecific/fixANOVA_072716.csv")
+#write.csv(r, "output/IsoSpecific/randfx_072716.csv")
+write.csv(d, "output/IsoSpecific/fixANOVA_012717.csv")
 
 d = NULL
 library(data.table)

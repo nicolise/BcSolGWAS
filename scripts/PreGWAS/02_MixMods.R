@@ -1,4 +1,5 @@
-h#Preliminary data analysis Solanum spp. x Botrytis cinerea lesions
+#Nicole E Soltis
+#Preliminary data analysis Solanum spp. x Botrytis cinerea lesions
 #101315
 #-------------------------------------------------------------
 rm(list=ls())
@@ -160,19 +161,94 @@ fullmod2b <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm +
 fullmod3 <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|Species/PlGenoNm/IndPlant) + (1|ExpBlock:Igeno) + (1|ExpBlock:PlGenoNm), data = ModDat)
 
 #this one works
+#this is the one used for the paper: no random effects
 Sys.time()
 fullmod <- lm(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + ExpBlock:Igeno + ExpBlock:Species/PlGenoNm, data = ModDat)
 Sys.time()
-sink(file='output/newANOVA/fullmod_121716.txt')
-print("Model: (Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + ExpBlock:Igeno + ExpBlock:Species/PlGenoNm, data = ModDat)")
-Sys.time()
+#sink(file='output/newANOVA/fullmod_121716.txt')
+#print("Model: (Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + ExpBlock:Igeno + ExpBlock:Species/PlGenoNm, data = ModDat)")
+#Sys.time()
 #summary(fullmod) # the code generating output
-Anova(fullmod, type=2)
-anova(fullmod)
+#Anova(fullmod, type=2)
+#anova(fullmod)
+#Sys.time()
+#sink()
+
+#testing adding in ExpBlock:PExpRep.x
 Sys.time()
+fullmod2 <- lm(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + ExpBlock/PExpRep.x + ExpBlock:Igeno + ExpBlock:Species/PlGenoNm, data = ModDat)
+Sys.time()
+#sink(file='output/newANOVA/fullmod_012317.txt')
+#print("Model: (Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + ExpBlock:Igeno + ExpBlock:Species/PlGenoNm, data = ModDat)")
+#Sys.time()
+#summary(fullmod) # the code generating output
+#Anova(fullmod, type=2)
+#anova(fullmod)
+#Sys.time()
+#sink()
+
+#anova(fullmod, fullmod2, test="Chisq")
+
+#going to test adding IndPlant, IndPlant/Leaf, AorB as fixed effects
+fullmod3 <- lm(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + ExpBlock/PExpRep.x + ExpBlock:Igeno + ExpBlock:Species/PlGenoNm + IndPlant, data = ModDat)
+#anova(fullmod2, fullmod3, test="Chisq")
+#fullmod3 (IndPlant) DOES improve the model
+fullmod4 <- lm(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + ExpBlock/PExpRep.x + ExpBlock:Igeno + ExpBlock:Species/PlGenoNm + Species/PlGenoNm/IndPlant, data = ModDat)
+#anova(fullmod2, fullmod4, test="Chisq")
+#and if IndPlant is nested within Species/PlGenoNm, fullmod4 IS an improved model
+fullmod5 <- lm(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + ExpBlock/PExpRep.x + ExpBlock:Igeno + ExpBlock:Species/PlGenoNm + Species/PlGenoNm/IndPlant + Species/PlGenoNm/IndPlant/Leaf, data = ModDat)
+#anova(fullmod4, fullmod5, test="Chisq")
+#if we add leaf... improves model AGAIN
+
+#and try adding AorB
+fullmod6 <- lm(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + ExpBlock/PExpRep.x + ExpBlock:Igeno + ExpBlock:Species/PlGenoNm + Species/PlGenoNm/IndPlant + Species/PlGenoNm/IndPlant/Leaf + AorB, data = ModDat)
+
+sink(file='output/newANOVA/fullmod_012417_BuildingModelsB.txt')
+print(" fullmod <- lm(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + ExpBlock:Igeno + ExpBlock:Species/PlGenoNm, data = ModDat)
+Sys.time()
+      fullmod2 <- lm(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + ExpBlock/PExpRep.x + ExpBlock:Igeno + ExpBlock:Species/PlGenoNm, data = ModDat)
+      fullmod3 <- lm(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + ExpBlock/PExpRep.x + ExpBlock:Igeno + ExpBlock:Species/PlGenoNm + IndPlant, data = ModDat)
+      fullmod4 <- lm(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + ExpBlock/PExpRep.x + ExpBlock:Igeno + ExpBlock:Species/PlGenoNm + Species/PlGenoNm/IndPlant, data = ModDat)
+      fullmod5 <- lm(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + ExpBlock/PExpRep.x + ExpBlock:Igeno + ExpBlock:Species/PlGenoNm + Species/PlGenoNm/IndPlant + Species/PlGenoNm/IndPlant/Leaf, data = ModDat)
+      fullmod6 <- lm(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + ExpBlock/PExpRep.x + ExpBlock:Igeno + ExpBlock:Species/PlGenoNm + Species/PlGenoNm/IndPlant + Species/PlGenoNm/IndPlant/Leaf + AorB, data = ModDat)")
+print("fullmod vs. fullmod2: test effect of adding ExpBlock:PExpRep.x")
+anova(fullmod, fullmod2, test="Chisq")
+print("fullmod2 vs. fullmod3: test effect of adding NON-nested IndPlant")
+anova(fullmod2, fullmod3, test="Chisq")
+print("fullmod2 vs. fullmod4: test effect of adding NESTED IndPlant")
+anova(fullmod2, fullmod4, test="Chisq")
+print("fullmod4 vs. fullmod5: test effect of adding NESTED Leaf")
+anova(fullmod4, fullmod5, test="Chisq")
+print("fullmod vs. fullmod5: double check that complex model is an improvement")
+anova(fullmod, fullmod5, test="Chisq")
+print("fullmod5 vs. fullmod6: try adding AorB")
+anova(fullmod5, fullmod6, test="Chisq")
+
+
+Sys.time()
+print("Model ANOVA")
+anova(fullmod)
+print("Model2 ANOVA")
+anova(fullmod2)
+print("Model3 ANOVA")
+anova(fullmod3)
+print("Model4 ANOVA")
+anova(fullmod4)
+print("Model5 ANOVA")
+anova(fullmod5)
+print("Model6 ANOVA")
+anova(fullmod6)
+summary(fullmod)
+summary(fullmod2)
+summary(fullmod3)
+summary(fullmod4)
+summary(fullmod5)
+summary(fullmod6)
 sink()
 
-#this one works
+
+
+#this one works: random effects
 Sys.time()
 fullmod1 <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/AgFlat), data = ModDat)
 Sys.time()

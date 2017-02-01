@@ -1,13 +1,15 @@
 #Nicole E Soltis 
-#from script by Jason A Corwin, Modified by Rachel Fordyce
-#to run bigRR on Linux GPU for GWAS
+#plotting from bigRR on Linux GPU for GWAS
 #---------------------------------------------------------------
 
 rm(list=ls())
 #setwd("~/Documents/GitRepos/BcSolGWAS/")
 setwd("~/Projects/BcSolGWAS/")
+
+#Input File: Sl_DomesticationLS_MAF20.HEM.PlotFormat.csv and .Thresh.csv
+#Output File: results/Domestication_Top50SNP.csv
+#Plots: NONE
 ############################################################################
-###Plotting the HEM results
 
 #Load plotting package
 library(ggplot2)
@@ -35,16 +37,9 @@ for (i in 2:ncol(TH999)){
 
 names(HEM.plotdata)
 
-#All groups
-assign(paste("HEM.", names(HEM.plotdata[4]), sep=""), subset(HEM.plotdata, HEM.plotdata[4] > get(paste("TH999_", names(HEM.plotdata[4]), sep="")),
-                                                             select=c(Chrom,Segment,Pos,4)))
-
-#or each by hand
-# HEM.Domesticated <- subset(HEM.plotdata, Domesticated > 6.285562e-04, 
-#                                 select=c(Chrom,Pos,LA0410))
-# HEM.Domesticated <- rename(HEM.LA0410, c("LA0410" = "Effect"))
-# HEM.LA0410$Plant <- "LA0410"
-# HEM.LA0410 <- head(arrange(HEM.LA0410,desc(Effect)), n = 50)
+#All groups (4:6)
+assign(paste("HEM.", names(HEM.plotdata[6]), sep=""), subset(HEM.plotdata, HEM.plotdata[6] > get(paste("TH999_", names(HEM.plotdata[6]), sep="")),
+                                                             select=c(Chrom,Segment,Pos,6)))
 
 #then combine
 HEM.Domesticated <- rename(HEM.Domesticated, c("Domesticated" ="Effect"))
@@ -54,44 +49,78 @@ HEM.Wild$Trait <- "Wild"
 HEM.DmWoD <- rename(HEM.DmWoD, c("DmWoD" ="Effect"))
 HEM.DmWoD$Trait <- "DmWoD"
 
-Top50SNP <- rbind(HEM.Domesticated, HEM.Wild, HEM.DmWoD)
+HEM.plotdata <- rbind(HEM.Domesticated, HEM.Wild, HEM.DmWoD)
 
-Top50SNP$Chrom <- gsub("Chromosome", "", Top50SNP$Chrom)
-Top50SNP$Chrom <- as.numeric(as.character(Top50SNP$Chrom))
-Top50SNP$Pos <- as.numeric(as.character(Top50SNP$Pos))
-write.csv(Top50SNP, "data/GWAS_files/04_bigRRoutput/domestication/TopSNPs_domest.csv")
-
-#max pos is 1001108
-
-Top50SNP$Plot <- (Top50SNP$Chrom*1000000 + Top50SNP$Pos)
+# #Reformat Chromosomes and Positions
+HEM.plotdata$Chrom <- gsub("Chromosome", "", HEM.plotdata$Chrom)
+HEM.plotdata$Chrom <- as.numeric(as.character(HEM.plotdata$Chrom))
+HEM.plotdata$Segment <- as.numeric(as.character(HEM.plotdata$Segment))
+HEM.plotdata$Pos <- as.numeric(as.character(HEM.plotdata$Pos))
 
 #sort dataframe rows in order of Chrom, then Pos
-Top50SNP <- Top50SNP[with(Top50SNP, order(Chrom, Pos)), ]
+HEM.plotdata <- HEM.plotdata[with(HEM.plotdata, order(Chrom, Segment, Pos)), ]
+
+#now make segments line up consecutively
+HEM.plotdata$Chrom.Seg <- paste(HEM.plotdata$Chrom, HEM.plotdata$Segment, sep=".")
+HEM.plotdata$Chrom.Seg <- as.numeric(HEM.plotdata$Chrom.Seg)
+
+#let's try making the chrom.seg integers so that R isn't confused
+unique(HEM.plotdata$Chrom.Seg)
+library(plyr)
+HEM.plotdata$Chrom.Seg.F <- as.factor(HEM.plotdata$Chrom.Seg)
+unique(HEM.plotdata$Chrom.Seg.F)
+recode.vars <- data.frame(OGvals = c(1,1.1,2,2.1,2.2,2.3,2.4,2.5, 3, 3.1, 3.2, 4,  4.1, 5,  5.1, 6,  6.1, 6.2, 6.3, 7,  7.1, 7.2, 8,  8.1, 8.2, 9,  9.1, 10, 10.1, 11, 11.1, 12, 12.1, 13, 13.1, 13.2, 14, 14.1, 14.2, 15, 15.1, 15.2, 15.3, 15.4, 16, 16.1, 16.2, 16.3, 16.4, 16.5, 16.6, 16.7, 16.8, 16.9, 16.11), newvals = c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55))
+print(recode.vars)
+
+HEM.plotdata$Chrom.Seg.Int <- recode.vars$newvals[match(HEM.plotdata$Chrom.Seg.F, recode.vars$OGvals)]
+unique(HEM.plotdata$Chrom.Seg.Int)
 
 #Make plotting variables
-Top50SNP$Index = NA
+HEM.plotdata$Index = NA
 ticks = NULL
 lastbase = 0
 
-#want to figure out where to add +500 to draw breaks between chromosomes
 #Redo the positions to make them sequential		-- accurate position indexing
-for (i in unique(Top50SNP$Chrom)) {
+
+for (i in unique(HEM.plotdata$Chrom.Seg.Int)) {
   print(i)
+  #for chromosome 1
   if (i==1) {
-    Top50SNP[Top50SNP$Chrom==i, ]$Index=Top50SNP[Top50SNP$Chrom==i, ]$Pos
+    #for the subset of HEM.plotdata rows with Chromosome 1, set Index variable for each row to equal Pos.
+    HEM.plotdata[HEM.plotdata$Chrom.Seg.Int==i, ]$Index=HEM.plotdata[HEM.plotdata$Chrom.Seg.Int==i, ]$Pos
+    #for all other chromosomes: 
   }	else {
+    #lastbase for chromosome i is the greater of:
+    #current lastbase counter plus the maxiumum position of chromosome i-1
+    #OR 1
     #changed lastbase+tail to lastbase+max
-    lastbase=+lastbase+max(subset(Top50SNP,Top50SNP$Chrom==i-1)$Pos, 1)
-    Top50SNP[Top50SNP$Chrom==i, ]$Index=Top50SNP[Top50SNP$Chrom==i, ]$Pos+lastbase
+    lastbase=lastbase+max(subset(HEM.plotdata,HEM.plotdata$Chrom.Seg.Int==i-1)$Pos, 1)
+    #and then for the subset of HEM.plotdata rows with Chromosome i, set Index variable for each row to equal Pos + lastbase
+    HEM.plotdata[HEM.plotdata$Chrom.Seg.Int==i, ]$Index=HEM.plotdata[HEM.plotdata$Chrom.Seg.Int==i, ]$Pos+lastbase
   }
-  ticks=c(ticks, Top50SNP[Top50SNP$Chrom==i, ]$Index[floor(length(Top50SNP[Top50SNP$Chrom==i, ]$Index)/2)+1])
+  #set ticks to be a list of existing ticks, plus the current Index
+  #floor rounds it down to the nearest whole number
+  # ticks=c(ticks, HEM.plotdata[HEM.plotdata$Chrom.Seg.Int==i, ]$Index[floor(length(HEM.plotdata[HEM.plotdata$Chrom==i, ]$Index)/2)+1])
+  
+  ticks=c(ticks, HEM.plotdata[HEM.plotdata$Chrom.Seg.Int==i, ]$Index[floor(length(HEM.plotdata[HEM.plotdata$Chrom.Seg.Int==i, ]$Index)/2)+1])
 }
-ticklim=c(min(Top50SNP$Index),max(Top50SNP$Index))
+ticklim=c(min(HEM.plotdata$Index),max(HEM.plotdata$Index))
 
 library(ggplot2)
-plot1 <- ggplot(Top50SNP, aes(x=Index, y=Effect))
-plot1 + geom_point(aes(color=factor(Plant)))+
+plot1 <- ggplot(HEM.plotdata, aes(x=Index, y=Effect))
+plot1 + geom_point(aes(color=factor(Trait)))+
   theme_bw()
- 
-  write.csv(Top50SNP, "results/Domestication_Top50SNP.csv")
   
+#make it long format
+names(HEM.plotdata)
+#now long format : Chrom, Segment, Pos, Index, Effect, Trait
+HEM.plotdata2 <- HEM.plotdata[,c(1,2,3,10,4,5,6)]
+
+Top50SNPs <- reshape(HEM.plotdata2, 
+               varying = c("Domesticated", "Wild", "DmWoD"),
+               v.names = "Effect",
+               timevar = "Trait",
+               times = c("Domesticated", "Wild", "DmWoD"),
+               direction = "long")
+  
+write.csv(Top50SNPs, "results/Domestication_Top50SNP_Segments.csv")
