@@ -37,21 +37,7 @@ for (i in 2:ncol(TH999)){
 
 names(HEM.plotdata)
 
-#All groups (4:6)
-assign(paste("HEM.", names(HEM.plotdata[6]), sep=""), subset(HEM.plotdata, HEM.plotdata[6] > get(paste("TH999_", names(HEM.plotdata[6]), sep="")),
-                                                             select=c(Chrom,Segment,Pos,6)))
-
-#then combine
-HEM.Domesticated <- rename(HEM.Domesticated, c("Domesticated" ="Effect"))
-HEM.Domesticated$Trait <- "Domesticated"
-HEM.Wild <- rename(HEM.Wild, c("Wild" ="Effect"))
-HEM.Wild$Trait <- "Wild"
-HEM.DmWoD <- rename(HEM.DmWoD, c("DmWoD" ="Effect"))
-HEM.DmWoD$Trait <- "DmWoD"
-
-HEM.plotdata <- rbind(HEM.Domesticated, HEM.Wild, HEM.DmWoD)
-
-# #Reformat Chromosomes and Positions
+#Reformat Chromosomes and Positions
 HEM.plotdata$Chrom <- gsub("Chromosome", "", HEM.plotdata$Chrom)
 HEM.plotdata$Chrom <- as.numeric(as.character(HEM.plotdata$Chrom))
 HEM.plotdata$Segment <- as.numeric(as.character(HEM.plotdata$Segment))
@@ -106,21 +92,36 @@ for (i in unique(HEM.plotdata$Chrom.Seg.Int)) {
 }
 ticklim=c(min(HEM.plotdata$Index),max(HEM.plotdata$Index))
 
+names(HEM.plotdata)
+#All groups (4:6)
+#keep only: SNPs over 99.9% Threshold
+assign(paste("HEM.", names(HEM.plotdata[5]), sep=""), subset(HEM.plotdata, HEM.plotdata[5] > get(paste("TH999_", names(HEM.plotdata[5]), sep="")),
+                                                             select=c(Chrom,Segment,Pos,Index,5)))
+
+#then combine
+HEM.Domesticated <- rename(HEM.Domesticated, c("Domesticated" ="Effect"))
+HEM.Domesticated$Trait <- "Domesticated"
+HEM.Wild <- rename(HEM.Wild, c("Wild" ="Effect"))
+HEM.Wild$Trait <- "Wild"
+HEM.DmWoD <- rename(HEM.DmWoD, c("DmWoD" ="Effect"))
+HEM.DmWoD$Trait <- "DmWoD"
+
+HEM.plotdata <- rbind(HEM.Domesticated, HEM.Wild, HEM.DmWoD)
+
+
 library(ggplot2)
 plot1 <- ggplot(HEM.plotdata, aes(x=Index, y=Effect))
 plot1 + geom_point(aes(color=factor(Trait)))+
   theme_bw()
   
-#make it long format
+#make it wide format
 names(HEM.plotdata)
-#now long format : Chrom, Segment, Pos, Index, Effect, Trait
-HEM.plotdata2 <- HEM.plotdata[,c(1,2,3,10,4,5,6)]
+#currentlylong format : Chrom, Segment, Pos, Index, Effect, Trait
+write.csv(HEM.plotdata, "results/Domestication_Top50SNP_SegLong.csv")
 
-Top50SNPs <- reshape(HEM.plotdata2, 
-               varying = c("Domesticated", "Wild", "DmWoD"),
-               v.names = "Effect",
-               timevar = "Trait",
-               times = c("Domesticated", "Wild", "DmWoD"),
-               direction = "long")
-  
-write.csv(Top50SNPs, "results/Domestication_Top50SNP_Segments.csv")
+Top50SNP.wide.DM <- reshape(HEM.plotdata, 
+                         timevar = "Trait",
+                         idvar = c("Chrom","Segment","Pos","Index"),
+                         direction = "wide")
+
+write.csv(Top50SNP.wide.DM, "results/Domestication_Top50SNP_SegWide.csv")

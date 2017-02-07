@@ -110,40 +110,47 @@ colScale <- scale_colour_manual(name = "Chrom",values = myColors)
 
 #when plotting, add +colScale + as a line
 
-#without the loop [6]
-for (y in 4:6){
-jpeg(paste("plots/MultiPlot/domest/Sl_LesionSize_MAF20_lowTR_bw_", names(HEM.plotdata[6]), ".ManhattanPlot.jpg", sep=""), width=8, height=4, units='in', res=600)
-  ggplot(HEM.plotdata, aes(x=Index, y=abs(HEM.plotdata[6])))+
-    theme_bw()+
-    geom_point(aes(color = factor(Chrom)))+
-    colScale+
-    labs(list(y="SNP Effect Estimate", x="Chromosome position", title=paste("Lesion Size on ", names(HEM.plotdata[6]))))+
-    guides(col = guide_legend(nrow = 8, title="Chromosome"))+
-    geom_hline(yintercept=get(paste("TH95_", names(HEM.plotdata[6]), sep="")), colour = "blue") +
-    geom_text(aes(0,get(paste("TH95_", names(HEM.plotdata[6]), sep="")), label = ".95 Threshold", vjust = 1.5, hjust = .05), col = "blue")+
-   geom_hline(yintercept=get(paste("TH99_", names(HEM.plotdata[6]), sep=""))) +
-   geom_text(aes(0,get(paste("TH99_", names(HEM.plotdata[6]), sep="")), label = ".99 Threshold", vjust = 1.5, hjust = .05), col = "black")+
-    scale_x_continuous(name="Chromosome", breaks = c(1677889, 5253114, 9013367, 11074212, 13595791, 17206983, 20036067, 22404724, 24429409, 26804549, 28608225, 30154184, 31914256, 34033137, 35838514, 38953687), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
-   expand_limits(y=0)
-dev.off()
-
-jpeg(paste("plots/MultiPlot/domest/Sl_LesionSize_MAF20_highTR_", names(HEM.plotdata[6]), ".ManhattanPlot.jpg", sep=""), width=8, height=4, units='in', res=600)
-ggplot(HEM.plotdata, aes(x=Index, y=abs(HEM.plotdata[6])))+
+#without the loop [4]
+jpeg("plots/MultiPlot/domest/Sl_MAF20_highTR_bw_metaplot.jpg", width=8, height=4, units='in', res=600)
+ggplot(HEM.plotdata, aes(x=Index))+
   theme_bw()+
-  geom_point(aes(color = factor(Chrom)))+
-  labs(list(y="SNP Effect Estimate", x="Chromosome position", title=paste("Lesion Size on ", names(HEM.plotdata[6]))))+
-  guides(col = guide_legend(nrow = 8, title="Chromosome"))+
-  geom_hline(yintercept=get(paste("TH999_", names(HEM.plotdata[6]), sep=""))) +
-  geom_text(aes(0,get(paste("TH999_", names(HEM.plotdata[6]), sep="")), label =
+  #colScale+
+  labs(list(y="SNP Effect Estimate", x="Chromosome position", title=element_blank()))+
+  guides(col = guide_legend(nrow = 8, title="Phenotype"))+
+  
+  geom_point(aes(x=Index, y=(Domesticated), color = "Domesticated"), alpha=1/2)+
+  geom_point(aes(x=Index, y=(Wild), color = "Wild"), alpha=1/2)+
+  geom_point(aes(x=Index, y=(DmWoD), color = "(D-W)/D"), alpha=1/2, shape=2)+
+  geom_hline(yintercept=get(paste("TH999_", names(HEM.plotdata[4]), sep=""))) +
+  geom_hline(yintercept=(get(paste("TH999_", names(HEM.plotdata[4]), sep="")))*-1) +
+  geom_text(aes(-0.01,get(paste("TH999_", names(HEM.plotdata[4]), sep="")), label =
   ".999 Threshold", vjust = 1.5, hjust = .05), col = "black")+
-  scale_x_continuous(name="Chromosome", breaks = c(1677889, 5253114, 9013367, 11074212, 13595791, 17206983, 20036067, 22404724, 24429409, 26804549, 28608225, 30154184, 31914256, 34033137, 35838514, 38953687), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
-  expand_limits(y=-0.001)
+  scale_x_continuous(name="Chromosome", breaks = c(1677889, 5253114, 9013367, 11074212, 13595791, 17206983, 20036067, 22404724, 24429409, 26804549, 28608225, 30154184, 31914256, 34033137, 35838514, 38953687), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))
+  #theme(legend.position="none")
 dev.off()
 #}
-#stop [6]
+#stop [4]
 
 #how many SNPs are above a certain threshhold?
 topSNP <- sum(HEM.plotdata[6] >= 0.001) #41
 highSNP <- sum(HEM.plotdata[6] >= get(paste("TH999_", names(HEM.plotdata[6]), sep=""))) #spits out number
 totalSNP <- sum(HEM.plotdata[6] >= 0)
 highSNP/totalSNP*100
+
+#meta analysis plot
+#without the loop [4]
+jpeg("plots/MultiPlot/domest/Sl_MAF20_highTR_bw_metaplot.jpg", width=8, height=4, units='in', res=600)
+ggplot(HEM.plotdata, aes(x=Index))+
+  theme_bw()+
+  #colScale+
+  labs(list(y="SNP Effect Estimate", x="Chromosome position", title=element_blank()))+
+  guides(col = guide_legend(nrow = 8, title="Phenotype"))+
+  geom_point(aes(x=Index, y=(Domesticated), color = "Domesticated"), alpha=1/2)+
+  geom_point(aes(x=Index, y=(Wild), color = "Wild"), alpha=1/2)+
+  geom_point(aes(x=Index, y=(DmWoD), color = "(D-W)/D"), alpha=1/2)+
+  geom_hline(yintercept=get(paste("TH999_", names(HEM.plotdata[4]), sep=""))) +
+  geom_hline(yintercept=(get(paste("TH999_", names(HEM.plotdata[4]), sep="")))*-1) +
+  geom_text(aes(-0.01,get(paste("TH999_", names(HEM.plotdata[4]), sep="")), label = ".999 Threshold", vjust = 1.5, hjust = .05), col = "black")+
+  scale_x_continuous(name="Chromosome", breaks = c(1677889, 5253114, 9013367, 11074212, 13595791, 17206983, 20036067, 22404724, 24429409, 26804549, 28608225, 30154184, 31914256, 34033137, 35838514, 38953687), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))
+#theme(legend.position="none")
+dev.off()

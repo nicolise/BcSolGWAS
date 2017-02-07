@@ -18,6 +18,19 @@ colScale <- scale_colour_manual(name = "Chrom",values = myColors)
 #for subsets: avoid 2 oranges, yellow with yellow orange, green with blue
 +scale_color_manual(values=c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7"))
 
+#reshape data to and from long // wide
+Top50SNP.wide <- reshape(Top50SNP, 
+                         timevar = "Plant",
+                         idvar = c("Chrom","Segment","Pos","Index"),
+                         direction = "wide")
+
+Top50SNPs.long.DM <- reshape(HEM.plotdata, 
+                             varying = c("Domesticated", "Wild", "DmWoD"),
+                             v.names = "Effect",
+                             timevar = "Trait",
+                             times = c("Domesticated", "Wild", "DmWoD"),
+                             direction = "long")
+
 #original INDEXING without multiple segments per chromosome
 #Make plotting variables
 HEM.plotdata$Index = NA

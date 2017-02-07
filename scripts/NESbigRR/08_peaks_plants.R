@@ -8,7 +8,7 @@ setwd("~/Projects/BcSolGWAS/")
 
 #Input file: Sl_LesionSize_MAF20.HEM.PlotFormat.csv AND Sl_LesionSize_MAF20.HEM.Thresh.csv
 #Output file: TopSNPs_alltraits.csv
-#Plots: NONE
+#Plots: FigR7_LargeFxPlantSNPs.csv
 
 ############################################################################
 ###Plotting the HEM results
@@ -46,89 +46,6 @@ for (i in 2:ncol(TH95)){
 }
 
 names(HEM.plotdata)
-
-#LA0410: 0.999
-HEM.LA0410 <- subset(HEM.plotdata, LA410 > get(paste("TH999_", "LA410", sep="")), 
-                                select=c(Chrom,Segment, Pos,LA410))
-HEM.LA0410 <- rename(HEM.LA0410, c("LA410" = "Effect"))
-HEM.LA0410$Plant <- "LA0410"
-HEM.LA0410 <- head(arrange(HEM.LA0410,desc(Effect)), n = 50)
-
-#LA0480: 0.999
-HEM.LA0480 <- subset(HEM.plotdata, LA480 > get(paste("TH999_", "LA480", sep="")), 
-                     select=c(Chrom,Segment,Pos,LA480))
-HEM.LA0480 <- rename(HEM.LA0480, c("LA480" = "Effect"))
-HEM.LA0480$Plant <- "LA0480"
-HEM.LA0480 <- head(arrange(HEM.LA0480,desc(Effect)), n = 50)
-
-#LA1547 has none > 0.95
-
-#LA1589: 0.999
-HEM.LA1589 <- subset(HEM.plotdata, LA1589 > get(paste("TH999_", "LA1589", sep="")), 
-                     select=c(Chrom,Segment,Pos,LA1589))
-HEM.LA1589 <- rename(HEM.LA1589, c("LA1589" = "Effect"))
-HEM.LA1589$Plant <- "LA1589"
-HEM.LA1589 <- head(arrange(HEM.LA1589,desc(Effect)), n = 50)
-
-#LA1684: 0.999
-HEM.LA1684 <- subset(HEM.plotdata, LA1684 > get(paste("TH999_", "LA1684", sep="")), 
-                     select=c(Chrom,Segment,Pos,LA1684))
-HEM.LA1684 <- rename(HEM.LA1684, c("LA1684" = "Effect"))
-HEM.LA1684$Plant <- "LA1684"
-HEM.LA1684 <- head(arrange(HEM.LA1684,desc(Effect)), n = 50)
-
-#LA2093: 0.999
-HEM.LA2093 <- subset(HEM.plotdata, LA2093 > get(paste("TH999_", "LA2093", sep="")), 
-                     select=c(Chrom,Segment,Pos,LA2093))
-HEM.LA2093 <- rename(HEM.LA2093, c("LA2093" = "Effect"))
-HEM.LA2093$Plant <- "LA2093"
-HEM.LA2093 <- head(arrange(HEM.LA2093,desc(Effect)), n = 50)
-
-#LA2176: 0.999
-HEM.LA2176 <- subset(HEM.plotdata, LA2176 > get(paste("TH999_", "LA2176", sep="")), 
-                     select=c(Chrom,Segment,Pos,LA2176))
-HEM.LA2176 <- rename(HEM.LA2176, c("LA2176" = "Effect"))
-HEM.LA2176$Plant <- "LA2176"
-HEM.LA2176 <- head(arrange(HEM.LA2176,desc(Effect)), n = 50)
-
-#LA2706: 0.999
-HEM.LA2706 <- subset(HEM.plotdata, LA2706 > get(paste("TH999_", "LA2706", sep="")), 
-                     select=c(Chrom,Segment,Pos,LA2706))
-HEM.LA2706 <- rename(HEM.LA2706, c("LA2706" = "Effect"))
-HEM.LA2706$Plant <- "LA2706"
-HEM.LA2706 <- head(arrange(HEM.LA2706,desc(Effect)), n = 50)
-
-#LA3008: 0.99 !! or 0.95 to actually get 50 (only 15 > 0.99)
-HEM.LA3008 <- subset(HEM.plotdata, LA3008 > get(paste("TH95_", "LA3008", sep="")), 
-                     select=c(Chrom,Segment,Pos,LA3008))
-HEM.LA3008 <- rename(HEM.LA3008, c("LA3008" = "Effect"))
-HEM.LA3008$Plant <- "LA3008"
-HEM.LA3008 <- head(arrange(HEM.LA3008,desc(Effect)), n = 50)
-
-#LA3475: 0.95
-HEM.LA3475 <- subset(HEM.plotdata, LA3475 > get(paste("TH95_", "LA3475", sep="")), 
-                     select=c(Chrom,Segment,Pos,LA3475))
-HEM.LA3475 <- rename(HEM.LA3475, c("LA3475" = "Effect"))
-HEM.LA3475$Plant <- "LA3475"
-HEM.LA3475 <- head(arrange(HEM.LA3475,desc(Effect)), n = 50)
-
-#LA4345: 0.999
-HEM.LA4345 <- subset(HEM.plotdata, LA4345 > get(paste("TH999_", "LA4345", sep="")), 
-                     select=c(Chrom,Segment,Pos,LA4345))
-HEM.LA4345 <- rename(HEM.LA4345, c("LA4345" = "Effect"))
-HEM.LA4345$Plant <- "LA4345"
-HEM.LA4345 <- head(arrange(HEM.LA4345,desc(Effect)), n = 50)
-
-#LA4355: 0.99 !! or 0.95 to actually get 50. Only 1 SNP > 0.99
-HEM.LA4355 <- subset(HEM.plotdata, LA4355 > get(paste("TH95_", "LA4355", sep="")), 
-                     select=c(Chrom,Segment,Pos,LA4355))
-HEM.LA4355 <- rename(HEM.LA4355, c("LA4355" = "Effect"))
-HEM.LA4355$Plant <- "LA4355"
-HEM.LA4355 <- head(arrange(HEM.LA4355,desc(Effect)), n = 50)
-
-Top50SNP <- rbind(HEM.LA0410, HEM.LA0480, HEM.LA1589, HEM.LA1684, HEM.LA2093, HEM.LA2176, HEM.LA2706, HEM.LA3008, HEM.LA3475, HEM.LA4345, HEM.LA4355)
-
-#max pos is 1001108
 
 # #Reformat Chromosomes and Positions
 HEM.plotdata$Chrom <- gsub("Chromosome", "", HEM.plotdata$Chrom)
@@ -185,15 +102,117 @@ for (i in unique(HEM.plotdata$Chrom.Seg.Int)) {
 }
 ticklim=c(min(HEM.plotdata$Index),max(HEM.plotdata$Index))
 
+#NOW only keep top 50 SNPs per plant
+#LA0410: 0.999
+HEM.LA0410 <- subset(HEM.plotdata, LA410 > get(paste("TH999_", "LA410", sep="")), 
+                     select=c(Chrom,Segment, Pos, Index, LA410))
+HEM.LA0410 <- rename(HEM.LA0410, c("LA410" = "Effect"))
+HEM.LA0410$Plant <- "LA0410"
+HEM.LA0410 <- head(arrange(HEM.LA0410,desc(Effect)), n = 50)
+
+#LA0480: 0.999
+HEM.LA0480 <- subset(HEM.plotdata, LA480 > get(paste("TH999_", "LA480", sep="")), 
+                     select=c(Chrom,Segment,Pos,Index,LA480))
+HEM.LA0480 <- rename(HEM.LA0480, c("LA480" = "Effect"))
+HEM.LA0480$Plant <- "LA0480"
+HEM.LA0480 <- head(arrange(HEM.LA0480,desc(Effect)), n = 50)
+
+#LA1547 has none > 0.95
+
+#LA1589: 0.999
+HEM.LA1589 <- subset(HEM.plotdata, LA1589 > get(paste("TH999_", "LA1589", sep="")), 
+                     select=c(Chrom,Segment,Pos,Index,LA1589))
+HEM.LA1589 <- rename(HEM.LA1589, c("LA1589" = "Effect"))
+HEM.LA1589$Plant <- "LA1589"
+HEM.LA1589 <- head(arrange(HEM.LA1589,desc(Effect)), n = 50)
+
+#LA1684: 0.999
+HEM.LA1684 <- subset(HEM.plotdata, LA1684 > get(paste("TH999_", "LA1684", sep="")), 
+                     select=c(Chrom,Segment,Pos,Index,LA1684))
+HEM.LA1684 <- rename(HEM.LA1684, c("LA1684" = "Effect"))
+HEM.LA1684$Plant <- "LA1684"
+HEM.LA1684 <- head(arrange(HEM.LA1684,desc(Effect)), n = 50)
+
+#LA2093: 0.999
+HEM.LA2093 <- subset(HEM.plotdata, LA2093 > get(paste("TH999_", "LA2093", sep="")), 
+                     select=c(Chrom,Segment,Pos,Index,LA2093))
+HEM.LA2093 <- rename(HEM.LA2093, c("LA2093" = "Effect"))
+HEM.LA2093$Plant <- "LA2093"
+HEM.LA2093 <- head(arrange(HEM.LA2093,desc(Effect)), n = 50)
+
+#LA2176: 0.999
+HEM.LA2176 <- subset(HEM.plotdata, LA2176 > get(paste("TH999_", "LA2176", sep="")), 
+                     select=c(Chrom,Segment,Pos,Index,LA2176))
+HEM.LA2176 <- rename(HEM.LA2176, c("LA2176" = "Effect"))
+HEM.LA2176$Plant <- "LA2176"
+HEM.LA2176 <- head(arrange(HEM.LA2176,desc(Effect)), n = 50)
+
+#LA2706: 0.999
+HEM.LA2706 <- subset(HEM.plotdata, LA2706 > get(paste("TH999_", "LA2706", sep="")), 
+                     select=c(Chrom,Segment,Pos,Index,LA2706))
+HEM.LA2706 <- rename(HEM.LA2706, c("LA2706" = "Effect"))
+HEM.LA2706$Plant <- "LA2706"
+HEM.LA2706 <- head(arrange(HEM.LA2706,desc(Effect)), n = 50)
+
+#LA3008: 0.99 !! or 0.95 to actually get 50 (only 15 > 0.99)
+HEM.LA3008 <- subset(HEM.plotdata, LA3008 > get(paste("TH95_", "LA3008", sep="")),
+                     select=c(Chrom,Segment,Pos,Index,LA3008))
+HEM.LA3008 <- rename(HEM.LA3008, c("LA3008" = "Effect"))
+HEM.LA3008$Plant <- "LA3008"
+HEM.LA3008 <- head(arrange(HEM.LA3008,desc(Effect)), n = 50)
+
+#LA3475: 0.95
+HEM.LA3475 <- subset(HEM.plotdata, LA3475 > get(paste("TH95_", "LA3475", sep="")),
+                     select=c(Chrom,Segment,Pos,Index,LA3475))
+HEM.LA3475 <- rename(HEM.LA3475, c("LA3475" = "Effect"))
+HEM.LA3475$Plant <- "LA3475"
+HEM.LA3475 <- head(arrange(HEM.LA3475,desc(Effect)), n = 50)
+
+#LA4345: 0.999
+HEM.LA4345 <- subset(HEM.plotdata, LA4345 > get(paste("TH999_", "LA4345", sep="")), 
+                     select=c(Chrom,Segment,Pos,Index,LA4345))
+HEM.LA4345 <- rename(HEM.LA4345, c("LA4345" = "Effect"))
+HEM.LA4345$Plant <- "LA4345"
+HEM.LA4345 <- head(arrange(HEM.LA4345,desc(Effect)), n = 50)
+
+#LA4355: 0.99 !! or 0.95 to actually get 50. Only 1 SNP > 0.99
+HEM.LA4355 <- subset(HEM.plotdata, LA4355 > get(paste("TH95_", "LA4355", sep="")), 
+                     select=c(Chrom,Segment,Pos,Index,LA4355))
+HEM.LA4355 <- rename(HEM.LA4355, c("LA4355" = "Effect"))
+HEM.LA4355$Plant <- "LA4355"
+HEM.LA4355 <- head(arrange(HEM.LA4355,desc(Effect)), n = 50)
+
+Top50SNP <- rbind(HEM.LA0410, HEM.LA0480, HEM.LA1589, HEM.LA1684, HEM.LA2093, HEM.LA2176, HEM.LA2706, HEM.LA3008, HEM.LA3475, HEM.LA4345, HEM.LA4355)
+
+#plot for figure R7
 library(ggplot2)
-plot1 <- ggplot(HEM.plotdata, aes(x=Index, y=Effect))
-plot1 + geom_point(aes(color=factor(Plant)))+
-  theme_bw()
+
+#cbPalette <- c("#999999", "#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+myColors <- c("#999999", "#292929","#684800" ,"#CBA22A", "#63B2D3", "#1FA69D", "#57B761", "#DAD94C","#2B869D", "#746750", "#D2652D", "#CC79A7")
+#myColors <- c("grey20", "grey60", "grey20", "grey60", "grey20", "grey60", "grey20", "grey80", "grey20", "grey80", "grey20", "grey80", "grey20", "grey80", "grey20", "grey80")
+names(myColors) <- levels(Top50SNP$Plant)
+colScale <- scale_colour_manual(name = "Plant",values = myColors)
+
+plot1 <- ggplot(Top50SNP, aes(x=Index, y=Effect))
+jpeg("plots/paper/FigR7_largeFxPlantSNPs.jpg", width=8, height=4, units='in', res=600)
+plot1 + geom_point(aes(color=factor(Plant)), size=3, alpha=1/2)+ colScale+
+  theme_bw()+
+  scale_x_continuous(name="Chromosome", breaks = c(1677889, 5253114, 9013367, 11074212, 13595791, 17206983, 20036067, 22404724, 24429409, 26804549, 28608225, 30154184, 31914256, 34033137, 35838514, 38953687), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))
+dev.off()
  
-  write.csv(HEM.plotdata, "data/GWAS_files/04_bigRRoutput/NewModel0711/TopSNPs_alltraits_Segments.csv")
-  
-names(HEM.plotdata)
-HEM.plotdata
-#now long format : Chrom, Segment, Pos, Index, Effect, Trait
-HEM.plotdata
-  
+write.csv(Top50SNP, "results/Plants_TopSNPs_SegLong.csv")
+
+#now wide format : from Chrom, Segment, Pos, Index, Effect, Trait
+
+Top50SNP.wide.PL <- reshape(Top50SNP, 
+                         timevar = "Plant",
+                         idvar = c("Chrom","Segment","Pos","Index"),
+                         direction = "wide")
+#now: add a column for number of non-NA columns in each row
+#aka how many plants share a high-effect SNP
+names(Top50SNP.wide.PL)
+#add a column counting number of nonzero counts for plant
+Top50SNP.wide.PL$PlantPhenos <- apply(Top50SNP.wide.PL, 1, function(x) sum(!is.na(x)))
+Top50SNP.wide.PL$PlantPhenos <- (Top50SNP.wide.PL$PlantPhenos - 4)
+write.csv(Top50SNP.wide.PL, "results/Plants_TopSNPs_SegWide.csv")
+

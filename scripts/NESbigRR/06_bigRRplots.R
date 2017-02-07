@@ -136,24 +136,25 @@ colScale <- scale_colour_manual(name = "Chrom",values = myColors)
   dev.off()
 #stop [14]
 
-#start[15]
+#start[9]
 #highTR BW
-jpeg(paste("plots/MultiPlot/NewModel0711b/BW_Sl_LesionSize_MAF20_highTR_", names(HEM.plotdata[15]), ".ManhattanPlot.jpg", sep=""), width=8, height=4, units='in', res=600)
-ggplot(HEM.plotdata, aes(x=Index, y=abs(HEM.plotdata[15])))+
+  #plot 2706 as example, [9]
+jpeg(paste("plots/MultiPlot/NewModel0711b/BW_Sl_MAF20_highTR_", names(HEM.plotdata[9]), ".ManhattanPlot.jpg", sep=""), width=6.5, height=2.25, units='in', res=600)
+ggplot(HEM.plotdata, aes(x=Index, y=abs(HEM.plotdata[9])))+
   theme_bw()+
   colScale+
   geom_point(aes(color = factor(Chrom)))+
-  labs(list(y="SNP Effect Estimate", title=paste("Lesion Size on ", names(HEM.plotdata[15]))))+
+  labs(list(y="SNP Effect Estimate", title=paste("Lesion Size on ", names(HEM.plotdata[9]))))+
   guides(col = guide_legend(nrow = 8, title="Chromosome"))+
-  geom_hline(yintercept=get(paste("TH999_", names(HEM.plotdata[15]), sep=""))) +
-  geom_text(aes(0,get(paste("TH999_", names(HEM.plotdata[15]), sep="")), label =
+  geom_hline(yintercept=get(paste("TH999_", names(HEM.plotdata[9]), sep=""))) +
+  geom_text(aes(0,get(paste("TH999_", names(HEM.plotdata[9]), sep="")), label =
                   ".999 Threshold", vjust = 1.5, hjust = .05), col = "black")+
   theme(legend.position="none")+
   scale_x_continuous(name="Chromosome", breaks = c(1677889, 5253114, 9013367, 11074212, 13595791, 17206983, 20036067, 22404724, 24429409, 26804549, 28608225, 30154184, 31914256, 34033137, 35838514, 38953687), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
-  expand_limits(y=0)
+  expand_limits(y=-0.005)
 dev.off()
 
-#stop [15]
+#stop [9]
 
 #color highTR
 jpeg(paste("plots/MultiPlot/NewModel0711b/Sl_LesionSize_MAF20_highTR_", names(HEM.plotdata[13]), ".ManhattanPlot.jpg", sep=""), width=8, height=4, units='in', res=600)
@@ -189,41 +190,3 @@ for (y in 4:15){
     expand_limits(y=0)
   dev.off()
   #stop [14]
-
-#or just do them each by hand
-jpeg("plots/Sl_LesionSize_greyIntx.jpeg", width=6, height=4, units='in', res=600)
-ggplot(HEM.plotdata, aes(x=Index, y=abs(LA4345)))+
-  labs(list(y="SNP Effect Estimate", title = "Lesion Size on LA4345", x="Chromosome position"))+
-  theme_bw()+
-  geom_point(aes(color = factor(Chrom)))+
-  guides(col = guide_legend(nrow = 8, title="Chromosome"))+
-  geom_hline(yintercept=TH95_LA4345, colour = "blue") +
-  geom_text(aes(0,TH95_LA4345, label = ".95 Threshold", vjust = 1.5, hjust = .05), col = "blue")+
-  geom_hline(yintercept=TH99_LA4345) +
-  geom_text(aes(0,TH99_LA4345, label = ".99 Threshold", vjust = 1.5, hjust = .05), col = "black")
-dev.off()
-
-#geom_hline(yintercept=TH999_LA3475) +
-#  geom_text(aes(0,TH999_LA3475, label = ".999 Threshold", vjust = 1.5, hjust = .05), col = "black")
-
-jpeg("plots/Sl_LesionSize_LA0410.ManhattanPlot_999.jpg")
-qplot(Index,abs(LA0410), data=HEM.plotdata, ylab="SNP Effect Estimate" , 
-      main = "LesionSize_LA0410", colour=factor(Chrom)) +
-  geom_hline(yintercept=TH999_LA0410) +
-  geom_text(aes(0,TH999_LA0410, label = ".999 Threshold", vjust = 1.5, hjust = .05), col = "black")
-dev.off()
-
-#how many SNPs are above a certain threshhold?
-topSNP <- sum(HEM.plotdata$LA0410 >= 0.001) #41
-highSNP <- sum(HEM.plotdata$LA0410 >= TH999_LA0410) #spits out number
-totalSNP <- sum(HEM.plotdata$LA0410 >= 0)
-highSNP/totalSNP*100
-
-#rest of plots
-jpeg("plots/Sl_LesionSize_LA1547.ManhattanPlot_95.jpg")
-qplot(Index,abs(LA1547), data=HEM.plotdata, ylab="SNP Effect Estimate" , 
-      main = "LesionSize_LA1547", colour=factor(Chrom)) +
-geom_hline(yintercept=TH95_LA1547, colour = "blue") +
-  geom_text(aes(0,TH95_LA1547, label = ".95 Threshold", vjust = 1.5, hjust = .05), col = "blue")
-dev.off()
-
