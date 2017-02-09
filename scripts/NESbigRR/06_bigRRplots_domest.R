@@ -112,9 +112,9 @@ colScale <- scale_colour_manual(name = "Chrom",values = myColors)
 
 #without the loop [4]
 jpeg("plots/MultiPlot/domest/Sl_MAF20_highTR_bw_metaplot.jpg", width=8, height=4, units='in', res=600)
-ggplot(HEM.plotdata, aes(x=Index))+
+ggplot(HEM.plotdata, aes(x=Index, y=HEM.plotdata[4]))+
   theme_bw()+
-  #colScale+
+  colScale+
   labs(list(y="SNP Effect Estimate", x="Chromosome position", title=element_blank()))+
   guides(col = guide_legend(nrow = 8, title="Phenotype"))+
   
@@ -150,7 +150,7 @@ ggplot(HEM.plotdata, aes(x=Index))+
   geom_point(aes(x=Index, y=(DmWoD), color = "(D-W)/D"), alpha=1/2)+
   geom_hline(yintercept=get(paste("TH999_", names(HEM.plotdata[4]), sep=""))) +
   geom_hline(yintercept=(get(paste("TH999_", names(HEM.plotdata[4]), sep="")))*-1) +
-  geom_text(aes(-0.01,get(paste("TH999_", names(HEM.plotdata[4]), sep="")), label = ".999 Threshold", vjust = 1.5, hjust = .05), col = "black")+
+  #geom_text(aes(-0.01,get(paste("TH999_", names(HEM.plotdata[4]), sep="")), label = ".999 Threshold", vjust = 1.5, hjust = .05), col = "black")+
   scale_x_continuous(name="Chromosome", breaks = c(1677889, 5253114, 9013367, 11074212, 13595791, 17206983, 20036067, 22404724, 24429409, 26804549, 28608225, 30154184, 31914256, 34033137, 35838514, 38953687), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))
 #theme(legend.position="none")
 dev.off()

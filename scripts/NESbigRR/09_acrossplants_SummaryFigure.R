@@ -200,23 +200,23 @@ hist(SUMM.plot$Index, breaks=100)
 #create a custom color scale
 myColors <- c("grey40", "grey60", "grey40", "grey60", "grey40", "grey60", "grey40", "grey60", "grey40", "grey60", "grey40", "grey60", "grey40", "grey60", "grey40", "grey60")
 #names(myColors) <- levels(HEM.plotdata$Chrom)
+library(ggplot2)
 colScale <- scale_colour_manual(name = "Chrom",values = myColors)
 
 #make plots 
-library(ggplot2)
 #for poster figures, width=8, height=4
- jpeg("plots/MultiPlot/meta/FigR6_Summary_999Thresh_ManhattanPlot.jpg", width=6.5, height=2.25, units='in', res=600)
+ jpeg("plots/MultiPlot/meta/FigR6_Summary_999Thresh_ManhattanPlot.jpg", width=7.5, height=4.4, units='in', res=600)
 #SUMMtemp <- subset(SUMM.plot[SUMM.plot$Chrom==c(5,6),])
   ggplot(SUMM.plot, aes(x=Index, y=SUMM))+
     colScale+ #remove for rainbow plot
     theme_bw()+
 #    scale_x_continuous(breaks = ticks)+
     geom_point(aes(color = factor(Chrom)))+
-    labs(list(y="SNPs >99.9% Threshold", x="Genome position"))+
+    labs(list(y="Number of Significant SNPs Across Plants", x="Chromosome position"))+
     #nrow=8
     theme(legend.position="none")+
     guides(col = guide_legend(nrow = 8, title="Chromosome"))+
-    scale_x_continuous(name="Chromosome", breaks = c(1677889, 5253114, 9013367, 11074212, 13595791, 17206983, 20036067, 22404724, 24429409, 26804549, 28608225, 30154184, 31914256, 34033137, 35838514, 38953687), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))
+    scale_x_continuous(name="Chromosome Position", breaks = c(1677889, 5253114, 9013367, 11074212, 13595791, 17206983, 20036067, 22404724, 24429409, 26804549, 28608225, 30154184, 31914256, 34033137, 35838514, 38953687), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))
   dev.off()
   
 names(SUMM.plot)
