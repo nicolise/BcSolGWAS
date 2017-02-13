@@ -97,30 +97,31 @@ names(Threshval)
 
 SNPbin <- SNPlist
 #I'll do this with a loop over the columns later
+#fixing this to include negative values
 Thresh_1547 <- Threshval[,"LA1547"]
-SNPbin$LA1547 <- ifelse(SNPlist$LA1547 > Thresh_1547, 1, 0)
+SNPbin$LA1547 <- ifelse(abs(SNPlist$LA1547) > Thresh_1547, 1, 0)
 Thresh_1589 <- Threshval[,"LA1589"]
-SNPbin$LA1589 <- ifelse(SNPlist$LA1589 > Thresh_1589, 1, 0)
+SNPbin$LA1589 <- ifelse(abs(SNPlist$LA1589) > Thresh_1589, 1, 0)
 Thresh_1684 <- Threshval[,"LA1684"]
-SNPbin$LA1684 <- ifelse(SNPlist$LA1684 > Thresh_1684, 1, 0)
+SNPbin$LA1684 <- ifelse(abs(SNPlist$LA1684) > Thresh_1684, 1, 0)
 Thresh_2093 <- Threshval[,"LA2093"]
-SNPbin$LA2093 <- ifelse(SNPlist$LA2093 > Thresh_2093, 1, 0)
+SNPbin$LA2093 <- ifelse(abs(SNPlist$LA2093) > Thresh_2093, 1, 0)
 Thresh_2176 <- Threshval[,"LA2176"]
-SNPbin$LA2176 <- ifelse(SNPlist$LA2176 > Thresh_2176, 1, 0)
+SNPbin$LA2176 <- ifelse(abs(SNPlist$LA2176) > Thresh_2176, 1, 0)
 Thresh_2706 <- Threshval[,"LA2706"]
-SNPbin$LA2706 <- ifelse(SNPlist$LA2706 > Thresh_2706, 1, 0)
+SNPbin$LA2706 <- ifelse(abs(SNPlist$LA2706) > Thresh_2706, 1, 0)
 Thresh_3008 <- Threshval[,"LA3008"]
-SNPbin$LA3008 <- ifelse(SNPlist$LA3008 > Thresh_3008, 1, 0)
+SNPbin$LA3008 <- ifelse(abs(SNPlist$LA3008) > Thresh_3008, 1, 0)
 Thresh_3475 <- Threshval[,"LA3475"]
-SNPbin$LA3475 <- ifelse(SNPlist$LA3475 > Thresh_3475, 1, 0)
+SNPbin$LA3475 <- ifelse(abs(SNPlist$LA3475) > Thresh_3475, 1, 0)
 Thresh_410 <- Threshval[,"LA410"]
-SNPbin$LA410 <- ifelse(SNPlist$LA410 > Thresh_410, 1, 0)
+SNPbin$LA410 <- ifelse(abs(SNPlist$LA410) > Thresh_410, 1, 0)
 Thresh_4345 <- Threshval[,"LA4345"]
-SNPbin$LA4345 <- ifelse(SNPlist$LA4345 > Thresh_4345, 1, 0)
+SNPbin$LA4345 <- ifelse(abs(SNPlist$LA4345) > Thresh_4345, 1, 0)
 Thresh_4355 <- Threshval[,"LA4355"]
-SNPbin$LA4355 <- ifelse(SNPlist$LA4355 > Thresh_4355, 1, 0)
+SNPbin$LA4355 <- ifelse(abs(SNPlist$LA4355) > Thresh_4355, 1, 0)
 Thresh_480 <- Threshval[,"LA480"]
-SNPbin$LA480 <- ifelse(SNPlist$LA480 > Thresh_480, 1, 0)
+SNPbin$LA480 <- ifelse(abs(SNPlist$LA480) > Thresh_480, 1, 0)
 
 #now create a summation column
 names(SNPbin)

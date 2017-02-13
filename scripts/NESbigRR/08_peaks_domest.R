@@ -7,7 +7,7 @@ rm(list=ls())
 setwd("~/Projects/BcSolGWAS/")
 
 #Input File: Sl_DomesticationLS_MAF20.HEM.PlotFormat.csv and .Thresh.csv
-#Output File: results/Domestication_Top50SNP.csv
+#Output File: results/Domestication_TopSNPs_SegLong.csv, results/Domestication_TopSNPs_SegWide.csv
 #Plots: NONE
 ############################################################################
 
@@ -95,8 +95,7 @@ ticklim=c(min(HEM.plotdata$Index),max(HEM.plotdata$Index))
 names(HEM.plotdata)
 #All groups (4:6)
 #keep only: SNPs over 99.9% Threshold
-assign(paste("HEM.", names(HEM.plotdata[5]), sep=""), subset(HEM.plotdata, HEM.plotdata[5] > get(paste("TH999_", names(HEM.plotdata[5]), sep="")),
-                                                             select=c(Chrom,Segment,Pos,Index,5)))
+assign(paste("HEM.", names(HEM.plotdata[6]), sep=""), subset(HEM.plotdata, abs(HEM.plotdata[6]) > get(paste("TH999_", names(HEM.plotdata[6]), sep="")), select=c(Chrom,Segment,Pos,Index,6)))
 
 #then combine
 HEM.Domesticated <- rename(HEM.Domesticated, c("Domesticated" ="Effect"))
@@ -117,11 +116,11 @@ plot1 + geom_point(aes(color=factor(Trait)))+
 #make it wide format
 names(HEM.plotdata)
 #currentlylong format : Chrom, Segment, Pos, Index, Effect, Trait
-write.csv(HEM.plotdata, "results/Domestication_Top50SNP_SegLong.csv")
+write.csv(HEM.plotdata, "results/Domestication_TopSNPs_SegLong.csv")
 
 Top50SNP.wide.DM <- reshape(HEM.plotdata, 
                          timevar = "Trait",
                          idvar = c("Chrom","Segment","Pos","Index"),
                          direction = "wide")
 
-write.csv(Top50SNP.wide.DM, "results/Domestication_Top50SNP_SegWide.csv")
+write.csv(Top50SNP.wide.DM, "results/Domestication_TopSNPs_SegWide.csv")
