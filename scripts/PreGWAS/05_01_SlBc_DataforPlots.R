@@ -24,6 +24,12 @@ MDmeans <- MDmeans[order(MDmeans$Species, MDmeans$mean),]
 MDmeans$PlantNum <- c(1,2,3,4,5,6,7,8,9,10,11,12)
 #MDmeans$PlNum <- c(1,2,3,4,5,6,1,2,3,4,5,6)
 FigDat3 <- merge(FigDat3, MDmeans, by="PlGenoNm")
+
+names(MDmeans)
+MDmeans <- MDmeans[,c("PlGenoNm","PlantNum")]
+ModDat <- merge(ModDat,MDmeans, by="PlGenoNm" )
+ModDat$PlantNum <- as.numeric(ModDat$PlantNum)
+
 FigDat3 <- dplyr::select(FigDat3, Plnum = mean, matches("."))
 FigDat3$PlantNum <- as.numeric(FigDat3$PlantNum)
 library(ggplot2)

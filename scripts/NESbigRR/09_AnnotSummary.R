@@ -11,15 +11,31 @@ setwd("~/Projects/BcSolGWAS/")
 #most of these data come from 06_bigRRplots_meta.R
 
 #---------------------------------------------------------------------
-#numbers come from "data/GWAS_files/04_bigRRoutput/SNP_overlap/TopSNPs_domestONLY_wide.csv"
-install.packages("eulerr")
+Top50SNP.wide.DM <- read.csv("results/Domestication_TopSNPs_SegWide.csv")
+#this is all SNPs
+a <- table(Top50SNP.wide.DM$Cat)
+
+#domestication is first color, pale green. Wild is lilac.
+myColors <- c("#2F4F4F", "#9EFA6C", "#AB82FF")
+
+#install.packages("eulerr")
 library(eulerr)
 jpeg("plots/MultiPlot/meta/VennDia_domest.jpg", width=4, height=4, units='in', res=600)
-fit <- eulerr(c(Do=154, Wi=223, Di=378, "Do&Wi" = 76, 
-                "Di&Do" = 4, "Di&Wi" = 2, 
-                "Do&Wi&Di" = 2))
-plot(fit, fill_opacity=0.3)
-dev.off()
+fit <- eulerr(c(Do=149, Wi=263, Di=596, "Do&Wi" = 136, 
+                "Di&Do" = 3, "Di&Wi" = 25, 
+                "Do&Wi&Di" = 17))
+plot(fit, fill_opacity=0.3, fill=c("#2F4F4F", "#9EFA6C", "#AB82FF"))
+
+require(VennDiagram)
+#domesticated = 17
+venn.diagram(list(Domesticated=c(1:17,18:20,21:157,183:331), Wild=c(1:17,21:157,158:182,332:594), Sensitivity=c(1:17,18:20,158:182,595:1190)), fill_opacity=0.3, fill=c("#9EFA6C", "#AB82FF", "#2F4F4F"), cex = 2, cex.axis=2,filename="plots/PosNeg_VennSNPS.emf")
+
+#now genes only
+names(Top50SNP.wide.DM)
+
+#-------------------------------------------
+#more options
+
 #can also use venn() in gplots package
 #by gene
 jpeg("plots/MultiPlot/meta/VennDia_domest_gene.jpg", width=4, height=4, units='in', res=600)

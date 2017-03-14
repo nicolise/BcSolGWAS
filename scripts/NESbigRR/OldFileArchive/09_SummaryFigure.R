@@ -166,7 +166,7 @@ library(ggplot2)
   ggplot(SUMM.plot, aes(x=Index, y=SUMM))+
     theme_bw()+
     geom_point(aes(color = factor(Chrom)))+
-    labs(list(y="Frequency of SNPs over Threshold (99.9%)", x="Genome position"))+
+    labs(list(y="SNPs over Threshold (99.9%)", x="Genome position"))+
     guides(col = guide_legend(nrow = 8, title="Chromosome"))
   dev.off()
   

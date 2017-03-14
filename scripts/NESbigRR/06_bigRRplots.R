@@ -119,63 +119,80 @@ colScale <- scale_colour_manual(name = "Chrom",values = myColors)
   #low ones: 10, 11, 12, 14
   #high ones: 5, 6, 7, 8, 9, 13
 #done: 4, 5, 6, 7, 8, 9
-  jpeg(paste("plots/MultiPlot/NewModel0711b/BW_Sl_LesionSize_MAF20_lowTR_", names(HEM.plotdata[14]), ".ManhattanPlot.jpg", sep=""), width=8, height=4, units='in', res=600)
-  ggplot(HEM.plotdata, aes(x=Index, y=abs(HEM.plotdata[14])))+
+  jpeg(paste("plots/MultiPlot/NewModel0711b/color_Sl_LesionSize_MAF20_lowTR_", names(HEM.plotdata[7]), ".ManhattanPlot.jpg", sep=""), width=8, height=5, units='in', res=600)
+  ggplot(HEM.plotdata, aes(x=Index, y=HEM.plotdata[7]))+
     theme_bw()+
-    colScale+
+    #colScale+
     geom_point(aes(color = factor(Chrom)))+
-    labs(list(y="SNP Effect Estimate", title=paste("Lesion Size on ", names(HEM.plotdata[14]))))+
+    labs(list(y="SNP Effect Estimate", title=paste("Lesion Size on ", names(HEM.plotdata[7]))))+
     guides(col = guide_legend(nrow = 8, title="Chromosome"))+
-    geom_hline(yintercept=get(paste("TH95_", names(HEM.plotdata[14]), sep="")), colour = "black") +
-    geom_text(aes(0,get(paste("TH95_", names(HEM.plotdata[14]), sep="")), label = ".95 Threshold", vjust = 1.5, hjust = .05), col = "black")+
-   geom_hline(yintercept=get(paste("TH99_", names(HEM.plotdata[14]), sep=""))) +
-   geom_text(aes(0,get(paste("TH99_", names(HEM.plotdata[14]), sep="")), label = ".99 Threshold", vjust = 1.5, hjust = .05), col = "black")+
+    geom_hline(yintercept=get(paste("TH95_", names(HEM.plotdata[7]), sep="")), colour = "black") +
+    geom_text(aes(0,get(paste("TH95_", names(HEM.plotdata[7]), sep="")), label = ".95 Threshold", vjust = 1.5, hjust = .05), col = "black")+
+   geom_hline(yintercept=get(paste("TH99_", names(HEM.plotdata[7]), sep=""))) +
+   geom_text(aes(0,get(paste("TH99_", names(HEM.plotdata[7]), sep="")), label = ".99 Threshold", vjust = 1.5, hjust = .05), col = "black")+
     theme(legend.position="none")+
     scale_x_continuous(name="Chromosome", breaks = c(1677889, 5253114, 9013367, 11074212, 13595791, 17206983, 20036067, 22404724, 24429409, 26804549, 28608225, 30154184, 31914256, 34033137, 35838514, 38953687), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
     expand_limits(y=0)
   dev.off()
-#stop [14]
+#stop [7]
 
 #start[9]
 #highTR BW
   #plot 2706 as example, [9]
-jpeg(paste("plots/MultiPlot/NewModel0711b/BW_Sl_MAF20_highTR_", names(HEM.plotdata[9]), ".ManhattanPlot.jpg", sep=""), width=6.5, height=2.25, units='in', res=600)
+  #with labeling removed for paper
+jpeg(paste("paper/plots/ActualPaper/FigR5/Routs/pm_BW_Sl_MAF20_highTR_", names(HEM.plotdata[9]), ".ManhattanPlot.jpg", sep=""), width=7.5, height=4, units='in', res=600)
+ggplot(HEM.plotdata, aes(x=Index, y=HEM.plotdata[9]))+
+  theme_bw()+
+  colScale+
+  geom_point(aes(color = factor(Chrom)))+
+ #labs(list(y="SNP Effect Estimate", title=paste("Lesion Size on ", names(HEM.plotdata[9]))))+
+  labs(list(y="SNP Effect Estimate"))+
+  guides(col = guide_legend(nrow = 8, title="Chromosome"))+
+  geom_hline(yintercept=get(paste("TH999_", names(HEM.plotdata[9]), sep=""))) +
+  geom_hline(yintercept=(-1*(get(paste("TH999_", names(HEM.plotdata[9]), sep=""))))) +
+  theme(legend.position="none")+
+  scale_x_continuous(name="Chromosome", breaks = c(1677889, 5253114, 9013367, 11074212, 13595791, 17206983, 20036067, 22404724, 24429409, 26804549, 28608225, 30154184, 31914256, 34033137, 35838514, 38953687), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
+  expand_limits(y=-0.005)
+dev.off()
+
+jpeg(paste("plots/MultiPlot/NewModel0711b/BW_Sl_MAF20_highTR_", names(HEM.plotdata[9]), ".ManhattanPlot.jpg", sep=""), width=7.5, height=4, units='in', res=600)
 ggplot(HEM.plotdata, aes(x=Index, y=abs(HEM.plotdata[9])))+
   theme_bw()+
   colScale+
   geom_point(aes(color = factor(Chrom)))+
-  labs(list(y="SNP Effect Estimate", title=paste("Lesion Size on ", names(HEM.plotdata[9]))))+
-  guides(col = guide_legend(nrow = 8, title="Chromosome"))+
-  geom_hline(yintercept=get(paste("TH999_", names(HEM.plotdata[9]), sep=""))) +
-  geom_text(aes(0,get(paste("TH999_", names(HEM.plotdata[9]), sep="")), label =
-                  ".999 Threshold", vjust = 1.5, hjust = .05), col = "black")+
+  labs(list(y="SNP Effect Estimate", title=element_blank()))+
+  guides(col = guide_legend(nrow = 8, title=element_blank()))+
+  geom_hline(yintercept=get(paste("TH999_", names(HEM.plotdata[9]), sep="")))+
   theme(legend.position="none")+
-  scale_x_continuous(name="Chromosome", breaks = c(1677889, 5253114, 9013367, 11074212, 13595791, 17206983, 20036067, 22404724, 24429409, 26804549, 28608225, 30154184, 31914256, 34033137, 35838514, 38953687), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
+  scale_x_continuous(name=element_blank(), breaks = c(1677889, 5253114, 9013367, 11074212, 13595791, 17206983, 20036067, 22404724, 24429409, 26804549, 28608225, 30154184, 31914256, 34033137, 35838514, 38953687), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
   expand_limits(y=-0.005)
 dev.off()
 
 #stop [9]
 
 #color highTR
-jpeg(paste("plots/MultiPlot/NewModel0711b/Sl_LesionSize_MAF20_highTR_", names(HEM.plotdata[13]), ".ManhattanPlot.jpg", sep=""), width=8, height=4, units='in', res=600)
-ggplot(HEM.plotdata, aes(x=Index, y=abs(HEM.plotdata[13])))+
+jpeg(paste("plots/MultiPlot/NewModel0711b/color_Sl_LesionSize_MAF20_highTR_", names(HEM.plotdata[9]), ".ManhattanPlot.jpg", sep=""), width=8, height=4, units='in', res=600)
+ggplot(HEM.plotdata, aes(x=Index, y=HEM.plotdata[9]))+
   theme_bw()+
-  colScale+
   geom_point(aes(color = factor(Chrom)))+
-  labs(list(y="SNP Effect Estimate", x="Chromosome position", title=paste("Lesion Size on ", names(HEM.plotdata[13]))))+
+  labs(list(y="SNP Effect Estimate", x="Chromosome position", title=paste("Lesion Size on ", names(HEM.plotdata[9]))))+
   guides(col = guide_legend(nrow = 8, title="Chromosome"))+
-  geom_hline(yintercept=get(paste("TH999_", names(HEM.plotdata[13]), sep=""))) +
-  geom_text(aes(0,get(paste("TH999_", names(HEM.plotdata[13]), sep="")), label =
+  geom_hline(yintercept=get(paste("TH999_", names(HEM.plotdata[9]), sep=""))) +
+  geom_hline(yintercept=-0.0004520958)+
+  geom_text(aes(0,get(paste("TH999_", names(HEM.plotdata[9]), sep="")), label =
   ".999 Threshold", vjust = 1.5, hjust = .05), col = "black")+
+  theme(legend.position="none")+
+  scale_x_continuous(name=element_blank(), breaks = c(1677889, 5253114, 9013367, 11074212, 13595791, 17206983, 20036067, 22404724, 24429409, 26804549, 28608225, 30154184, 31914256, 34033137, 35838514, 38953687), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
   expand_limits(y=-0.001)
 dev.off()
-}
+
 #stop [3]
 
 #color lowTR
 #without the loop
 for (y in 4:15){
   #start [14]
+  
   jpeg(paste("plots/MultiPlot/NewModel0711b/Sl_LesionSize_MAF20_lowTR_", names(HEM.plotdata[14]), ".ManhattanPlot.jpg", sep=""), width=8, height=4, units='in', res=600)
   ggplot(HEM.plotdata, aes(x=Index, y=abs(HEM.plotdata[14])))+
     theme_bw()+

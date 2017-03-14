@@ -8,7 +8,7 @@ setwd("~/Projects/BcSolGWAS/")
 
 #Input file: Sl_LesionSize_MAF20.HEM.PlotFormat.csv AND Sl_LesionSize_MAF20.HEM.Thresh.csv
 #Output file: results/Plants_TopSNPs_SegLong.csv, results/Plants_TopSNPs_SegWide.csv
-#Plots: FigR7_LargeFxPlantSNPs.csv
+#Plots: paper/plots/ActualPaper/FigR6_largeFxPlantSNPs.jpg
 
 ############################################################################
 ###Plotting the HEM results
@@ -108,9 +108,9 @@ HEM.LA0410 <- subset(HEM.plotdata, abs(LA410) > get(paste("TH999_", "LA410", sep
                      select=c(Chrom,Segment, Pos, Index, LA410))
 HEM.LA0410 <- rename(HEM.LA0410, c("LA410" = "Effect"))
 HEM.LA0410$Plant <- "LA0410"
+HEM.LA0410 <- head(arrange(HEM.LA0410,desc(abs(Effect))), n = 50)
 max(HEM.LA0410$Effect)
 min(HEM.LA0410$Effect)
-HEM.LA0410 <- head(arrange(HEM.LA0410,desc(abs(Effect))), n = 50)
 
 #LA0480: 0.999
 HEM.LA0480 <- subset(HEM.plotdata, abs(LA480) > get(paste("TH999_", "LA480", sep="")), 
@@ -118,73 +118,95 @@ HEM.LA0480 <- subset(HEM.plotdata, abs(LA480) > get(paste("TH999_", "LA480", sep
 HEM.LA0480 <- rename(HEM.LA0480, c("LA480" = "Effect"))
 HEM.LA0480$Plant <- "LA0480"
 HEM.LA0480 <- head(arrange(HEM.LA0480,desc(abs(Effect))), n = 50)
+max(HEM.LA0480$Effect)
+min(HEM.LA0480$Effect)
 
 #LA1547 has none > 0.95
 
 #LA1589: 0.999
-HEM.LA1589 <- subset(HEM.plotdata, LA1589 > get(paste("TH999_", "LA1589", sep="")), 
+HEM.LA1589 <- subset(HEM.plotdata, abs(LA1589) > get(paste("TH999_", "LA1589", sep="")), 
                      select=c(Chrom,Segment,Pos,Index,LA1589))
 HEM.LA1589 <- rename(HEM.LA1589, c("LA1589" = "Effect"))
 HEM.LA1589$Plant <- "LA1589"
 HEM.LA1589 <- head(arrange(HEM.LA1589,desc(abs(Effect))), n = 50)
+max(HEM.LA1589$Effect)
+min(HEM.LA1589$Effect)
 
 #LA1684: 0.999
-HEM.LA1684 <- subset(HEM.plotdata, LA1684 > get(paste("TH999_", "LA1684", sep="")), 
+HEM.LA1684 <- subset(HEM.plotdata, abs(LA1684) > get(paste("TH999_", "LA1684", sep="")), 
                      select=c(Chrom,Segment,Pos,Index,LA1684))
 HEM.LA1684 <- rename(HEM.LA1684, c("LA1684" = "Effect"))
 HEM.LA1684$Plant <- "LA1684"
 HEM.LA1684 <- head(arrange(HEM.LA1684,desc(abs(Effect))), n = 50)
+max(HEM.LA1684$Effect)
+min(HEM.LA1684$Effect)
 
 #LA2093: 0.999
-HEM.LA2093 <- subset(HEM.plotdata, LA2093 > get(paste("TH999_", "LA2093", sep="")), 
+HEM.LA2093 <- subset(HEM.plotdata, abs(LA2093) > get(paste("TH999_", "LA2093", sep="")), 
                      select=c(Chrom,Segment,Pos,Index,LA2093))
 HEM.LA2093 <- rename(HEM.LA2093, c("LA2093" = "Effect"))
 HEM.LA2093$Plant <- "LA2093"
 HEM.LA2093 <- head(arrange(HEM.LA2093,desc(abs(Effect))), n = 50)
+max(HEM.LA2093$Effect)
+min(HEM.LA2093$Effect)
 
 #LA2176: 0.999
-HEM.LA2176 <- subset(HEM.plotdata, LA2176 > get(paste("TH999_", "LA2176", sep="")), 
+HEM.LA2176 <- subset(HEM.plotdata, abs(LA2176) > get(paste("TH999_", "LA2176", sep="")), 
                      select=c(Chrom,Segment,Pos,Index,LA2176))
 HEM.LA2176 <- rename(HEM.LA2176, c("LA2176" = "Effect"))
 HEM.LA2176$Plant <- "LA2176"
 HEM.LA2176 <- head(arrange(HEM.LA2176,desc(abs(Effect))), n = 50)
+max(HEM.LA2176$Effect)
+min(HEM.LA2176$Effect)
 
 #LA2706: 0.999
-HEM.LA2706 <- subset(HEM.plotdata, LA2706 > get(paste("TH999_", "LA2706", sep="")), 
+HEM.LA2706 <- subset(HEM.plotdata, abs(LA2706) > get(paste("TH999_", "LA2706", sep="")), 
                      select=c(Chrom,Segment,Pos,Index,LA2706))
 HEM.LA2706 <- rename(HEM.LA2706, c("LA2706" = "Effect"))
 HEM.LA2706$Plant <- "LA2706"
 HEM.LA2706 <- head(arrange(HEM.LA2706,desc(abs(Effect))), n = 50)
+max(HEM.LA2706$Effect)
+min(HEM.LA2706$Effect)
 
 #LA3008: 0.99 !! or 0.95 to actually get 50 (only 15 > 0.99)
-HEM.LA3008 <- subset(HEM.plotdata, LA3008 > get(paste("TH95_", "LA3008", sep="")),
+HEM.LA3008 <- subset(HEM.plotdata, abs(LA3008) > get(paste("TH95_", "LA3008", sep="")),
                      select=c(Chrom,Segment,Pos,Index,LA3008))
 HEM.LA3008 <- rename(HEM.LA3008, c("LA3008" = "Effect"))
 HEM.LA3008$Plant <- "LA3008"
 HEM.LA3008 <- head(arrange(HEM.LA3008,desc(abs(Effect))), n = 50)
+max(HEM.LA3008$Effect)
+min(HEM.LA3008$Effect)
 
 #LA3475: 0.95
-HEM.LA3475 <- subset(HEM.plotdata, LA3475 > get(paste("TH95_", "LA3475", sep="")),
+HEM.LA3475 <- subset(HEM.plotdata, abs(LA3475) > get(paste("TH95_", "LA3475", sep="")),
                      select=c(Chrom,Segment,Pos,Index,LA3475))
 HEM.LA3475 <- rename(HEM.LA3475, c("LA3475" = "Effect"))
 HEM.LA3475$Plant <- "LA3475"
 HEM.LA3475 <- head(arrange(HEM.LA3475,desc(abs(Effect))), n = 50)
+max(HEM.LA3475$Effect)
+min(HEM.LA3475$Effect)
 
 #LA4345: 0.999
-HEM.LA4345 <- subset(HEM.plotdata, LA4345 > get(paste("TH999_", "LA4345", sep="")), 
+HEM.LA4345 <- subset(HEM.plotdata, abs(LA4345) > get(paste("TH999_", "LA4345", sep="")), 
                      select=c(Chrom,Segment,Pos,Index,LA4345))
 HEM.LA4345 <- rename(HEM.LA4345, c("LA4345" = "Effect"))
 HEM.LA4345$Plant <- "LA4345"
 HEM.LA4345 <- head(arrange(HEM.LA4345,desc(abs(Effect))), n = 50)
+max(HEM.LA4345$Effect)
+min(HEM.LA4345$Effect)
 
 #LA4355: 0.99 !! or 0.95 to actually get 50. Only 1 SNP > 0.99
-HEM.LA4355 <- subset(HEM.plotdata, LA4355 > get(paste("TH95_", "LA4355", sep="")), 
+HEM.LA4355 <- subset(HEM.plotdata, abs(LA4355) > get(paste("TH95_", "LA4355", sep="")), 
                      select=c(Chrom,Segment,Pos,Index,LA4355))
 HEM.LA4355 <- rename(HEM.LA4355, c("LA4355" = "Effect"))
 HEM.LA4355$Plant <- "LA4355"
 HEM.LA4355 <- head(arrange(HEM.LA4355,desc(abs(Effect))), n = 50)
+max(HEM.LA4355$Effect)
+min(HEM.LA4355$Effect)
 
 Top50SNP <- rbind(HEM.LA0410, HEM.LA0480, HEM.LA1589, HEM.LA1684, HEM.LA2093, HEM.LA2176, HEM.LA2706, HEM.LA3008, HEM.LA3475, HEM.LA4345, HEM.LA4355)
+max(HEM.LA0480$Effect)
+min(HEM.LA0480$Effect)
 
 #plot for figure R7
 library(ggplot2)
@@ -197,9 +219,11 @@ names(myColors) <- levels(Top50SNP$Plant)
 colScale <- scale_colour_manual(name = "Plant",values = myColors)
 
 plot1 <- ggplot(Top50SNP, aes(x=Index, y=Effect))
-jpeg("plots/paper/FigR7_largeFxPlantSNPs.jpg", width=8, height=4, units='in', res=600)
+jpeg("paper/plots/ActualPaper/FigR6_largeFxPlantSNPs.jpg", width=8, height=4, units='in', res=600)
 plot1 + geom_point(aes(color=factor(Plant)), size=3, alpha=3/4)+ colScale+
   theme_bw()+
+  theme(legend.title=element_blank())+
+  scale_y_continuous(name="SNP Effect Estimate")+
   scale_x_continuous(name="Chromosome", breaks = c(1677889, 5253114, 9013367, 11074212, 13595791, 17206983, 20036067, 22404724, 24429409, 26804549, 28608225, 30154184, 31914256, 34033137, 35838514, 38953687), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))
 dev.off()
  
