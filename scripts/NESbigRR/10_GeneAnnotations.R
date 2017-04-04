@@ -58,11 +58,12 @@ library(ggplot2)
 duplicated(PlSNP$Gene) #none, so fine.
 m <- ggplot(PlSNP, aes(x=TotTraits))
 
-jpeg("paper/plots/ActualPaper/FigR7/Routs/FigR7c_genehist.jpg", width=3, height=4, units='in', res=600)
-jpeg("plots/poster/FigR7c_genehist.jpg", width=6, height=4, units='in', res=600)
-m + geom_bar(color="dodgerblue4", fill="dodgerblue4")+
+jpeg("paper/plots/ActualPaper/FigR7/Routs/FigR7c_genehist_w.jpg", width=7, height=4, units='in', res=600)
+#jpeg("plots/poster/FigR7c_genehist.jpg", width=6, height=4, units='in', res=600)
+m + geom_bar(color="grey20")+
+  #geom_bar(color="dodgerblue4", fill="dodgerblue4")+
   theme_bw()+
-  scale_x_continuous(name="Plants with Significant SNPs", breaks=1:8)+
+  scale_x_continuous(name="Plant Genotypes per Candidate Gene", breaks=1:8)+
   scale_y_continuous(name="Number of Genes", breaks=c(0,20,40,60,80,100))
 dev.off()
 

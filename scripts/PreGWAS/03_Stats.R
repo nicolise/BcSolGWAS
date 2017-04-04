@@ -64,6 +64,13 @@ ModDat.cv <- ddply(ModDat, c("PlGenoNm", "Species"), summarise,
 dbottle <- lm(Scale.LS ~ Igeno * Species, data=ModDat)
 anova(dbottle)
 summary(anova(dbottle))
+#test for homogeneity of variances 
+names(ModDat)
+ModDat.vt <- ddply(ModDat, c("Igeno", "Species"), summarise, 
+                   mLS = mean(Scale.LS))
+ModDat.vt.D <- ModDat.vt[ModDat.vt$Species=="Dm",]
+ModDat.vt.W <- ModDat.vt[ModDat.vt$Species=="Wl",]
+var.test(ModDat.vt.D$mLS, ModDat.vt.W$mLS)
 library(car)
 leveneTest(Scale.LS ~ Species, data=ModDat)
 leveneTest(Scale.LS ~ Igeno * Species, data=ModDat)

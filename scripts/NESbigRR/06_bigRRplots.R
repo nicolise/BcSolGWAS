@@ -109,6 +109,9 @@ colScale <- scale_colour_manual(name = "Chrom",values = myColors)
 #get midpoint positions per chromosome
 ((max(HEM.plotdata[ which(HEM.plotdata$Chrom=='16'),]$Index) - min(HEM.plotdata[ which(HEM.plotdata$Chrom=='16'),]$Index))/2+min(HEM.plotdata[ which(HEM.plotdata$Chrom=='16'),]$Index))
 
+#get length per chromosome segment
+max(HEM.plotdata[which(HEM.plotdata$Chrom.Seg.F=='16.7'),]$Index) - min(HEM.plotdata[which(HEM.plotdata$Chrom.Seg.F=='16.7'),]$Index)
+
 #c(1677889, 5253114, 9013367, 11074212, 13595791, 17206983, 20036067, 22404724, 24429409, 26804549, 28608225, 30154184, 31914256, 34033137, 35838514, 38953687)
 
 #greyscale version

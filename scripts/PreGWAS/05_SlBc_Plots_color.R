@@ -246,6 +246,14 @@ tiff("plots/poster/Sl_LesionSize_SPintx.tif", width=6, height=3, units='in', res
 p0
 dev.off()
 
+#species effects
+names(FigDat3)
+unique(FigDat3$SpFxFIX)
+FigDatSP <- FigDat3[FigDat3$SpFxFIX=="a",]
+tapply(FigDatSP$mLS~FigDatSP$Igeno)
+aggregate(FigDatSP[, c("Igeno", "mLS")], list(FigDatSP$Igeno), mean)
+aggregate(mLS~Species.x+Igeno, FigDatSP, mean )
+
 p9 <- ggplot(FigDat3, aes(x = Plant.Lab.Ord, y = mLS))+
   theme_bw()+
   #order: all, b05.10, high10, low10
