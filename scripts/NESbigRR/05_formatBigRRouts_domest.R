@@ -3,32 +3,21 @@
 
 #--------------------------------------------------------
 rm(list=ls())
+library(tidyr)
 #setwd("~/Documents/GitRepos/BcSolGWAS/data/SNP_files")
-setwd("~/Projects/BcSolGWAS/data/GWAS_files/04_bigRRoutput")
+setwd("~/Projects/BcSolGWAS/data/GWAS_files/04_bigRRoutput/trueMAF/")
 #Import data
 #reorganize file Sl_LesionSize.HEM.csv
-HEMdat <- read.csv("domestication/Sl_DomesticationLS_MAF20.HEM.csv")
+HEMdat <- read.csv("SlBc_domest_trueMAF20.HEM.csv")
 
 #first remove first 4 rows (threshold data)
-HEMthresh <- HEMdat[1:4,]
-HEMdat <- HEMdat[-c(1:4),]
+HEMdat <- HEMdat[,-c(1)]
+HEMthresh <- HEMdat[1:8,]
+HEMdat <- HEMdat[-c(1:8),]
 HEMdat2 <- HEMdat
 
-#RF-Basically it has two columns containing Chrom and pos separately instead of just one column with eg "III.57894". This is easiest to do with code below:
-library(tidyr)
+#split chromosome and segment
 names(HEMdat)
-
-#my problem: some are formatted as Chromosome1.252
-#others are formatted as Chromosome1.1.252
-
-#this bit does not work
-#grx <- glob2rx("Chromosome*.*.*")
-#HEMsub <- HEMdat2[grep(grx, HEMdat2$X.1),]
-#HEMpractice2 <- HEMpractice
-
-#first, need to change Chromosome1.number to Chromosome1.0.number etc.
-
-#I'll change everything to 1.0.(1.)number
 unique(HEMdat$X.1)
 
 HEMdat$X.1 <- gsub(pattern = "Chromosome1\\.", replacement = "Chromosome1.0.", HEMdat$X.1)
@@ -97,6 +86,6 @@ HEMdat2 <- separate (HEMdat, X.1, into = c("Chrom", "Segment", "Pos") )
 unique(HEMdat2$Chrom)
 unique(HEMdat2$Segment)
 
-write.csv(HEMdat2, "domestication/Sl_DomesticationLS_MAF20.HEM.PlotFormat.csv") 
-write.csv(HEMthresh, "domestication//Sl_DomesticationLS_MAF20.HEM.Thresh.csv")
+write.csv(HEMdat2, "SlBc_domest_trueMAF20.HEM.PlotFormat.csv") 
+write.csv(HEMthresh, "SlBc_domest_trueMAF20.HEM.Thresh.csv")
 #read in to 06_plots
