@@ -10,11 +10,9 @@ library(plyr); library(tidyr); library(ggplot2)
 #setwd("~/Documents/GitRepos/BcSolGWAS/")
 setwd("~/Projects/BcSolGWAS/")
 #read in MAF20 SNPs file
-SolSNPs <- read.csv("data/GWAS_files/03_bigRRinput/binSNP_bigRR_MAF20hp_Sol.csv")
+SolSNPs <- read.csv("data/genome/SNPs/SNPdat/hp_binaryMAF20.csv")
 #make dataframe with 1 observation (sum of SNPs) per kb
 SolSNPs$Pos <- as.character(SolSNPs$POS)#ensure that position data is not in scientific notation
-SolSNPs <- SolSNPs[-c(1,3)]
-names(SolSNPs)
 
 #unique(SolSNPs$X.CHROM)
 SolSNPs$X.CHROM <- gsub(pattern = "Chromosome1$", replacement = "Chromosome1.0", SolSNPs$X.CHROM)
@@ -101,32 +99,41 @@ names(SolSNPs)
 #keep only: SNPs over 99.9% Threshold
 #assign(paste("HEM.", names(SolSNPs[6]), sep=""), subset(SolSNPs, abs(SolSNPs[6]) > get(paste("TH999_", names(SolSNPs[6]), sep="")), select=c(Chrom,Segment,Pos,Index,6)))
 names(SolSNPs)
-SolSNPs$Count <- rowSums(SolSNPs[4:96])
-table(SolSNPs$Count)
-hist(SolSNPs$Count)
+SolSNPs$Count1 <- rowSums(SolSNPs[,4:96]=="1")
+SolSNPs$Count0 <- rowSums(SolSNPs[,4:96]=="0")
+SolSNPs$CountNA <- rowSums(apply(is.na(SolSNPs[,4:96]), 2, as.numeric))
+table(SolSNPs$Count1)
+hist(SolSNPs$Count1)
 SolSNPs$Freq <- (SolSNPs$Count)/91
 hist(SolSNPs$Freq)
 SolSNPs$MAF <- ifelse(SolSNPs$Freq > 0.5, 1-SolSNPs$Freq, SolSNPs$Freq) 
 hist(SolSNPs$MAF)
-#dataframe$periodframe <- ifelse(dataframe$year > 1991,"post-1991", "pre-1991")
 
-#check if removing sites with missing data fixes the MAF problem
-
-jpeg(paste("plots/MultiPlot/NewModel0711b/color_Sl_LesionSize_MAF20_highTR_", names(HEM.plotdata[9]), ".ManhattanPlot.jpg", sep=""), width=8, height=4, units='in', res=600)
 ggplot(SolSNPs, aes(x=Index, y=Freq))+
   scale_y_continuous(limits = c(0,1.1))+
   theme_bw()+
-  geom_point(aes(color = factor(Chromosome)), alpha=0.2)+
-  labs(list(y="SNP Frequency", x="Chromosome position", title=paste("Lesion Size on ", names(HEM.plotdata[9]))))+
-  guides(col = guide_legend(nrow = 8, title="Chromosome"))+
-  geom_hline(yintercept=get(paste("TH999_", names(HEM.plotdata[9]), sep=""))) +
-  geom_hline(yintercept=-0.0004520958)+
-  geom_text(aes(0,get(paste("TH999_", names(HEM.plotdata[9]), sep="")), label =
-                  ".999 Threshold", vjust = 1.5, hjust = .05), col = "black")+
-  theme(legend.position="none")+
-  scale_x_continuous(name=element_blank(), breaks = c(1677889, 5253114, 9013367, 11074212, 13595791, 17206983, 20036067, 22404724, 24429409, 26804549, 28608225, 30154184, 31914256, 34033137, 35838514, 38953687), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
-  expand_limits(y=-0.001)
-dev.off()
+  geom_point(aes(color = factor(Chromosome)), alpha=0.2)
+
+#part 2: check if removing sites with missing data fixes the MAF problem
+#remove rows with 
+
+
+#extra shit
+#jpeg(paste("plots/MultiPlot/NewModel0711b/color_Sl_LesionSize_MAF20_highTR_", names(HEM.plotdata[9]), ".ManhattanPlot.jpg", sep=""), width=8, height=4, units='in', res=600)
+ggplot(SolSNPs, aes(x=Index, y=Freq))+
+  scale_y_continuous(limits = c(0,1.1))+
+  theme_bw()+
+  geom_point(aes(color = factor(Chromosome)), alpha=0.2)
+#   labs(list(y="SNP Frequency", x="Chromosome position", title=paste("Lesion Size on ", names(HEM.plotdata[9]))))+
+#   guides(col = guide_legend(nrow = 8, title="Chromosome"))+
+#   geom_hline(yintercept=get(paste("TH999_", names(HEM.plotdata[9]), sep=""))) +
+#   geom_hline(yintercept=-0.0004520958)+
+#   geom_text(aes(0,get(paste("TH999_", names(HEM.plotdata[9]), sep="")), label =
+#                   ".999 Threshold", vjust = 1.5, hjust = .05), col = "black")+
+#   theme(legend.position="none")+
+#   scale_x_continuous(name=element_blank(), breaks = c(1677889, 5253114, 9013367, 11074212, 13595791, 17206983, 20036067, 22404724, 24429409, 26804549, 28608225, 30154184, 31914256, 34033137, 35838514, 38953687), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
+#   expand_limits(y=-0.001)
+# dev.off()
 
 SummDat <- ddply(ModDat, c("PlGenoNm", "Igeno", "Species", "ExpBlock"), summarise,
                  mLS   = mean(Scale.LS),
