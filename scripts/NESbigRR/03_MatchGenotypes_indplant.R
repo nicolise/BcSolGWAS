@@ -15,7 +15,7 @@ SNPs_rename <- SNPs
 SNPnames <- read.csv("02_csvPrep/Key_SNPnames.csv")
 SNPnames <- SNPnames[c(2,4)]
 #Phenos <- read.csv("LSMforbigRR_est_Xnames.csv")
-Phenos <- read.csv("02_csvPrep/phenos/Domestication/BcSl_lsmeans_domest_forbigRR.csv")
+Phenos <- read.csv("02_csvPrep/phenos/NewModel0711/BcSl_lsmeans_forbigRR.csv")
 
 #change names from genotype file to match phenotype file
 #File SNPs_rename has columns of isolate genotypes that I want to rename
@@ -49,8 +49,8 @@ SNPMatch2 <- SNPMatch2[,-9]
 PhenoMatch2 <- PhenoMatch[order(PhenoMatch$Igeno),] 
 
 #save them files
-write.csv(SNPMatch2, "03_bigRRinput/Domestication/binSNP_bigRR_MAF20hp_trueMAF.csv")
-write.csv(PhenoMatch2, "03_bigRRinput/Domestication/Sl_Pheno_bigRR_MAF20_trueMAF.csv")
+write.csv(SNPMatch2, "03_bigRRinput/NewModel0711/binSNP_bigRR_MAF20hp_trueMAF.csv")
+write.csv(PhenoMatch2, "03_bigRRinput/NewModel0711/Sl_Pheno_bigRR_MAF20_trueMAF.csv")
 #------------------------------------------------------------------------------
 #extra things
 #miniSNPs <- as.data.frame(t(miniSNPs))
