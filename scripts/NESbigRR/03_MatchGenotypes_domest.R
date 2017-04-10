@@ -5,7 +5,7 @@
 rm(list=ls())
 setwd("~/Documents/GitRepos/BcSolGWAS/data/GWAS_files")
 #for laptop setwd("~/Projects/BcSolGWAS/data/genome")
-SNPs <- read.csv("02_csvPrep/hp_binaryMAF20_trueMAF.csv", row.names = 1)
+SNPs <- read.csv("02_csvPrep/hp_binaryMAF20_trueMAF_10NA.csv", row.names = 1)
 #SNPs <- read.csv("miniSNP_practice.csv") 
 #SNPsDF <- SNPs
 #SNPsDF <- SNPsDF[c(1:2),]
@@ -49,8 +49,8 @@ SNPMatch2 <- SNPMatch2[,-9]
 PhenoMatch2 <- PhenoMatch[order(PhenoMatch$Igeno),] 
 
 #save them files
-write.csv(SNPMatch2, "03_bigRRinput/Domestication/binSNP_bigRR_MAF20hp_trueMAF.csv")
-write.csv(PhenoMatch2, "03_bigRRinput/Domestication/Sl_Pheno_bigRR_MAF20_trueMAF.csv")
+write.csv(SNPMatch2, "03_bigRRinput/Domestication/binSNP_bigRR_MAF20hp_trueMAF_10NA.csv")
+write.csv(PhenoMatch2, "03_bigRRinput/Domestication/Sl_Pheno_bigRR_MAF20_trueMAF_10NA.csv")
 #------------------------------------------------------------------------------
 #extra things
 #miniSNPs <- as.data.frame(t(miniSNPs))

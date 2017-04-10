@@ -50,7 +50,7 @@ mySNPs[mySNPs=="G/G"]<-"G"
 # mySNPs[mySNPs=="T/C"]<-"NA"
 # mySNPs[mySNPs=="T/G"]<-"NA"
 # mySNPs[mySNPs=="./."]<-"NA"
-mySNPs[mySNPs=="."]<-"NA"
+mySNPs[mySNPs=="."]<-NA #this is a true NA
 allSNPs<- mySNPs
 
 #unlist(unique(mySNPs$X305))
@@ -70,4 +70,4 @@ for (i in names(mySNPs[4:100])) {
 }
 
 write.csv(allSNPs, "02_csvPrep/hp_charMAF5.csv")
-write.csv(mySNPs, "02_csvPrep/hp_binaryMAF5.csv")
+write.csv(mySNPs, "02_csvPrep/hp_binaryMAF20.csv")
