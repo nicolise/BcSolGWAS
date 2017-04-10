@@ -1,9 +1,9 @@
 #Nicole E Soltis
 #02242017
-#summarize gene annotation files
 #10_GeneAnnotations.R
-#and venn diagrams
 
+#Goal: summarize gene annotation files and draw venn diagrams
+#Input Files: Domestication_TopSNPs_SegLong_annot.csv, Plants_TopSNPs_SegLong_0224_annotated.csv
 #------------------------------------------------------
 rm(list=ls())
 setwd("~/Projects/BcSolGWAS")

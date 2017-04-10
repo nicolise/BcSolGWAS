@@ -9,6 +9,7 @@ setwd("~/Projects/BcSolGWAS/")
 #Input file: Sl_DomesticationLS_MAF20.HEM.PlotFormat.csv AND Sl_DomesticationLS_MAF20.HEM.Thresh.csv
 #Output file: NONE
 #Plots: Basic and greyscale domestication Manhattan plots
+#go to script 09_bigRR_meta for domestication color plot (fig R8)
 ###########################################################################
 #Plotting the HEM results
 

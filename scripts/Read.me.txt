@@ -1,0 +1,17 @@
+README for BcSolGWAS scripts
+
+preGWAS: phenotype analysis
+
+NESbigRR: bigRR run and downstream analysis
+
+08_peaks_domest:
+#Goal: get top SNPs list for domestication
+#Input File: Sl_DomesticationLS_MAF20.HEM.PlotFormat.csv and .Thresh.csv
+#Output File: results/Domestication_TopSNPs_SegLong.csv, results/Domestication_TopSNPs_SegWide.csv
+#this goes into gene annotation and then venn diagrams
+#Plots: NONE
+
+09_bigRRplots_meta: 
+#Goal: draw 2 plots using multiple phenotypes
+#Plots: Sl_LesionSize_MAF20_meta.ManhattanPlot.jpg AKA the Manhattan plot with Phenotypes > threshold for Domestication phenos vs. Single geno phenos vs. Both
+#AND FigR8_Sl_LesionSize_MAF20_Domestmeta.ManhattanPlot.jpg AKA the Manhattan plot with DmWoD vs. Domesticated vs. Wild 

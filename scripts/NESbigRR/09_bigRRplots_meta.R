@@ -9,17 +9,16 @@ setwd("~/Projects/BcSolGWAS/")
 #Input files: 
 #Output files: 
 #Plots: Sl_LesionSize_MAF20_meta.ManhattanPlot.jpg AKA the Manhattan plot with Phenotypes > threshold for Domestication phenos vs. Single geno phenos vs. Both
-#AND FigR8_Sl_LesionSize_MAF20_Domestmeta.ManhattanPlot.jpg AKA the Manhattan plot with DmWoD vs. Domesticated vs. Wild
+#AND FigR8_Sl_LesionSize_MAF20_Domestmeta.ManhattanPlot.jpg AKA the Manhattan plot with DmWoD vs. Domesticated vs. Wild 
 ###########################################################################
 #For Plant/ Domest plot
 #these source files have all been revised to include positive AND NEGATIVE effect SNPs
 Top50SNP.wide.PL <- read.csv("results/Plants_TopSNPs_SegWide.csv")
 #combine plant with domestication data
 #easiest: take wide data for plant. take wide data for domestication. Omit effects: we only need a count of phenotypes per level.
-Top50SNP.wide.DM <- read.csv("results/Domestication_TopSNPs_SegWide.csv")
+Top50SNP.wide.DM <- read.csv("results/Domestication_TopSNPs_SegWide_trueMAF.csv")
 #remove X column
 Top50SNP.wide.DM <- Top50SNP.wide.DM[,2:8]
-names(Top50SNP.wide.DM)
 #count the number of phenotypes
 Top50SNP.wide.DM$PlantPhenos <- apply(Top50SNP.wide.DM, 1, function(x) sum(!is.na(x)))
 Top50SNP.wide.DM$PlantPhenos <- (Top50SNP.wide.DM$PlantPhenos - 4)
@@ -43,7 +42,7 @@ Top50SNP.all.w$PlantPhenos.Both <- (Top50SNP.all.w$PlantPhenos.Domest + Top50SNP
 #and BOTH does not double-count, because 0 = NA for Plant and Domest. X + NA = NA.
 
 #read in Domestication file for DmWoD vs. Domesticated vs. Wild. This will overwrite the Top50SNP.wide.DM in memory for making the BOTH phenos plot.
-Top50SNP.wide.DM <- read.csv("results/Domestication_TopSNPs_SegWide.csv")
+Top50SNP.wide.DM <- read.csv("results/Domestication_TopSNPs_SegWide_trueMAF.csv")
 
 #make plots for each phenotype
 
@@ -97,7 +96,7 @@ myColors <- c("#1C86EE", "#050505", "#EE7600")
 #names(myColors) <- levels(HEM.plotdata$Phenos)
 colScale <- scale_colour_manual(name="Phenotypes", values=myColors)
 
-jpeg("paper/plots/ActualPaper/FigR8/FigR8_Sl_MAF20_Domestmeta.ManhattanPlot_new.jpg", width=7.5, height=5, units='in', res=600)
+jpeg("paper/plots/ActualPaper/FigR8/FigR8_SlBc_trueMAF20_domest.ManhattanPlot.jpg", width=7.5, height=5, units='in', res=600)
 ggplot(Top50SNP.wide.DM)+
   theme_bw()+
   #    colScale+ #add this for BW version only
@@ -105,7 +104,7 @@ ggplot(Top50SNP.wide.DM)+
   geom_point(aes(x=Index, y=(Effect.Domesticated), color = "Domesticated"), alpha=1/2)+
   geom_point(aes(x=Index, y=(Effect.Wild), color = "Wild"), alpha=1/2)+
   geom_point(aes(x=Index, y=(Effect.DmWoD), color = "Sensitivity"), alpha=1/2)+
-  labs(list(y="Estimated Effect size", x="Chromosome position", title=element_blank()))+
+  labs(list(y=expression(paste("Estimated Effect Size (",cm^{2},")")), x="Chromosome position", title=element_blank()))+
   #theme(legend.title = element_blank())+
   theme(legend.position = "none")+
   guides(col = guide_legend(nrow = 8, title="Traits"))+
