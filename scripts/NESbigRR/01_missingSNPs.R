@@ -10,6 +10,7 @@ library(plyr); library(tidyr); library(ggplot2)
 #setwd("~/Documents/GitRepos/BcSolGWAS/")
 setwd("~/Projects/BcSolGWAS/")
 #read in MAF20 SNPs file
+#SolSNPs <- read.csv("data/GWAS_files/02_csvPrep/hp_binaryMAF20.csv")
 SolSNPs <- read.csv("data/genome/SNPs/SNPdat/hp_binaryMAF20.csv")
 #make dataframe with 1 observation (sum of SNPs) per kb
 SolSNPs$Pos <- as.character(SolSNPs$POS)#ensure that position data is not in scientific notation
@@ -101,7 +102,7 @@ names(SolSNPs)
 names(SolSNPs)
 SolSNPs$Count1 <- rowSums(SolSNPs[,4:96]=="1")
 SolSNPs$Count0 <- rowSums(SolSNPs[,4:96]=="0")
-SolSNPs$CountNA <- rowSums(apply(is.na(SolSNPs[,4:96]), 2, as.numeric))
+SolSNPs$CountNA <- rowSums(apply(is.na(SolSNPs[,4:96]), 2, as.numeric)) #no NAs
 table(SolSNPs$Count1)
 hist(SolSNPs$Count1)
 SolSNPs$Freq <- (SolSNPs$Count)/91

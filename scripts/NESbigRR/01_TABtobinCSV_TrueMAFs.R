@@ -50,7 +50,7 @@ mySNPs[mySNPs=="G/G"]<-"G"
 # mySNPs[mySNPs=="T/C"]<-"NA"
 # mySNPs[mySNPs=="T/G"]<-"NA"
 # mySNPs[mySNPs=="./."]<-"NA"
-mySNPs[mySNPs=="."]<-"NA"
+mySNPs[mySNPs=="."]<-NA #this is a true NA
 allSNPs<- mySNPs
 
 #unlist(unique(mySNPs$X305))
@@ -65,17 +65,44 @@ allSNPs<- mySNPs
 #automatically skips NAs
 mySNPs <- allSNPs
 for (i in names(mySNPs[4:100])) {
+<<<<<<< HEAD
   mySNPs[i][mySNPs[i]!= mySNPs$REF]  <- 1
   mySNPs[i][mySNPs[i]== mySNPs$REF] <- 0
+=======
+  mySNPs[i][mySNPs[i]!=mySNPs$REF] <- 1
+  mySNPs[i][mySNPs[i]==mySNPs$REF] <- 0
+>>>>>>> 5bca61868991c89ddf1cda7327cce13e79ca224e
 }
 
 #remove low MAFs!
 names(mySNPs)
+<<<<<<< HEAD
 mySNPs$Freq <- rowSums(mySNPs =="1")
 mySNPs$Freq.0 <- rowSums(mySNPs =="0")
 mySNPs$MAF <- (mySNPs$Freq)/ (mySNPs$Freq + mySNPs$Freq.0)
 mySNPs <- mySNPs[mySNPs$MAF <= 0.8,]
 hist(mySNPs$MAF)
+=======
+mySNPs$Freq.1 <- rowSums(mySNPs =="1", na.rm=T)
+mySNPs$Freq.0 <- rowSums(mySNPs =="0", na.rm=T)
+mySNPs$NAcount <- 98 - (mySNPs$Freq.1 + mySNPs$Freq.0)
+mySNPs$Freq <- (mySNPs$Freq.1)/ (mySNPs$Freq.1 + mySNPs$Freq.0)
+hist(mySNPs$Freq)
+
+#now, make choices:
+#omit loci with low info?
+#total of 98 isolates. A SNP with data in 90% of isolates is present in:
+98*.9 #>88 isolates
+#meaning NA in:
+98*.1 #<10 isolates
+#or for data in 80% of isolates:
+98*.2 #<20 isolates
+#data in 50% of isolates:
+98*.5 #<49 isolates
+mySNPs <- mySNPs[mySNPs$NAcount <= 48,]
+#mySNPs <- mySNPs[mySNPs$NAcount <= 19,]
+#mySNPs <- mySNPs[mySNPs$NAcount <= 9,]
+
+>>>>>>> 5bca61868991c89ddf1cda7327cce13e79ca224e
 
 write.csv(allSNPs, "02_csvPrep/hp_charMAF5.csv")
-write.csv(mySNPs, "02_csvPrep/hp_binaryMAF20_trueMAF.csv")
