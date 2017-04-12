@@ -106,3 +106,4 @@ mySNPs <- mySNPs[mySNPs$NAcount <= 48,]
 >>>>>>> 5bca61868991c89ddf1cda7327cce13e79ca224e
 
 write.csv(allSNPs, "02_csvPrep/hp_charMAF5.csv")
+write.csv(mySNPs, "02_csvPrep/hp_binaryMAF20_trueMAF_50NA.csv")
