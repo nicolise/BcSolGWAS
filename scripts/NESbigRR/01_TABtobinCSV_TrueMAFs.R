@@ -65,13 +65,12 @@ allSNPs<- mySNPs
 #automatically skips NAs
 mySNPs <- allSNPs
 for (i in names(mySNPs[4:100])) {
-  mySNPs[i][mySNPs[i]!=mySNPs$REF]  <- 1
-  mySNPs[i][mySNPs[i]==mySNPs$REF] <- 0
+  mySNPs[i][mySNPs[i]!= mySNPs$REF]  <- 1
+  mySNPs[i][mySNPs[i]== mySNPs$REF] <- 0
 }
 
 #remove low MAFs!
 names(mySNPs)
-rowSums(df == "nc")
 mySNPs$Freq <- rowSums(mySNPs =="1")
 mySNPs$Freq.0 <- rowSums(mySNPs =="0")
 mySNPs$MAF <- (mySNPs$Freq)/ (mySNPs$Freq + mySNPs$Freq.0)
