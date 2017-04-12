@@ -24,10 +24,6 @@ names( SNPs_rename ) <- SNPnames[ match( names( SNPs_rename ) , SNPnames[ , 'SNP
 
 ## now only keep genotypes and phenotypes that match
 
-#save practice file
-#miniSNPs <- SNPs_rename[c(1:3),]
-#write.csv(miniSNPs, "miniSNP_practice.csv")
-
 #only keep phenotype rows that match SNP names
 SNPMt <- as.data.frame(names(SNPs_rename))
 PhenoMatch <- Phenos
@@ -41,14 +37,36 @@ SNPMatch <- SNPMatch[names(SNPMatch) %in% (PhenoMt$"PhenoMatch[, 1]")]
 SNPMatch <- SNPMatch[ , order(names(SNPMatch))]
 SNPMatch2 <- cbind(SNPs3,SNPMatch)
 
-#REMOVE genotype column with 01.01.06.1
+#REMOVE duplicate genotype column with 01.01.06.1
 #remove SNP column "X1.01.06.1"
 SNPMatch2 <- SNPMatch2[,-9]
 
 #sort pheno match
 PhenoMatch2 <- PhenoMatch[order(PhenoMatch$Igeno),] 
 
-#save them files
+#check for matching names between SNPMatch2 and PhenoMatch2
+CheckNames <- PhenoMatch2[,c(1:2)]
+CheckNames$SNPIgeno <- names(SNPMatch2[,c(4:96)])
+CheckNames$Igeno[!(CheckNames$Igeno %in% CheckNames$SNPIgeno)] #good
+CheckNames$SNPIgeno[!(CheckNames$SNPIgeno %in% CheckNames$Igeno)] #good
+
+#now need to remove SNP columns for which all data is zero or all data is ones
+digits = digits[,which(colSums(abs(digits)) !=0)]
+SNPMatch2[which(rowSums(abs(SNPMatch2[,c(4:96)]), na.rm=T)==0),]
+
+myvector <- rowSums(abs(SNPMatch2[,c(4:96)]), na.rm=T)
+head(sort(myvector))
+tail(sort(myvector))
+#none: all SNPs have variation
+
+#and, all isolates have variation
+testdf <- data.frame("zero"= integer(0), "one"= integer(0))
+for (i in 4:96) {
+  newrow <- table(SNPMatch2[,i])
+  testdf <- rbind(testdf, newrow)
+}
+
+#save them files!
 write.csv(SNPMatch2, "03_bigRRinput/Domestication/binSNP_bigRR_MAF20hp_trueMAF_10NA.csv")
 write.csv(PhenoMatch2, "03_bigRRinput/Domestication/Sl_Pheno_bigRR_MAF20_trueMAF_10NA.csv")
 #------------------------------------------------------------------------------
