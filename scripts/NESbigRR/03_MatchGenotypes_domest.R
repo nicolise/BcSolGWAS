@@ -5,7 +5,7 @@
 rm(list=ls())
 setwd("~/Documents/GitRepos/BcSolGWAS/data/GWAS_files")
 #for laptop setwd("~/Projects/BcSolGWAS/data/genome")
-SNPs <- read.csv("02_csvPrep/hp_binaryMAF20_trueMAF_10NA.csv", row.names = 1)
+SNPs <- read.csv("02_csvPrep/hp_bin_trueMAF20_20NA.csv", row.names = 1)
 #SNPs <- read.csv("miniSNP_practice.csv") 
 #SNPsDF <- SNPs
 #SNPsDF <- SNPsDF[c(1:2),]
@@ -51,7 +51,6 @@ CheckNames$Igeno[!(CheckNames$Igeno %in% CheckNames$SNPIgeno)] #good
 CheckNames$SNPIgeno[!(CheckNames$SNPIgeno %in% CheckNames$Igeno)] #good
 
 #now need to remove SNP columns for which all data is zero or all data is ones
-digits = digits[,which(colSums(abs(digits)) !=0)]
 SNPMatch2[which(rowSums(abs(SNPMatch2[,c(4:96)]), na.rm=T)==0),]
 
 myvector <- rowSums(abs(SNPMatch2[,c(4:96)]), na.rm=T)
@@ -67,8 +66,8 @@ for (i in 4:96) {
 }
 
 #save them files!
-write.csv(SNPMatch2, "03_bigRRinput/Domestication/binSNP_bigRR_MAF20hp_trueMAF_10NA.csv")
-write.csv(PhenoMatch2, "03_bigRRinput/Domestication/Sl_Pheno_bigRR_MAF20_trueMAF_10NA.csv")
+write.csv(SNPMatch2, "03_bigRRinput/Domestication/hpbinSNP_bigRR_trueMAF20_20NA.csv")
+write.csv(PhenoMatch2, "03_bigRRinput/Domestication/Sl_Pheno_bigRR_trueMAF20_20NA.csv")
 #------------------------------------------------------------------------------
 #extra things
 #miniSNPs <- as.data.frame(t(miniSNPs))

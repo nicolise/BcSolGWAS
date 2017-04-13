@@ -36,7 +36,7 @@ bigRR_update <- function (obj, Z, family = gaussian(link = identity), tol.err = 
 library(bigRR) #check if version is 1.3-9
 
 #Get genotype data
-SNPs <- read.csv("03_bigRRinput/Domestication/binSNP_bigRR_MAF20hp_trueMAF_10NA.csv", row.names = 1)
+SNPs <- read.csv("03_bigRRinput/Domestication/hpbinSNP_bigRR_trueMAF20_20NA.csv", row.names = 1)
 FullSNPs <- SNPs
 SNPs <- FullSNPs
 #add a column with position as chr.base
@@ -53,7 +53,7 @@ for(i in 1:dim(SNPs)[1]) {
 }
 
 #read in phenotype data
-Phenos <- read.csv("03_bigRRinput/Domestication/Sl_Pheno_bigRR_MAF20_trueMAF_10NA.csv", row.names = 1)
+Phenos <- read.csv("03_bigRRinput/Domestication/Sl_Pheno_bigRR_trueMAF20_20NA.csv", row.names = 1)
 dat <- as.data.frame((Phenos[,2:4]))  #INSERT PHENOTYPE COLUMNS HERE
 #e.g. LesionGreen as.data.frame(c(Phenos[,31:32],Phenos[,34:35]))
 
@@ -65,7 +65,7 @@ dat <- as.data.frame((Phenos[,2:4]))  #INSERT PHENOTYPE COLUMNS HERE
 outpt.HEM <- colnames(SNPs)
 thresh.HEM <- list("pos0.95Thresh" = NA, "pos0.975Thresh" = NA, "pos0.99Thresh" = NA, "pos0.999Thresh" = NA, "neg0.95Thresh" = NA, "neg0.975Thresh" = NA, "neg0.99Thresh" = NA, "neg0.999Thresh" = NA)
 
-con <- file("04_bigRRoutput/trueMAF_10NA/test.log")
+con <- file("04_bigRRoutput/trueMAF20_20NA/test.log")
 sink(con, append=TRUE)
 sink(con, append=TRUE, type="message")
 
@@ -124,4 +124,4 @@ thresh.HEM$"neg0.99Thresh" <- c("neg 0.99 Thresh", thresh.HEM$"neg0.99Thresh")
 thresh.HEM$"neg0.999Thresh" <- c("neg 0.999 Thresh", thresh.HEM$"neg0.999Thresh")
 
 #Write results to output
-write.csv(rbind(thresh.HEM$"pos0.95Thresh",thresh.HEM$"pos0.975Thresh",thresh.HEM$"pos0.99Thresh",thresh.HEM$"pos0.999Thresh",thresh.HEM$"neg0.95Thresh",thresh.HEM$"neg0.975Thresh",thresh.HEM$"neg0.99Thresh",thresh.HEM$"neg0.999Thresh",outpt.HEM),"04_bigRRoutput/trueMAF_10NA/SlBc_domest_trueMAF20.HEM.csv")
+write.csv(rbind(thresh.HEM$"pos0.95Thresh",thresh.HEM$"pos0.975Thresh",thresh.HEM$"pos0.99Thresh",thresh.HEM$"pos0.999Thresh",thresh.HEM$"neg0.95Thresh",thresh.HEM$"neg0.975Thresh",thresh.HEM$"neg0.99Thresh",thresh.HEM$"neg0.999Thresh",outpt.HEM),"04_bigRRoutput/trueMAF20_20NA/SlBc_domest_trueMAF20_20NA.HEM.csv")
