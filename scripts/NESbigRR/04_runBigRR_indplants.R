@@ -17,8 +17,11 @@ bigRR_update <- function (obj, Z, family = gaussian(link = identity), tol.err = 
 {
   w <- as.numeric(obj$u^2/(1 - obj$leverage))
   w[w < tol.err] <- tol.err
+  #if bigRR is having trouble with missing values (NAs) can add option impute=TRUE
+  #X is the genotype (MyX)
+  #y is the phenotype (dat)
   bigRR(y = obj$y, X = obj$X, Z = Z, family = family, weight = w, 
-        tol.err = tol.err, tol.conv = tol.conv, GPU = TRUE )
+        tol.err = tol.err, tol.conv = tol.conv, GPU = TRUE, impute = TRUE )
 }
 ########################
 #NOTE1 FROM RACHEL:  we need bigRR1.3-9 to get GPU option
@@ -33,7 +36,7 @@ bigRR_update <- function (obj, Z, family = gaussian(link = identity), tol.err = 
 library(bigRR) #check if version is 1.3-9
 
 #Get genotype data
-SNPs <- read.csv("03_bigRRinput/NewModel0711/binSNP_bigRR_MAF20hp_trueMAF.csv", row.names = 1)
+SNPs <- read.csv("03_bigRRinput/NewModel0711/hpbinSNP_bigRR_trueMAF20_10NA.csv", row.names = 1)
 FullSNPs <- SNPs
 SNPs <- FullSNPs
 #add a column with position as chr.base
@@ -51,9 +54,11 @@ for(i in 1:dim(SNPs)[1]) {
 }
 
 #read in phenotype data
-Phenos <- read.csv("03_bigRRinput/NewModel0711/Sl_Pheno_bigRR_MAF20_trueMAF.csv", row.names = 1)
-#2 separately, it's being difficult
-dat <- as.data.frame((Phenos[,2]))  #INSERT PHENOTYPE COLUMNS HERE
+Phenos <- read.csv("03_bigRRinput/NewModel0711/Sl_Pheno_bigRR_trueMAF20_10NA.csv", row.names = 1)
+#2 to 13
+#run 2 separately
+#all phenos: 2:13. rerun just 8 (LA2176)
+dat <- as.data.frame((Phenos[,8]))  #INSERT PHENOTYPE COLUMNS HERE
 #e.g. LesionGreen as.data.frame(c(Phenos[,31:32],Phenos[,34:35]))
 
 #should I remove reference (B05.10 I assume) phenotypes and genotypes from list?
@@ -63,7 +68,7 @@ dat <- as.data.frame((Phenos[,2]))  #INSERT PHENOTYPE COLUMNS HERE
 outpt.HEM <- colnames(SNPs)
 thresh.HEM <- list("pos0.95Thresh" = NA, "pos0.975Thresh" = NA, "pos0.99Thresh" = NA, "pos0.999Thresh" = NA, "neg0.95Thresh" = NA, "neg0.975Thresh" = NA, "neg0.99Thresh" = NA, "neg0.999Thresh" = NA)
 
-con <- file("04_bigRRoutput/trueMAF/LA1547_test.log")
+con <- file("04_bigRRoutput/trueMAF20_10NA/IndPlant_LA2176_Output.log")
 sink(con, append=TRUE)
 sink(con, append=TRUE, type="message")
 
@@ -73,32 +78,33 @@ for(i in 1:dim(dat)[2]) { #i will be each isolate
   MyX <- matrix(1, dim(dat)[1], 1) #good to here
   
   #added try here
-  Pheno.BLUP.result <- try(bigRR(y = dat[,i], X = MyX, Z = SNPs, GPU = TRUE)) #why is this failing for Col0.AT3G26830 and Col0.AT2G30770
-#can add try here as well
-Pheno.HEM.result <- try(bigRR_update(Pheno.BLUP.result, SNPs))
-
-outpt.HEM <- cbind(outpt.HEM, Pheno.HEM.result$u)
-
-#Permute Thresholds for Phenos - this is what takes forever
-perm.u.HEM <- vector()
-for(p in 1:1000) {  
-  if(p %% 10 == 0) {print(paste("Thresh sample:", p, "--", Sys.time()))}
-  try(temp.Pheno <- sample(dat[,i], length(dat[,i]), replace = FALSE))
-  try(temp.BLUP  <- bigRR(y = temp.Pheno, X = MyX, Z = SNPs, GPU = TRUE),silent = TRUE)
-  try(temp.HEM <- bigRR_update(temp.BLUP, SNPs)) #REF change- was bigRR_update(Pheno.BLUP.result...
-  perm.u.HEM <- c(perm.u.HEM, temp.HEM$u)
+  #testing with impute=T
+  Pheno.BLUP.result <- try(bigRR(y = dat[,i], X = MyX, Z = SNPs, GPU = TRUE, impute=TRUE)) #why is this failing for Col0.AT3G26830 and Col0.AT2G30770
+  #can add try here as well
+  Pheno.HEM.result <- try(bigRR_update(Pheno.BLUP.result, SNPs))
   
-}
-#write.csv(perm.u.HEM, paste("PermEffects_",colnames(dat)[i],".csv",sep=""))
-thresh.HEM$"pos0.95Thresh"[i] <- quantile(perm.u.HEM,0.95)
-thresh.HEM$"pos0.975Thresh"[i] <- quantile(perm.u.HEM,0.975)
-thresh.HEM$"pos0.99Thresh"[i] <- quantile(perm.u.HEM,0.99)
-thresh.HEM$"pos0.999Thresh"[i] <- quantile(perm.u.HEM,0.999)
-thresh.HEM$"neg0.95Thresh"[i] <- quantile(perm.u.HEM,0.05)
-thresh.HEM$"neg0.975Thresh"[i] <- quantile(perm.u.HEM,0.025)
-thresh.HEM$"neg0.99Thresh"[i] <- quantile(perm.u.HEM,0.01)
-thresh.HEM$"neg0.999Thresh"[i] <- quantile(perm.u.HEM,0.001)
-colnames(outpt.HEM)[i+1] <- paste(colnames(dat)[i],"HEM",sep=".")
+  outpt.HEM <- cbind(outpt.HEM, Pheno.HEM.result$u)
+  
+  #Permute Thresholds for Phenos - this is what takes forever
+  perm.u.HEM <- vector()
+  for(p in 1:1000) {
+    if(p %% 10 == 0) {print(paste("Thresh sample:", p, "--", Sys.time()))}
+    try(temp.Pheno <- sample(dat[,i], length(dat[,i]), replace = FALSE))
+    try(temp.BLUP  <- bigRR(y = temp.Pheno, X = MyX, Z = SNPs, GPU = TRUE, impute=TRUE),silent = TRUE)
+    try(temp.HEM <- bigRR_update(temp.BLUP, SNPs)) #REF change- was bigRR_update(Pheno.BLUP.result...
+    perm.u.HEM <- c(perm.u.HEM, temp.HEM$u)
+    
+  }
+  #write.csv(perm.u.HEM, paste("PermEffects_",colnames(dat)[i],".csv",sep=""))
+  thresh.HEM$"pos0.95Thresh"[i] <- quantile(perm.u.HEM,0.95)
+  thresh.HEM$"pos0.975Thresh"[i] <- quantile(perm.u.HEM,0.975)
+  thresh.HEM$"pos0.99Thresh"[i] <- quantile(perm.u.HEM,0.99)
+  thresh.HEM$"pos0.999Thresh"[i] <- quantile(perm.u.HEM,0.999)
+  thresh.HEM$"neg0.95Thresh"[i] <- quantile(perm.u.HEM,0.05)
+  thresh.HEM$"neg0.975Thresh"[i] <- quantile(perm.u.HEM,0.025)
+  thresh.HEM$"neg0.99Thresh"[i] <- quantile(perm.u.HEM,0.01)
+  thresh.HEM$"neg0.999Thresh"[i] <- quantile(perm.u.HEM,0.001)
+  colnames(outpt.HEM)[i+1] <- paste(colnames(dat)[i],"HEM",sep=".")
 }
 
 # Restore output to console
@@ -121,4 +127,4 @@ thresh.HEM$"neg0.99Thresh" <- c("neg 0.99 Thresh", thresh.HEM$"neg0.99Thresh")
 thresh.HEM$"neg0.999Thresh" <- c("neg 0.999 Thresh", thresh.HEM$"neg0.999Thresh")
 
 #Write results to output
-write.csv(rbind(thresh.HEM$"pos0.95Thresh",thresh.HEM$"pos0.975Thresh",thresh.HEM$"pos0.99Thresh",thresh.HEM$"pos0.999Thresh",thresh.HEM$"neg0.95Thresh",thresh.HEM$"neg0.975Thresh",thresh.HEM$"neg0.99Thresh",thresh.HEM$"neg0.999Thresh",outpt.HEM),"04_bigRRoutput/trueMAF/SlBc_LA1547_trueMAF20.HEM.csv")
+write.csv(rbind(thresh.HEM$"pos0.95Thresh",thresh.HEM$"pos0.975Thresh",thresh.HEM$"pos0.99Thresh",thresh.HEM$"pos0.999Thresh",thresh.HEM$"neg0.95Thresh",thresh.HEM$"neg0.975Thresh",thresh.HEM$"neg0.99Thresh",thresh.HEM$"neg0.999Thresh",outpt.HEM),"04_bigRRoutput/trueMAF20_10NA/SlBc_IndPlants_LA2176_hpbin_trueMAF20_10NA.HEM.csv")

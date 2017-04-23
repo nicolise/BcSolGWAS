@@ -5,7 +5,7 @@
 rm(list=ls())
 setwd("~/Documents/GitRepos/BcSolGWAS/data/GWAS_files")
 #for laptop setwd("~/Projects/BcSolGWAS/data/genome")
-SNPs <- read.csv("02_csvPrep/hp_bin_trueMAF20_20NA.csv", row.names = 1)
+SNPs <- read.csv("02_csvPrep/hp_bin_trueMAF20_50NA.csv", row.names = 1)
 #SNPs <- read.csv("miniSNP_practice.csv") 
 #SNPsDF <- SNPs
 #SNPsDF <- SNPsDF[c(1:2),]
@@ -66,8 +66,8 @@ for (i in 4:96) {
 }
 
 #save them files!
-write.csv(SNPMatch2, "03_bigRRinput/Domestication/hpbinSNP_bigRR_trueMAF20_20NA.csv")
-write.csv(PhenoMatch2, "03_bigRRinput/Domestication/Sl_Pheno_bigRR_trueMAF20_20NA.csv")
+write.csv(SNPMatch2, "03_bigRRinput/Domestication/hpbinSNP_bigRR_trueMAF20_50NA.csv")
+write.csv(PhenoMatch2, "03_bigRRinput/Domestication/Sl_Pheno_bigRR_trueMAF20_50NA.csv")
 #------------------------------------------------------------------------------
 #extra things
 #miniSNPs <- as.data.frame(t(miniSNPs))
