@@ -65,24 +65,18 @@ allSNPs<- mySNPs
 #automatically skips NAs
 mySNPs <- allSNPs
 for (i in names(mySNPs[4:100])) {
-<<<<<<< HEAD
-  mySNPs[i][mySNPs[i]!= mySNPs$REF]  <- 1
-  mySNPs[i][mySNPs[i]== mySNPs$REF] <- 0
-=======
   mySNPs[i][mySNPs[i]!=mySNPs$REF] <- 1
   mySNPs[i][mySNPs[i]==mySNPs$REF] <- 0
->>>>>>> 5bca61868991c89ddf1cda7327cce13e79ca224e
 }
 
 #remove low MAFs!
 names(mySNPs)
-<<<<<<< HEAD
 mySNPs$Freq <- rowSums(mySNPs =="1")
 mySNPs$Freq.0 <- rowSums(mySNPs =="0")
 mySNPs$MAF <- (mySNPs$Freq)/ (mySNPs$Freq + mySNPs$Freq.0)
+hist(mySNPs$MAF)
 mySNPs <- mySNPs[mySNPs$MAF <= 0.8,]
 hist(mySNPs$MAF)
-=======
 mySNPs$Freq.1 <- rowSums(mySNPs =="1", na.rm=T)
 mySNPs$Freq.0 <- rowSums(mySNPs =="0", na.rm=T)
 mySNPs$NAcount <- 98 - (mySNPs$Freq.1 + mySNPs$Freq.0)
@@ -103,7 +97,6 @@ mySNPs <- mySNPs[mySNPs$NAcount <= 48,]
 #mySNPs <- mySNPs[mySNPs$NAcount <= 19,]
 #mySNPs <- mySNPs[mySNPs$NAcount <= 9,]
 
->>>>>>> 5bca61868991c89ddf1cda7327cce13e79ca224e
 
 write.csv(allSNPs, "02_csvPrep/hp_charMAF5.csv")
 write.csv(mySNPs, "02_csvPrep/hp_binaryMAF20_trueMAF_50NA.csv")

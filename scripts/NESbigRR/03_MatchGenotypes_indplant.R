@@ -5,7 +5,7 @@
 rm(list=ls())
 setwd("~/Documents/GitRepos/BcSolGWAS/data/GWAS_files")
 #for laptop setwd("~/Projects/BcSolGWAS/data/genome")
-SNPs <- read.csv("02_csvPrep/hp_binaryMAF20_trueMAF.csv", row.names = 1)
+SNPs <- read.csv("02_csvPrep/hp_bin_trueMAF20_10NA.csv", row.names = 1)
 #SNPs <- read.csv("miniSNP_practice.csv") 
 #SNPsDF <- SNPs
 #SNPsDF <- SNPsDF[c(1:2),]
@@ -48,9 +48,31 @@ SNPMatch2 <- SNPMatch2[,-9]
 #sort pheno match
 PhenoMatch2 <- PhenoMatch[order(PhenoMatch$Igeno),] 
 
+#check for matching names between SNPMatch2 and PhenoMatch2
+CheckNames <- PhenoMatch2[,c(1:2)]
+CheckNames$SNPIgeno <- names(SNPMatch2[,c(4:96)])
+CheckNames$Igeno[!(CheckNames$Igeno %in% CheckNames$SNPIgeno)] #good
+CheckNames$SNPIgeno[!(CheckNames$SNPIgeno %in% CheckNames$Igeno)] #good
+
+#now need to remove SNP columns for which all data is zero or all data is ones
+SNPMatch2[which(rowSums(abs(SNPMatch2[,c(4:96)]), na.rm=T)==0),]
+
+myvector <- rowSums(abs(SNPMatch2[,c(4:96)]), na.rm=T)
+head(sort(myvector))
+tail(sort(myvector))
+#none: all SNPs have variation
+
+#and, all isolates have variation
+testdf <- data.frame("zero"= integer(0), "one"= integer(0))
+for (i in 4:96) {
+  newrow <- table(SNPMatch2[,i])
+  testdf <- rbind(testdf, newrow)
+}
+
+
 #save them files
-write.csv(SNPMatch2, "03_bigRRinput/NewModel0711/binSNP_bigRR_MAF20hp_trueMAF.csv")
-write.csv(PhenoMatch2, "03_bigRRinput/NewModel0711/Sl_Pheno_bigRR_MAF20_trueMAF.csv")
+write.csv(SNPMatch2, "03_bigRRinput/NewModel0711/hpbinSNP_bigRR_trueMAF20_10NA.csv")
+write.csv(PhenoMatch2, "03_bigRRinput/NewModel0711/Sl_Pheno_bigRR_trueMAF20_10NA.csv")
 #------------------------------------------------------------------------------
 #extra things
 #miniSNPs <- as.data.frame(t(miniSNPs))
