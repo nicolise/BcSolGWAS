@@ -16,10 +16,10 @@ setwd("~/Projects/BcSolGWAS/")
 library(plyr); library(ggplot2); library(grid)
 
 #Import data (reorganized from script ReformatBigRRouts.R)
-HEM.plotdata <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF_10NA/SlBc_domest_trueMAF20_10NA.HEM.PlotFormat.csv")
+HEM.plotdata <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF_10NA/SlBc_12plants_trueMAF20_10NA.HEM.PlotFormat.csv")
 
 #get threshhold values 
-HEM.thresh <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF_10NA/SlBc_domest_trueMAF20_10NA.HEM.Thresh.csv")
+HEM.thresh <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF_10NA/SlBc_12plants_trueMAF20_10NA.HEM.Thresh.csv")
 
 #take the top 50 over the threshold for each phenotype
 TH95pos <- HEM.thresh[1,]
@@ -48,27 +48,50 @@ for (i in 2:ncol(TH999neg)){
 }
 
 names(HEM.plotdata)
+HEM.plotdata <- HEM.plotdata[,-c(1)]
 #All groups (4:6)
 #keep only: SNPs over 99% Threshold
 #now very few over 99.9% Thr
-for (i in 4:6){
-assign(paste("HEMpos.", names(HEM.plotdata[i]), sep=""), subset(HEM.plotdata, HEM.plotdata[i] > get(paste("TH99pos_", names(HEM.plotdata[i]), sep="")), select=c(Chrom,Segment,Pos,Index,i)))
-assign(paste("HEMneg.", names(HEM.plotdata[i]), sep=""), subset(HEM.plotdata, HEM.plotdata[i] < get(paste("TH99neg_", names(HEM.plotdata[i]), sep="")), select=c(Chrom,Segment,Pos,Index,i)))
+for (i in 4:15){
+assign(paste("HEMpos.", names(HEM.plotdata[i]), sep=""), subset(HEM.plotdata, HEM.plotdata[i] > get(paste("TH999pos_", names(HEM.plotdata[i]), sep="")), select=c(Chrom,Segment,Pos,Index,i)))
+assign(paste("HEMneg.", names(HEM.plotdata[i]), sep=""), subset(HEM.plotdata, HEM.plotdata[i] < get(paste("TH999neg_", names(HEM.plotdata[i]), sep="")), select=c(Chrom,Segment,Pos,Index,i)))
 }
+
+subset(HEM.plotdata, HEM.plotdata[,16] < -0.0002432714)
 
 #for wide format plot need fewer SNPs -- take top 1000 for each? but all of DmWoD
 #top 1000
-HEMpos.Domesticated <- head(arrange(HEMpos.Domesticated, desc(Domesticated)), n=500)
-HEMneg.Domesticated <- tail(arrange(HEMneg.Domesticated, desc(Domesticated)), n=500)
-HEMpos.Wild <- head(arrange(HEMpos.Wild, desc(Wild)), n=500)
-HEMneg.Wild <- tail(arrange(HEMneg.Wild, desc(Wild)), n=500)
-#combine pos and neg by group
-HEM.DmWoD <- rbind(HEMpos.DmWoD, HEMneg.DmWoD)
-HEM.Domesticated <- rbind(HEMpos.Domesticated, HEMneg.Domesticated)
-HEM.Wild <- rbind(HEMpos.Wild, HEMneg.Wild)
+#4:15
+#basic version, no loop:
+#HEMpos.Domesticated <- head(arrange(HEMpos.Domesticated, desc(Domesticated)), n=500)
+#design the loop:
+#assign(paste("HEMpos.", names(HEM.plotdata[4]), sep=""), head(arrange(HEMpos.Domesticated, desc(Domesticated)), n=500))
+#HEMpos.Domesticated == get(paste("HEMpos.", names(HEM.plotdata[4]), sep=""))
+#Domesticated == get(paste("HEMpos.", names(HEM.plotdata[4]), sep=""))[,5]
 
+#test script
+#assign(paste("HEMpos.", names(HEM.plotdata[4]), sep=""), head(arrange(get(paste("HEMpos.", names(HEM.plotdata[4]), sep="")), desc(get(paste("HEMpos.", names(HEM.plotdata[4]), sep=""))[,5])), n=500))
+
+#for top 500 only
+for (i in 4:15){
+  assign(paste("HEMpos.", names(HEM.plotdata[i]), sep=""), head(arrange(get(paste("HEMpos.", names(HEM.plotdata[i]), sep="")), desc(get(paste("HEMpos.", names(HEM.plotdata[i]), sep=""))[,5])), n=500))
+}
+for (i in 4:15){
+  assign(paste("HEMneg.", names(HEM.plotdata[i]), sep=""), tail(arrange(get(paste("HEMneg.", names(HEM.plotdata[i]), sep="")), desc(get(paste("HEMneg.", names(HEM.plotdata[i]), sep=""))[,5])), n=500))
+}
+
+#combine pos and neg by group
+for (i in 4:15){
+assign(paste("HEM.", names(HEM.plotdata[i]), sep=""), rbind(get(paste("HEMpos.", names(HEM.plotdata[i]), sep="")),get(paste("HEMneg.", names(HEM.plotdata[i]), sep=""))))
+}
 
 #then combine
+assign(dfname, rename(dfname, c("Trait" = "Effect")))
+
+mydfname <- paste("HEM.", names(HEM.plotdata[5]), sep="")
+assign(mydfname, rename(get(mydfname), c("Trait" = "Effect")))
+
+#Trait? names(get(mydfname))[5]
 HEM.Domesticated <- rename(HEM.Domesticated, c("Domesticated" ="Effect"))
 HEM.Domesticated$Trait <- "Domesticated"
 HEM.Wild <- rename(HEM.Wild, c("Wild" ="Effect"))
@@ -85,8 +108,8 @@ plot1 + geom_point(aes(color=factor(Trait)))+
   
 #make it wide format
 #currently long format : Chrom, Segment, Pos, Index, Effect, Trait
-write.csv(HEM.plotdata, "results/Domestication_TopSNPs_SegLong_trueMAF20_10NA.csv")
-write.csv(HEM.plotdata, "results/Domestication_Top1000SNPs_SegLong_trueMAF20_10NA.csv")
+write.csv(HEM.plotdata, "data/GWAS_files/05_annotation/TrueMAF_NAs/Domestication_TopSNPs_SegLong_trueMAF20_10NA.csv")
+write.csv(HEM.plotdata, "data/GWAS_files/05_annotation/TrueMAF_NAs/Domestication_Top1000SNPs_SegLong_trueMAF20_10NA.csv")
 
 TopSNP.wide.DM <- reshape(HEM.topSNPs, 
                          timevar = "Trait",

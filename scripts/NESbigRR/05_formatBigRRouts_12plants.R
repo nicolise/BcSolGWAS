@@ -5,10 +5,10 @@
 rm(list=ls())
 library(tidyr)
 #setwd("~/Documents/GitRepos/BcSolGWAS/data/SNP_files")
-setwd("~/Projects/BcSolGWAS/data/GWAS_files/04_bigRRoutput/trueMAF_20NA/")
+setwd("~/Projects/BcSolGWAS/data/GWAS_files/04_bigRRoutput/trueMAF_10NA/")
 #Import data
 #reorganize file Sl_LesionSize.HEM.csv
-HEMdat <- read.csv("SlBc_domest_trueMAF20_20NA.HEM.csv")
+HEMdat <- read.csv("SlBc_IndPlants_hpbin_trueMAF20_10NA.HEM.csv")
 
 #first remove first 4 rows (threshold data)
 HEMdat <- HEMdat[,-c(1)]
@@ -145,6 +145,6 @@ for (i in unique(HEM.plotdata$Chrom.Seg.Int)) {
 }
 ticklim=c(min(HEM.plotdata$Index),max(HEM.plotdata$Index))
 
-write.csv(HEM.plotdata, "SlBc_domest_trueMAF20_20NA.HEM.PlotFormat.csv") 
-write.csv(HEMthresh, "SlBc_domest_trueMAF20_20NA.HEM.Thresh.csv")
+write.csv(HEM.plotdata, "SlBc_12plants_trueMAF20_10NA.HEM.PlotFormat.csv") 
+write.csv(HEMthresh, "SlBc_12plants_trueMAF20_10NA.HEM.Thresh.csv")
 #read in to 06_plots

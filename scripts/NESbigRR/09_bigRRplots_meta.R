@@ -16,7 +16,7 @@ setwd("~/Projects/BcSolGWAS/")
 Top50SNP.wide.PL <- read.csv("results/Plants_TopSNPs_SegWide.csv")
 #combine plant with domestication data
 #easiest: take wide data for plant. take wide data for domestication. Omit effects: we only need a count of phenotypes per level.
-Top50SNP.wide.DM <- read.csv("results/Domestication_TopSNPs_SegWide_trueMAF.csv")
+Top50SNP.wide.DM <- read.csv("results/Domestication_Top1000SNPs_SegWide_trueMAF20_10NA.csv")
 #remove X column
 Top50SNP.wide.DM <- Top50SNP.wide.DM[,2:8]
 #count the number of phenotypes
@@ -42,7 +42,7 @@ Top50SNP.all.w$PlantPhenos.Both <- (Top50SNP.all.w$PlantPhenos.Domest + Top50SNP
 #and BOTH does not double-count, because 0 = NA for Plant and Domest. X + NA = NA.
 
 #read in Domestication file for DmWoD vs. Domesticated vs. Wild. This will overwrite the Top50SNP.wide.DM in memory for making the BOTH phenos plot.
-Top50SNP.wide.DM <- read.csv("results/Domestication_TopSNPs_SegWide_trueMAF.csv")
+Top50SNP.wide.DM <- read.csv("data/GWAS_files/05_annotation/TrueMAF_NAs/Domestication_Top1000SNPs_SegWide_trueMAF20_10NA.csv")
 
 #make plots for each phenotype
 
@@ -96,7 +96,19 @@ myColors <- c("#1C86EE", "#050505", "#EE7600")
 #names(myColors) <- levels(HEM.plotdata$Phenos)
 colScale <- scale_colour_manual(name="Phenotypes", values=myColors)
 
-jpeg("paper/plots/ActualPaper/FigR8/FigR8_SlBc_trueMAF20_domest.ManhattanPlot.jpg", width=7.5, height=5, units='in', res=600)
+#get midpoint positions per chromosome
+((max(Top50SNP.wide.DM[ which(Top50SNP.wide.DM$Chrom=='13'),]$Index) - min(Top50SNP.wide.DM[ which(Top50SNP.wide.DM$Chrom=='13'),]$Index))/2+min(Top50SNP.wide.DM[ which(Top50SNP.wide.DM$Chrom=='13'),]$Index))
+
+#this is the correct list for NA10_domest... for plotting looks SAME as below
+#c(1590499, 5329683, 8875600, 11132301, 13856717, 17180918, 20192223, 22379333, 24362455, 26766425, 28369140, 29737602, 31793651, 33958207, 35919420, 38890360)
+
+#this is the correct list for NA10_12plants
+#c(1674920, 5242762, 8999082, 11057880, 13580364, 17181767, 20009659, 22371413, 24388631, 26765466, 28559407, 30104939, 31864287, 33980281, 35775028, 38876579)
+
+#this is the correct list for NA20_12plants
+#c(1677869, 5250031, 9006772, 11066464, 13584641, 17192569, 20021437, 22387756, 24411342, 26784999, 28587689, 30133032, 31892533, 34009041, 35807682,  9006772)
+
+jpeg("paper/plots/ActualPaper/FigR8/FigR8_SlBc_trueMAF20_10NA_domest_b.ManhattanPlot.jpg", width=7.5, height=5, units='in', res=600)
 ggplot(Top50SNP.wide.DM)+
   theme_bw()+
   #    colScale+ #add this for BW version only
@@ -108,6 +120,6 @@ ggplot(Top50SNP.wide.DM)+
   #theme(legend.title = element_blank())+
   theme(legend.position = "none")+
   guides(col = guide_legend(nrow = 8, title="Traits"))+
-  scale_x_continuous(name="Chromosome", breaks = c(1677889, 5253114, 9013367, 11074212, 13595791, 17206983, 20036067, 22404724, 24429409, 26804549, 28608225, 30154184, 31914256, 34033137, 35838514, 38953687), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
+  scale_x_continuous(name="Chromosome", breaks = c(1590499, 5329683, 8875600, 11132301, 13856717, 17180918, 20192223, 22379333, 24362455, 26766425, 28369140, 29737602, 31793651, 33958207, 35919420, 38890360), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
   expand_limits(y=0)
 dev.off()
