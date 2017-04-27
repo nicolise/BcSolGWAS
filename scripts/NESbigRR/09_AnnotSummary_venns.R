@@ -11,8 +11,11 @@ setwd("~/Projects/BcSolGWAS/")
 #most of these data come from 06_bigRRplots_meta.R
 
 #---------------------------------------------------------------------
-Top50SNP.wide.DM <- read.csv("results/Domestication_TopSNPs_SegWide.csv")
+TopSNP.wide.DM.NA20 <- read.csv("data/GWAS_files/05_annotation/TrueMAF_NAs/Domestication_Top1000SNPs_SegWide_trueMAF20_20NA.csv")
+TopSNP.wide.DM.NA10 <- read.csv("data/GWAS_files/05_annotation/TrueMAF_NAs/Domestication_Top1000SNPs_SegWide_trueMAF20_10NA.csv")
+Top50SNP.wide.DM <- TopSNP.wide.DM.NA10
 #this is all SNPs
+names(Top50SNP.wide.DM)
 a <- table(Top50SNP.wide.DM$Cat)
 
 #domestication is first color, pale green. Wild is lilac.

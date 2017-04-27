@@ -16,12 +16,12 @@ library(ggplot2)
 library(grid)
 
 #Import data (reorganized from script ReformatBigRRouts.R)
-HEM.plotdata <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF_20NA/SlBc_12plants_trueMAF20_20NA.HEM.PlotFormat.csv")
+HEM.plotdata <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF_10NA/SlBc_12plants_trueMAF20_10NA.HEM.PlotFormat.final.csv")
 
 HEM.plotdata <- HEM.plotdata[,-c(1)]
 
 #get threshhold values 
-HEM.thresh <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF_20NA/SlBc_12plants_trueMAF20_20NA.HEM.Thresh.csv")
+HEM.thresh <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF_10NA/SlBc_12plants_trueMAF20_10NA.HEM.Thresh.final.csv")
 HEM.thresh <- HEM.thresh[,-c(1)]
 
 TH95pos <- HEM.thresh[1,]
@@ -68,9 +68,9 @@ max(HEM.plotdata[which(HEM.plotdata$Chrom.Seg.F=='16.7'),]$Index) - min(HEM.plot
 
 #greyscale version
 #4 to 15
-for (i in 7){
+for (i in c(7)){
   #jpeg(paste("paper/plots/ActualPaper/bw_Sl_LesionSize_trueMAF20_NA10_lowTR_", names(HEM.plotdata[7]), ".ManhattanPlot.jpg", sep=""), width=8, height=5, units='in', res=600)
-jpeg(paste("plots/paper/bw_Sl_LesionSize_trueMAF20_NA20_lowTR_", names(HEM.plotdata[i]), ".ManhattanPlot.jpg", sep=""), width=8, height=5, units='in', res=600)
+jpeg(paste("plots/paper/bw_Sl_LesionSize_trueMAF20_NA10_lowTR_", names(HEM.plotdata[i]), ".ManhattanPlot.jpg", sep=""), width=8, height=5, units='in', res=600)
   plot(ggplot(HEM.plotdata, aes(x=Index, y=HEM.plotdata[,i]))+
     theme_bw()+
     colScale+
@@ -97,8 +97,8 @@ jpeg(paste("plots/paper/bw_Sl_LesionSize_trueMAF20_NA20_lowTR_", names(HEM.plotd
   #with labeling removed for paper
 #jpeg(paste("paper/plots/ActualPaper/FigR5/Routs/pm_BW_Sl_MAF20_highTR_", names(HEM.plotdata[8]), ".ManhattanPlot.jpg", sep=""), width=7.5, height=4, units='in', res=600)
 #4 to 15
-for (i in 4:15){
-  jpeg(paste("plots/paper/bw_Sl_LesionSize_trueMAF20_NA20_hiTR_", names(HEM.plotdata[i]), ".ManhattanPlot.jpg", sep=""), width=8, height=5, units='in', res=600)
+for (i in c(15)){
+  jpeg(paste("plots/paper/bw_Sl_LesionSize_trueMAF20_NA10_hiTR_", names(HEM.plotdata[i]), ".ManhattanPlot.jpg", sep=""), width=8, height=5, units='in', res=600)
   plot(ggplot(HEM.plotdata, aes(x=Index, y=HEM.plotdata[,i]))+
     theme_bw()+
     colScale+
