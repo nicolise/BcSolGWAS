@@ -98,14 +98,19 @@ sink()
 #-----------------------------------------------------------
 #FDR cutoff
 #p is a vector of p values
-MyPvals <- read.csv("isoANOVApvals.csv")
+MyPvals <- read.csv("data/isoANOVApvals.csv")
 names(MyPvals)
 p <- MyPvals$pSpecies
 MyPvals$pSpFDR <- p.adjust(p, method = "fdr", n = length(p))
+#2 sig by FDR
+#1 sig, 1 marginally sig by bonf
 
 pSpPl <- MyPvals$pSpPlant
-MyPvals$pSpPlFDR <- p.adjust(pSpPl, method = "fdr", n = length(pSpPl))
+MyPvals$pSpPlFDR <- p.adjust(pSpPl, method = "bonferroni", n = length(pSpPl))
+#0 sig by FDR
+#0 sig by bonferroni
 
+#what is bp?
 bpSp <- MyPvals$BpSpecies
 MyPvals$bpSpFDR <- p.adjust(bpSp, method = "fdr", n = length(bpSp))
 
