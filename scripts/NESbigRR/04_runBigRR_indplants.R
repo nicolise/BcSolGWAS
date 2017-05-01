@@ -57,8 +57,8 @@ for(i in 1:dim(SNPs)[1]) {
 Phenos <- read.csv("03_bigRRinput/NewModel0711/Sl_Pheno_bigRR_trueMAF20_10NA.csv", row.names = 1)
 #2 to 13
 #run 2 separately
-#all phenos: 2:13. rerun just 8 (LA2176)
-dat <- as.data.frame((Phenos[,8]))  #INSERT PHENOTYPE COLUMNS HERE
+#all phenos: 2:13. rerun just 8 (LA2176) and (LA0480) separately
+dat <- as.data.frame(Phenos[,13])  #INSERT PHENOTYPE COLUMNS HERE
 #e.g. LesionGreen as.data.frame(c(Phenos[,31:32],Phenos[,34:35]))
 
 #should I remove reference (B05.10 I assume) phenotypes and genotypes from list?
@@ -68,7 +68,7 @@ dat <- as.data.frame((Phenos[,8]))  #INSERT PHENOTYPE COLUMNS HERE
 outpt.HEM <- colnames(SNPs)
 thresh.HEM <- list("pos0.95Thresh" = NA, "pos0.975Thresh" = NA, "pos0.99Thresh" = NA, "pos0.999Thresh" = NA, "neg0.95Thresh" = NA, "neg0.975Thresh" = NA, "neg0.99Thresh" = NA, "neg0.999Thresh" = NA)
 
-con <- file("04_bigRRoutput/trueMAF20_10NA/IndPlant_LA2176_Output.log")
+con <- file("04_bigRRoutput/trueMAF20_10NA/IndPlant_LA0480_Output.log")
 sink(con, append=TRUE)
 sink(con, append=TRUE, type="message")
 
@@ -127,4 +127,4 @@ thresh.HEM$"neg0.99Thresh" <- c("neg 0.99 Thresh", thresh.HEM$"neg0.99Thresh")
 thresh.HEM$"neg0.999Thresh" <- c("neg 0.999 Thresh", thresh.HEM$"neg0.999Thresh")
 
 #Write results to output
-write.csv(rbind(thresh.HEM$"pos0.95Thresh",thresh.HEM$"pos0.975Thresh",thresh.HEM$"pos0.99Thresh",thresh.HEM$"pos0.999Thresh",thresh.HEM$"neg0.95Thresh",thresh.HEM$"neg0.975Thresh",thresh.HEM$"neg0.99Thresh",thresh.HEM$"neg0.999Thresh",outpt.HEM),"04_bigRRoutput/trueMAF20_10NA/SlBc_IndPlants_LA2176_hpbin_trueMAF20_10NA.HEM.csv")
+write.csv(rbind(thresh.HEM$"pos0.95Thresh",thresh.HEM$"pos0.975Thresh",thresh.HEM$"pos0.99Thresh",thresh.HEM$"pos0.999Thresh",thresh.HEM$"neg0.95Thresh",thresh.HEM$"neg0.975Thresh",thresh.HEM$"neg0.99Thresh",thresh.HEM$"neg0.999Thresh",outpt.HEM),"04_bigRRoutput/trueMAF20_10NA/SlBc_IndPlants_LA0480_hpbin_trueMAF20_10NA.HEM.csv")
