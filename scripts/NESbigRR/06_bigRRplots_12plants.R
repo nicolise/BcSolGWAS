@@ -6,6 +6,8 @@
 rm(list=ls())
 setwd("~/Documents/GitRepos/BcSolGWAS/")
 setwd("~/Projects/BcSolGWAS/")
+
+#just Manhattan plots for individual plant genotypes
 ############################################################################
 ###Plotting the HEM results
 
