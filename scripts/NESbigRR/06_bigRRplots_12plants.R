@@ -6,6 +6,8 @@
 rm(list=ls())
 setwd("~/Documents/GitRepos/BcSolGWAS/")
 setwd("~/Projects/BcSolGWAS/")
+
+#just Manhattan plots for individual plant genotypes
 ############################################################################
 ###Plotting the HEM results
 
@@ -16,12 +18,12 @@ library(ggplot2)
 library(grid)
 
 #Import data (reorganized from script ReformatBigRRouts.R)
-HEM.plotdata <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF_20NA/SlBc_12plants_trueMAF20_20NA.HEM.PlotFormat.csv")
+HEM.plotdata <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF_10NA/SlBc_12plants_trueMAF20_10NA.HEM.PlotFormat.final.csv")
 
 HEM.plotdata <- HEM.plotdata[,-c(1)]
 
 #get threshhold values 
-HEM.thresh <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF_20NA/SlBc_12plants_trueMAF20_20NA.HEM.Thresh.csv")
+HEM.thresh <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF_10NA/SlBc_12plants_trueMAF20_10NA.HEM.Thresh.final.csv")
 HEM.thresh <- HEM.thresh[,-c(1)]
 
 TH95pos <- HEM.thresh[1,]
@@ -55,7 +57,7 @@ names(myColors) <- levels(HEM.plotdata$Chrom)
 colScale <- scale_colour_manual(name = "Chrom",values = myColors)
 
 #get midpoint positions per chromosome
-((max(HEM.plotdata[ which(HEM.plotdata$Chrom=='14'),]$Index) - min(HEM.plotdata[ which(HEM.plotdata$Chrom=='14'),]$Index))/2+min(HEM.plotdata[ which(HEM.plotdata$Chrom=='14'),]$Index))
+((max(HEM.plotdata[ which(HEM.plotdata$Chrom=='16'),]$Index) - min(HEM.plotdata[ which(HEM.plotdata$Chrom=='16'),]$Index))/2+min(HEM.plotdata[ which(HEM.plotdata$Chrom=='16'),]$Index))
 
 #get length per chromosome segment
 max(HEM.plotdata[which(HEM.plotdata$Chrom.Seg.F=='16.7'),]$Index) - min(HEM.plotdata[which(HEM.plotdata$Chrom.Seg.F=='16.7'),]$Index)
@@ -64,13 +66,13 @@ max(HEM.plotdata[which(HEM.plotdata$Chrom.Seg.F=='16.7'),]$Index) - min(HEM.plot
 #c(1674920, 5242762, 8999082, 11057880, 13580364, 17181767, 20009659, 22371413, 24388631, 26765466, 28559407, 30104939, 31864287, 33980281, 35775028, 38876579)
 
 #this is the correct list for NA20
-#c(1677869, 5250031, 9006772, 11066464, 13584641, 17192569, 20021437, 22387756, 24411342, 26784999, 28587689, 30133032, 31892533, 34009041, 35807682,  9006772)
+#c(1677869, 5250031, 9006772, 11066464, 13584641, 17192569, 20021437, 22387756, 24411342, 26784999, 28587689, 30133032, 31892533, 34009041, 35807682,  38915229)
 
 #greyscale version
 #4 to 15
-for (i in 7){
+for (i in c(7)){
   #jpeg(paste("paper/plots/ActualPaper/bw_Sl_LesionSize_trueMAF20_NA10_lowTR_", names(HEM.plotdata[7]), ".ManhattanPlot.jpg", sep=""), width=8, height=5, units='in', res=600)
-jpeg(paste("plots/paper/bw_Sl_LesionSize_trueMAF20_NA20_lowTR_", names(HEM.plotdata[i]), ".ManhattanPlot.jpg", sep=""), width=8, height=5, units='in', res=600)
+jpeg(paste("plots/paper/bw_Sl_LesionSize_trueMAF20_NA10_lowTR_", names(HEM.plotdata[i]), ".ManhattanPlot.jpg", sep=""), width=8, height=5, units='in', res=600)
   plot(ggplot(HEM.plotdata, aes(x=Index, y=HEM.plotdata[,i]))+
     theme_bw()+
     colScale+
@@ -85,7 +87,7 @@ jpeg(paste("plots/paper/bw_Sl_LesionSize_trueMAF20_NA20_lowTR_", names(HEM.plotd
    geom_text(aes(0,get(paste("TH99neg_", names(HEM.plotdata[i]), sep="")), label = "99% Threshold", vjust = 1.5, hjust=.05), col = "black")+
     theme(legend.position="none")+
     #NA20 chromosomes
-    scale_x_continuous(name="Chromosome", breaks = c(1677869, 5250031, 9006772, 11066464, 13584641, 17192569, 20021437, 22387756, 24411342, 26784999, 28587689, 30133032, 31892533, 34009041, 35807682,  9006772), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
+    scale_x_continuous(name="Chromosome", breaks = c(1677869, 5250031, 9006772, 11066464, 13584641, 17192569, 20021437, 22387756, 24411342, 26784999, 28587689, 30133032, 31892533, 34009041, 35807682, 38915229), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
     #NA10 chromosomes
    # scale_x_continuous(name="Chromosome", breaks = c(1674920, 5242762, 8999082, 11057880, 13580364, 17181767, 20009659, 22371413, 24388631, 26765466, 28559407, 30104939, 31864287, 33980281, 35775028, 38876579), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
     expand_limits(y=0))
@@ -97,8 +99,8 @@ jpeg(paste("plots/paper/bw_Sl_LesionSize_trueMAF20_NA20_lowTR_", names(HEM.plotd
   #with labeling removed for paper
 #jpeg(paste("paper/plots/ActualPaper/FigR5/Routs/pm_BW_Sl_MAF20_highTR_", names(HEM.plotdata[8]), ".ManhattanPlot.jpg", sep=""), width=7.5, height=4, units='in', res=600)
 #4 to 15
-for (i in 4:15){
-  jpeg(paste("plots/paper/bw_Sl_LesionSize_trueMAF20_NA20_hiTR_", names(HEM.plotdata[i]), ".ManhattanPlot.jpg", sep=""), width=8, height=5, units='in', res=600)
+for (i in c(15)){
+  jpeg(paste("plots/paper/bw_Sl_LesionSize_trueMAF20_NA10_hiTR_", names(HEM.plotdata[i]), ".ManhattanPlot.jpg", sep=""), width=8, height=5, units='in', res=600)
   plot(ggplot(HEM.plotdata, aes(x=Index, y=HEM.plotdata[,i]))+
     theme_bw()+
     colScale+
@@ -109,7 +111,7 @@ for (i in 4:15){
     geom_hline(yintercept=get(paste("TH999neg_", names(HEM.plotdata[i]), sep="")), lty=2) +
     geom_text(aes(0,get(paste("TH999neg_", names(HEM.plotdata[i]), sep="")), label = "99.9% Threshold", vjust = 1.2, hjust = .05), col = "black")+
     theme(legend.position="none")+
-  scale_x_continuous(name="Chromosome", breaks = c(1677869, 5250031, 9006772, 11066464, 13584641, 17192569, 20021437, 22387756, 24411342, 26784999, 28587689, 30133032, 31892533, 34009041, 35807682,  9006772), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
+  scale_x_continuous(name="Chromosome", breaks = c(1677869, 5250031, 9006772, 11066464, 13584641, 17192569, 20021437, 22387756, 24411342, 26784999, 28587689, 30133032, 31892533, 34009041, 35807682, 38915229), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
   expand_limits(y=0))
 dev.off()
 }

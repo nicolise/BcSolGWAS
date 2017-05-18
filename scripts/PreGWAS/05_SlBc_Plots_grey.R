@@ -119,25 +119,25 @@ FigDat6$Direction <- ifelse(FigDat6$MeanDiff > 0,1,0)
 FigDat7 <- FigDat6[,c(1,9)]
 FigDat5 <- merge(FigDat5, FigDat7, by="Igeno")
 
-names(FigDat5)
-ggplot(FigDat5, aes(x = Species, y = SpMean, group=Igeno))+
-  geom_point()+
-  geom_line(size=1, aes(color=factor(Direction)), show.legend=F)+
-  theme_bw()+
-  labs(y=expression(Mean ~ Lesion ~ Area ~ per ~ Isolate ~ (cm^{2})), x=element_blank())+
-  scale_x_discrete(labels=c("Domesticated","Wild"))
+# names(FigDat5)
+# ggplot(FigDat5, aes(x = Species, y = SpMean, group=Igeno))+
+#   geom_point()+
+#   geom_line(size=1, aes(color=factor(Direction)), show.legend=F)+
+#   theme_bw()+
+#   labs(y=expression(Mean ~ Lesion ~ Area ~ per ~ Isolate ~ (cm^{2})), x=element_blank())+
+#   scale_x_discrete(labels=c("Domesticated","Wild"))
 
 #------------------------------------------------------------------
-#plot sum of squares for host and for domestication
-#for each isolate
-library(ggplot2)
-SinIsos <- read.csv("output/IsoSpecific/fixANOVA_072716.csv")
-names(SinIsos)
-ggplot(SinIsos, aes(x=Sum.Sq, fill=rn))+
-  geom_density(alpha=0.3)+
-  theme_bw()+
-  labs(y=expression(Density), x=expression(Sum ~ of ~ Squares))+
-  guide_legend(title=NULL)
+# #plot sum of squares for host and for domestication
+# #for each isolate
+# library(ggplot2)
+# SinIsos <- read.csv("output/IsoSpecific/fixANOVA_072716.csv")
+# names(SinIsos)
+# ggplot(SinIsos, aes(x=Sum.Sq, fill=rn))+
+#   geom_density(alpha=0.3)+
+#   theme_bw()+
+#   labs(y=expression(Density), x=expression(Sum ~ of ~ Squares))+
+#   guide_legend(title=NULL)
 #------------------------------------------------------------------------
 #scatter plot with subset of isolates colored in: black and white version
 #have to redo FigDat3$Plant.Lab.Ord to get correct ordering
@@ -219,8 +219,8 @@ p6 <- ggplot(FigDat3, aes(x = Plant.Lab.Ord, y = mLS))+
 p7 <- ggplot(FigDat3, aes(x = Plant.Lab.Ord, y = mLS))+
   theme_bw()+
   #order: all, b05.10, high10, intx, low10
-  scale_color_manual(values = c("black", "grey80"))+
-  geom_line(size=0.5, aes(color=factor(SpFxFIX), group=factor(Igeno)), show.legend=F, alpha=0.8)+
+  scale_color_manual(values = c("black", "black", "grey80"))+
+  geom_line(size=0.5, aes(color=factor(FdrSpp), group=factor(Igeno)), show.legend=F, alpha=0.8)+
   facet_grid(.~SpLabs, scales="free_x")+
   theme(text = element_text(size=14), axis.text.x = element_text(angle = 45, hjust = 1), strip.background = element_blank(), strip.text.x=element_text(color=NA),  axis.title.x=element_text(color=NA), aspect.ratio=1/1)+
   labs(y=expression(Lesion ~ Area ~ (cm^{2})))

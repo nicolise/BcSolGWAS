@@ -8,7 +8,7 @@ setwd("~/Projects/BcSolGWAS/")
 
 #Input files: 
 #Output files: 
-#Plots: Sl_LesionSize_MAF20_meta.ManhattanPlot.jpg AKA the Manhattan plot with Phenotypes > threshold for Domestication phenos vs. Single geno phenos vs. Both
+#Plots: Sl_LesionSize_MAF20_meta.ManhattanPlot.jpg AKA the Manhattan plot with Phenotypes > threshold for Domestication phenos vs. Single geno phenos vs. Both (NOT in paper)
 #AND FigR8_Sl_LesionSize_MAF20_Domestmeta.ManhattanPlot.jpg AKA the Manhattan plot with DmWoD vs. Domesticated vs. Wild 
 ###########################################################################
 #For Plant/ Domest plot

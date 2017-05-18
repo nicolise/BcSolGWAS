@@ -3,7 +3,7 @@
 #081916
 
 #input: Sl_LesionSize_MAF20.HEM.csv
-#plot: FigR6_Summary_999Thresh_ManhattanPlot.jpg
+#plot: FigR6_Summary_99Thresh_ManhattanPlot.jpg
 #-------------------------------------------------------------
 rm(list=ls())
 setwd("~/Projects/BcSolGWAS")
