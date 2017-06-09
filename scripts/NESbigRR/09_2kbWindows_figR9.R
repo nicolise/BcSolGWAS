@@ -120,6 +120,15 @@ ggplot(plotdf, aes(x=Index))+
         expand_limits(y=0)
 dev.off()
 
+ggplot(plotdf, aes(x=SNPnum, y=ScaleSig))+
+  geom_point()
+
+ggplot(plotdf, aes(x=Index))+
+  theme_bw()+
+  geom_point(aes(y=SNPnum), colour="aquamarine2")+
+  scale_x_continuous(name="Chromosome", breaks = c(1671217,5242822, 8992216, 11061288, 13572024, 17204187, 20011250, 22370383, 24391089, 26758962, 28562747, 30110453, 31874774, 33982299, 35769894, 38871001), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16")) +
+  expand_limits(y=0)
+
 jpeg(paste("paper/plots/ActualPaper/SNPdistribution", ".GWPlot.jpg", sep=""), width=8, height=5, units='in', res=600)
 ggplot(plotdf, aes(x=Index))+
   theme_bw()+
