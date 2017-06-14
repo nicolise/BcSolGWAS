@@ -12,7 +12,8 @@ library(dplyr); library(ggplot2)
 setwd("~/Projects/BcSolGWAS")
 #read in annotation file
 DomestAnt <- read.csv("data/GWAS_files/05_annotation/TrueMAF_NAs/Domestication_TopSNPs_SegLong_trueMAF20_10NA.csv")
-DoGenes <- read.csv("data/SNPdat_Annotate/Domestication_TopSNPs_SegLong_trueMAF20_10NA.output.csv")
+#this is just the list of genes, from SNPdat. SNP info etc. must be reattached.
+DoGenes <- read.csv("data/SNPdat_Annotate/Final_annots/Domestication_TopSNPs_SegLong_trueMAF20_10NA.output.csv")
 
 #includes the top 1000 SNPs per plant genotype (all >99% Thr)
 IPGenes <- read.csv("data/SNPdat_Annotate/12Plants_Top1000SNPs_SegWide_trueMAF20_10NA_FORPERL.output.csv")
@@ -35,7 +36,7 @@ IPgen2 <- IPGenes[IPGenes$Distance.to.nearest.feature<1000,]
 IPgen4 <- IPGenes[IPGenes$Distance.to.nearest.feature<2000,]
 
 #sub in IPgen1, IPgen2, IPgen4
-IPgen <- IPgenp5[,c(25,11)]
+IPgen <- IPgen2[,c(25,11)]
 #this includes multiple SNPs per gene
 IPgen <- unique(IPgen)
 IndPlAnt <- IndPlAnt[,-c(1,18)]
@@ -75,6 +76,8 @@ IPant3 <- IPant2 %>%
   group_by(TotPhenos) %>%
   summarise(n = n())
 
+write.csv(IPant2, "data/GWAS_files/05_annotation/FINAL_2kbWindow/12plants_genesTOANNOT.csv")
+
 jpeg("paper/plots/ActualPaper/FigR7/topGenesOverlap_IndPlants_1kbWin.jpg", width=8, height=5, units='in', res=600)
 ggplot(IPant2, aes(IPant2$TotPhenos)) + 
   geom_bar()+
@@ -92,14 +95,16 @@ DomestAnt$TotTraits <- ifelse(abs(DomestAnt$Domesticated) > 0 & abs(DomestAnt$Wi
                                                 ifelse(abs(DomestAnt$Domesticated) >0, "D",
                                                        ifelse(abs(DomestAnt$Wild) >0, "W", "S"))))))
 #yay! now get table for venn diagram
-#remove duplicates by Index
+#remove duplicate SNPs by Index
 DomestAnt <- DomestAnt[!duplicated(DomestAnt$Index),]
-#SNP level venn!
+#SNP level venn! Consistent with the figure
 table(DomestAnt$TotTraits)
 
 #now add genes in
 #first, subset by distance
 DoGenes$Distance_to_nearest_feature <- as.numeric(DoGenes$Distance_to_nearest_feature)
+#multiple listings per gene, with different positional information
+#so: cut off list to remove distant genes (>1kb from SNP, 2kb windows) THEN remove duplicate genes
 #up to 10kb, crazy
 DoGenes$Distance_to_nearest_feature[is.na(DoGenes$Distance_to_nearest_feature)] <-0
 hist(DoGenes$Distance_to_nearest_feature)
@@ -109,27 +114,39 @@ DoGen2 <- DoGenes[DoGenes$Distance_to_nearest_feature<1000,]
 DoGen4 <- DoGenes[DoGenes$Distance_to_nearest_feature<2000,]
 
 #changes this out: DoGen1, DoGen2, DoGen4
-DoGenes <- DoGenp5
+stop("replace the correct DoGen list and delete this stop")
+DoGenes <- DoGen2
 
+#keep only chrom, snp, and gene id
 DoGenes <- DoGenes[,c(1,2,11)]
 DoGenes$geneID <- DoGenes$gene_ID_containing_the_current_feature
 DoGenes$Chrom <- DoGenes$Chromosome_Number
 DoGenes$Pos <- DoGenes$SNP_Position
 DoGenes$Chrom.Pos <- paste(DoGenes$Chrom, DoGenes$Pos, sep='.')
+#now only Chrom, Pos, Chrom.Pos and geneID
 DoGenes <- DoGenes[,c(5,6,7,4)]
+#only Chrom.Pos and geneID
 GeneList <- DoGenes[,c(3,4)]
+#make sure those are unique: choosing only one Gene per SNP
+GeneList <- GeneList[!duplicated(GeneList$Chrom.Pos),]
 
 DomestAnt$Chrom2<- paste("CHROMOSOME",DomestAnt$Chrom, sep='')
 DomestAnt$Chrom.Pos<- paste(DomestAnt$Chrom2,DomestAnt$Pos, sep='.')
 DomestAnt2 <- DomestAnt[,c(2,3,4,5,6,7,11,14)]
 
+#here is where I actually attach Gene ID
+#this gives one D, W, S value for each 
 DoGenAnt <- merge(DomestAnt2, GeneList, by="Chrom.Pos")
 
 #and for annotation list:
 DomestAnt <- DomestAnt[,-c(1)]
 DomestAnt <- DomestAnt[,c(1,2,3,4,5,6,10,11,13)]
 GenesforAnnot <- merge(DomestAnt, GeneList, by="Chrom.Pos")
-write.csv(GenesforAnnot, "data/GWAS_files/05_annotation/Domest_topSNPs_genestoAnnot.csv")
+
+#check venn values
+table(GenesforAnnot$TotTraits)
+
+write.csv(GenesforAnnot, "data/GWAS_files/05_annotation/FINAL_2kbWindow/Domest_genestoANNOT.csv")
 
 #how to summarize per gene for Venn?
 #can take average within genes. will still be 0 if no sig fx snps, nonzero if 1 or more sig fx snps
