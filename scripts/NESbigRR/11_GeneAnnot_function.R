@@ -13,7 +13,7 @@ setwd("~/Projects/BcSolGWAS")
 library(dplyr)
 GenesDForAnnot <- read.csv("data/GWAS_files/05_annotation/Domest_TopSNPs_10NA_intoAnt.csv")
 Genes12ForAnnot <- read.csv("data/GWAS_files/05_annotation/FINAL_2kbWindow/12plants_genestoANNOT.csv")
-FuncAnnot <- read.csv("data/genome/annotation/botrytis_cinerea__t4__1_pfam_to_genes_use.csv")
+FuncAnnot <- read.csv("data/genome/annotation/botrytis_cinerea__t4__1_pfam_to_genes_mycleaned.csv")
 
 head(FuncAnnot)
 
@@ -24,92 +24,95 @@ Funcs <- Funcs[!duplicated(Funcs[,1]),]
 colnames(Funcs)[1] <- "geneID"
 GenesDForAnnot <- GenesDForAnnot[,-c(1)]
 DoGenAnt <- merge(GenesDForAnnot, Funcs, by="geneID")
-#keep only the first mention of each gene
-DoGenAnt <- DoGenAnt[!duplicated(DoGenAnt[,1]),]
 
+#summary DF for WHOLE GENOME
+#remove empty levels of the variable (in case function appears 0 times in whole genome)
+Funcs$PFAM_DESCRIPTION <- droplevels(Funcs$PFAM_DESCRIPTION)
+#how many times does a given function occur in the whole genome?
+WGAntCats <- as.data.frame(table(Funcs$PFAM_DESCRIPTION))
+colnames(WGAntCats)[2] <-"WGGenFreq"
+colnames(WGAntCats)[1] <- "Function"
+WGAntCats <- WGAntCats[-c(1,2),]
+#need to add droplevels() to correctly count the ocurrences of each Function, but this doesn't work for underrepresentation
 DoGenAnt$PFAM_DESCRIPTION <- droplevels(DoGenAnt$PFAM_DESCRIPTION)
 
+#summary DF for ANY phenotype
+#if there is a row in the table, it must be significant for at least one pheno, so can count all rows
 DoAntCats <- as.data.frame(table(DoGenAnt$PFAM_DESCRIPTION))
+DoAntCats <- DoAntCats[-c(1),]
+colnames(DoAntCats)[2] <-"AllDoGenFreq"
+colnames(DoAntCats)[1]<- "Function"
+AntOverrep <- merge(WGAntCats, DoAntCats, by="Function", all=T)
 
-Funcs$PFAM_DESCRIPTION <- droplevels(Funcs$PFAM_DESCRIPTION)
-WGAntCats <- as.data.frame(table(Funcs$PFAM_DESCRIPTION))
+#summary DF for Wild phenotype
+WildAntCats <- DoGenAnt[,c(1,3,6,7)]
+#remove rows when mean_Wild = 0
+WildAntCats <- subset(WildAntCats, WildAntCats[ ,2] != 0) 
+WildAntCats$PFAM_DESCRIPTION <- droplevels(WildAntCats$PFAM_DESCRIPTION)
+WildAntCats <- as.data.frame(table(WildAntCats$PFAM_DESCRIPTION))
+colnames(WildAntCats)[2] <-"WildGenFreq"
+colnames(WildAntCats)[1]<- "Function"
 
-colnames(DoAntCats)[2] <-"DoGenFreq"
-colnames(WGAntCats)[2] <-"WGGenFreq"
+#summary DF for Domestication phenotype
+DomestAntCats <- DoGenAnt[,c(1,2,6,7)]
+DomestAntCats <- subset(DomestAntCats, DomestAntCats[ ,2] != 0) 
+DomestAntCats$PFAM_DESCRIPTION <- droplevels(DomestAntCats$PFAM_DESCRIPTION)
+DomestAntCats <- as.data.frame(table(DomestAntCats$PFAM_DESCRIPTION))
+colnames(DomestAntCats)[2] <-"DomestGenFreq"
+colnames(DomestAntCats)[1]<- "Function"
 
-AntOverrep <- merge(DoAntCats, WGAntCats, by="Var1")
+#summary DF for Sensitivity phenotype
+SensAntCats <- DoGenAnt[,c(1,4,6,7)]
+SensAntCats <- subset(SensAntCats, SensAntCats[ ,2] != 0) 
+SensAntCats$PFAM_DESCRIPTION <- droplevels(SensAntCats$PFAM_DESCRIPTION)
+SensAntCats <- as.data.frame(table(SensAntCats$PFAM_DESCRIPTION))
+colnames(SensAntCats)[2] <-"SensGenFreq"
+colnames(SensAntCats)[1]<- "Function"
+
+#with all=T, can make underrepresentation work by filling in zeroes
+AntOverrep <- merge(AntOverrep, WildAntCats, by="Function", all=T)
+AntOverrep <- merge(AntOverrep, DomestAntCats, by="Function", all=T)
+AntOverrep <- merge(AntOverrep, SensAntCats, by="Function", all=T)
+AntOverrep[is.na(AntOverrep)] <- 0
+
 #remove blank rows
 AntOverrep <- AntOverrep[-c(1,2),]
-sum(AntOverrep[,2])
-sum(AntOverrep[,3])
-#AntOverrep <- rbind(AntOverrep, c(0001,1249,4485))
 
-AntOverrep[AntOverrep$Var1=="Major Facilitator Superfamily",]
 #test for overrepresentation of a function
 #https://stats.stackexchange.com/questions/72553/which-statistical-test-should-be-used-to-test-for-enrichment-of-gene-lists
+#fisher's exact test
+#http://www.biostathandbook.com/fishers.html
 #function my list, function whole list, not-function my list, not-function whole list
 
-fisher.col <- NULL
+#next: modify this to run for each phenotype
 
-for (i in 1:nrow(AntOverrep)){
-  myrow <- AntOverrep[i,]
-  myA <- myrow$DoGenFreq
-  myB <- myrow$WGGenFreq
-  myCmA <- sum(AntOverrep$DoGenFreq)-myA
-  myDmB <- sum(AntOverrep$WGGenFreq)-myB
-  fisher.p <- fisher.test(matrix(c(myA, myB, myCmA, myDmB), nrow=2, ncol=2), alternative="greater")$p.value
-  fisher.col <- append(fisher.col, fisher.p)
+for (j in c(3:6)){
+  fisher.p.over <- NULL
+  fisher.p.under <- NULL
+  for (i in 1:nrow(AntOverrep)){
+    myrow <- AntOverrep[i,]
+    myA <- myrow[,j]
+    myB <- myrow$WGGenFreq
+    myCmA <- sum(AntOverrep[,j])-myA
+    myDmB <- sum(AntOverrep$WGGenFreq)-myB
+    fisher.p.up <- fisher.test(matrix(c(myA, myB, myCmA, myDmB), nrow=2, ncol=2), alternative="greater")$p.value
+    fisher.p.down <- fisher.test(matrix(c(myA, myB, myCmA, myDmB), nrow=2, ncol=2), alternative="less")$p.value
+    fisher.p.over <- append(fisher.p.over, fisher.p.up)
+    fisher.p.under <- append(fisher.p.under, fisher.p.down)
+  }
+  assign(paste("fisher.p.over", names(AntOverrep)[j], sep="."),fisher.p.over)
+  assign(paste("fisher.p.under", names(AntOverrep)[j], sep="."),fisher.p.under)
 }
 
-AntOverrep$Fisher.p <- fisher.col
+#write fisher values into df
+names(AntOverrep)
+AntOverrep$fisher.up.All <- fisher.p.over.AllDoGenFreq
+AntOverrep$fisher.up.Do <- fisher.p.over.DomestGenFreq
+AntOverrep$fisher.up.Wi <- fisher.p.over.WildGenFreq
+AntOverrep$fisher.up.Se <- fisher.p.over.SensGenFreq
+AntOverrep$fisher.dn.All <- fisher.p.under.AllDoGenFreq
+AntOverrep$fisher.dn.Do <- fisher.p.under.DomestGenFreq
+AntOverrep$fisher.dn.Wi <- fisher.p.under.WildGenFreq
+AntOverrep$fisher.dn.Se <- fisher.p.under.SensGenFreq
 
-
-#----------------------------------------------------------------------
-#trying to figure this chunk out
-#someone's function for fisher test across a dataframe (stackoverflow, un=vodka)
-get_fisher <- function(df){
-  mat <- matrix(as.numeric(df[c(2:3)]), ncol=2)
-  f <- fisher.test(as.table(mat), alt="two.sided")
-  return(c(df[1], f$p.value))
-}
-
-fishers <- apply(AntOverrep, 1,  get_fisher)
-
-#another option
-AntOverrep$p_value <- apply(AntOverrep,1,function(x) fisher.test(matrix(x[-1],nrow=728))$p.value)
-
-fisher.test(matrix(AntOverrep[,-1],nrow=728))
-
-#https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Hypergeometric.html
-dhyper(x, m, n, k, log = FALSE)
-dhyper(39, 186, 4485-186, 1249, log=F)
-
-#--------------------------------------------------------------------------------
-
-# #summarize annotations
-# DoGenAnt %>%
-#   group_by(PFAM_DESCRIPTION) %>%
-#   summarize(count_genes = count(geneID, na.rm = TRUE))
-
-mytable <- as.data.frame(table(droplevels(DoGenAnt2$PFAM_DESCRIPTION)))
-write.csv(mytable, "data/GWAS_files/05_annotation/Domest_NA10_FunctionsSummary.csv")
-
-#Enrichment analysis
-#use fisher exact test or hypergeometric test
-
-#first, collapse DoGenAnt table so that there is only one row per annotation
-#so: go long to wide format. 
-#remove geneID, Chrom.Pos, Chrom, Segment, Pos, Index, Domesticated, Wild, DmWoD, PFAM_NAME
-#split TotTraits into new columns (D, W, S... etc)
-#keep PFAM_DESCRIPTION
-DoAntW <- DoGenAnt[,c(12,10)]
-#go wide
-DoAntW <- table(PFAM_DESCRIPTION = DoAntW$PFAM_DESCRIPTION, DoAntW$TotTraits)
-DoAntW <- as.data.frame(DoAntW)
-DoAntW <- reshape(DoAntW, idvar="PFAM_DESCRIPTION", timevar="Var2", direction="wide")
-DoAntW <- rename(DoAntW, c("PFAM_DESCRIPTION"= "PFAM_DESCRIPTION", "Freq.D"="D", "Freq.S"="S", "Freq.W"="W", "Freq.WS"="WS", "Freq.DW"="DW", "Freq.DS"="DS"))
-DoAntW$DSW <- 
-
-#add a column of "any traits"
-DoAntW$Freq.Any <-
-
+write.csv(AntOverrep, "data/GWAS_files/05_annotation/FINAL_2kbWindow/Domestication_AnnotatedGenes.csv")
