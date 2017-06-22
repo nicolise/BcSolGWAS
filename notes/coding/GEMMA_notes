@@ -90,3 +90,5 @@ Martin first prepare the ped file in excel and then transfer (copy paste...exclu
 Each SNP should be represented by two columns (one for each allele, separated by a space eg. A A or A G ) and coded either ACGT or 1-4 where: 1=A, 2=C, 3=G, T=4.  
 
 How do I convert a SNP genotype table into plink binary PED files?. Available from: https://www.researchgate.net/post/How_do_I_convert_a_SNP_genotype_table_into_plink_binary_PED_files [accessed Jun 22, 2017].
+
+http://www.gwaspi.org/?page_id=145
