@@ -9,7 +9,9 @@ rm(list=ls())
 setwd("~/Projects/BcSolGWAS")
 #read in annotation file
 DomestAnt <- read.csv("data/GWAS_files/05_annotation/TrueMAF_NAs/Domestication_TopSNPs_SegLong_trueMAF20_10NA.csv")
-GeneAnnots <- read.csv("data/genome/annotation/botrytis_cinerea__t4__1_pfam_to_genes_use.csv")
+#GeneAnnots <- read.csv("data/genome/annotation/botrytis_cinerea__t4__1_pfam_to_genes_use.csv")
+GeneAnnots <- read.csv("data/Annotate/12Plants_Top1000SNPs_SegWide_trueMAF20_20NA_geneAnnot.csv")
+
 IndPlAnt <- read.csv("data/GWAS_files/05_annotation/IndPlants/Plants_TopSNPs_SegLong_0224_annotated.csv")
 names(DomestAnt)
 #go long to wide

@@ -67,12 +67,12 @@ colScale <- scale_colour_manual(name = "Chrom",values = myColors)
 #for poster figures, width=8, height=4
  jpeg("paper/plots/ActualPaper/FigR7/FigR7a_Summary_99Thresh_ManhattanPlot_NA10.jpg", width=7.5, height=5, units='in', res=600)
 #SUMMtemp <- subset(SUMM.plot[SUMM.plot$Chrom==c(5,6),])
-  ggplot(SUMM.plot, aes(x=Index, y=SUMM))+
+  ggplot(SUMM.plot, aes(x=Index, y=SUMMpos))+
     colScale+ #remove for rainbow plot
     theme_bw()+
 #    scale_x_continuous(breaks = ticks)+
     geom_point(aes(color = factor(Chrom)))+
-    labs(list(y="Number of Significant SNPs Across Plants", x="Chromosome position"))+
+    labs(list(y="Plant Genotypes per Significant SNP", x="Chromosome position"))+
     #nrow=8
     theme(legend.position="none")+
     guides(col = guide_legend(nrow = 8, title=element_blank()))+
