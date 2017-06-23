@@ -42,5 +42,15 @@ mySNPs$missing <- apply(mySNPs[,c(4:100)], 1, function(x) sum(is.na(x)))
 mySNPs <- mySNPs[(mySNPs$max + mySNPs$missing) < 78,]
 
 #and now for making PED format for PLINK!
+#turn df sideways (individuals as rows, SNPs as columns)
+#split each genotype into 2 identical columns (PED assumes diploid)
+#add a first column: FAM1 (no info on isolate families)
+#second column: isolate ID
+#third column: father ID (a column of zeros)
+#fourth column: mother ID (a column of zeros)
+#fifth column: individual sex = 1 (all assumed same)
+#sixth  column: binary  phenotype (all = 1)
+#fix column order
+df2[,c(1,3,2,4)]
 
 write.csv(mySNPs, "GEMMA_files/02_csvPrep/hp_charMAF20_10NA.csv")
