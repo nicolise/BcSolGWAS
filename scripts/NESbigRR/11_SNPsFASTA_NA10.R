@@ -45,7 +45,7 @@ DomestAnnot.dom <- subset(DomestAnnot, DomestAnnot[ ,2] != 0)
 DomestAnnot.wild <- subset(DomestAnnot, DomestAnnot[,3] != 0)
 DomestAnnot.sens <- subset(DomestAnnot, DomestAnnot[,4] != 0)
 
-DomestAnnot <- DomestAnnot.sens
+DomestAnnot <- DomestAnnot.dom
 
 #all domestication phenotypes:
 DomestAnnot <- as.data.frame(DomestAnnot[,c("geneID")])
@@ -56,4 +56,4 @@ DomestAnnot <- merge(DomestAnnot, FASTAgetseqs, by="Gene")
 names(DomestAnnot)
 #install.packages("seqinr")
 library(seqinr)
-write.fasta(as.list(DomestAnnot$sequence),DomestAnnot$Gene,"data/GWAS_files/05_annotation/DomestGenes_sens_NA10.fasta")
+write.fasta(as.list(DomestAnnot$sequence),DomestAnnot$Gene,"data/GWAS_files/05_annotation/DomestGenes_domest_NA10.fasta")
