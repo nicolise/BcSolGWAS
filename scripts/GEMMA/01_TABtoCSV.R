@@ -5,7 +5,8 @@
 rm(list=ls())
 #on linux desktop
 setwd("~/Documents/GitRepos/BcSolGWAS/data/")
-
+#on windows laptop
+setwd("~/Projects/BcSolGWAS/data")
 #convert .tab SNP file to .csv
 #sticking to MAF20, 10% missingness
 
@@ -42,6 +43,7 @@ mySNPs$missing <- apply(mySNPs[,c(4:100)], 1, function(x) sum(is.na(x)))
 mySNPs <- mySNPs[(mySNPs$max + mySNPs$missing) < 78,]
 
 #and now for making PED format for PLINK!
+  #do not need positional info: just SNP states for PED
 #turn df sideways (individuals as rows, SNPs as columns)
 #split each genotype into 2 identical columns (PED assumes diploid)
 #add a first column: FAM1 (no info on isolate families)
@@ -51,6 +53,15 @@ mySNPs <- mySNPs[(mySNPs$max + mySNPs$missing) < 78,]
 #fifth column: individual sex = 1 (all assumed same)
 #sixth  column: binary  phenotype (all = 1)
 #fix column order
+mySNPs2 <- mySNPs[,-c(1:3, 101:107)]
+write.csv(mySNPs2, "GEMMA_files/02_csvPrep/hp_charMAF20_10NA_forPED.csv")
 df2[,c(1,3,2,4)]
+
+mySNPs3 <- as.data.frame(NULL)
+for(i in 1:nrow(mySNPs2)){
+  mySNPs3<-rbind(mySNPs3, mySNPs2[i,])
+  mySNPs3<-rbind(mySNPs3, mySNPs2[i,])
+}
+
 
 write.csv(mySNPs, "GEMMA_files/02_csvPrep/hp_charMAF20_10NA.csv")
