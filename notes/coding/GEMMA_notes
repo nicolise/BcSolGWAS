@@ -1,0 +1,94 @@
+cd Documents/
+./gemma -h 1
+
+ QUICK GUIDE
+ to generate a relatedness matrix: 
+         ./gemma -bfile [prefix] -gk [num] -o [prefix]
+         ./gemma -g [filename] -p [filename] -gk [num] -o [prefix]
+ to generate the S matrix: 
+         ./gemma -bfile [prefix] -gs -o [prefix]
+         ./gemma -p [filename] -g [filename] -gs -o [prefix]
+         ./gemma -bfile [prefix] -cat [filename] -gs -o [prefix]
+         ./gemma -p [filename] -g [filename] -cat [filename] -gs -o [prefix]
+         ./gemma -bfile [prefix] -sample [num] -gs -o [prefix]
+         ./gemma -p [filename] -g [filename] -sample [num] -gs -o [prefix]
+ to generate the q vector: 
+         ./gemma -beta [filename] -gq -o [prefix]
+         ./gemma -beta [filename] -cat [filename] -gq -o [prefix]
+ to generate the ldsc weigthts: 
+         ./gemma -beta [filename] -gw -o [prefix]
+         ./gemma -beta [filename] -cat [filename] -gw -o [prefix]
+ to perform eigen decomposition of the relatedness matrix: 
+         ./gemma -bfile [prefix] -k [filename] -eigen -o [prefix]
+         ./gemma -g [filename] -p [filename] -k [filename] -eigen -o [prefix]
+ to estimate variance components: 
+         ./gemma -bfile [prefix] -k [filename] -vc [num] -o [prefix]
+         ./gemma -p [filename] -k [filename] -vc [num] -o [prefix]
+         ./gemma -bfile [prefix] -mk [filename] -vc [num] -o [prefix]
+         ./gemma -p [filename] -mk [filename] -vc [num] -o [prefix]
+         ./gemma -beta [filename] -cor [filename] -vc [num] -o [prefix]
+         ./gemma -beta [filename] -cor [filename] -cat [filename] -vc [num] -o [prefix]
+         options for the above two commands: -crt -windowbp [num]
+         ./gemma -mq [filename] -ms [filename] -mv [filename] -vc [num] -o [prefix]
+         or with summary statistics, replace bfile with mbfile, or g or mg; vc=1 for HE weights and vc=2 for LDSC weights
+         ./gemma -beta [filename] -bfile [filename] -cat [filename] -wsnp [filename] -wcat [filename] -vc [num] -o [prefix]
+         ./gemma -beta [filename] -bfile [filename] -cat [filename] -wsnp [filename] -wcat [filename] -ci [num] -o [prefix]
+ to fit a linear mixed model: 
+         ./gemma -bfile [prefix] -k [filename] -lmm [num] -o [prefix]
+         ./gemma -g [filename] -p [filename] -a [filename] -k [filename] -lmm [num] -o [prefix]
+ to fit a linear mixed model to test g by e effects: 
+         ./gemma -bfile [prefix] -gxe [filename] -k [filename] -lmm [num] -o [prefix]
+         ./gemma -g [filename] -p [filename] -a [filename] -gxe [filename] -k [filename] -lmm [num] -o [prefix]
+ to fit a univariate linear mixed model with different residual weights for different individuals: 
+         ./gemma -bfile [prefix] -weight [filename] -k [filename] -lmm [num] -o [prefix]
+         ./gemma -g [filename] -p [filename] -a [filename] -weight [filename] -k [filename] -lmm [num] -o [prefix]
+ to fit a multivariate linear mixed model: 
+         ./gemma -bfile [prefix] -k [filename] -lmm [num] -n [num1] [num2] -o [prefix]
+         ./gemma -g [filename] -p [filename] -a [filename] -k [filename] -lmm [num] -n [num1] [num2] -o [prefix]
+ to fit a Bayesian sparse linear mixed model: 
+         ./gemma -bfile [prefix] -bslmm [num] -o [prefix]
+         ./gemma -g [filename] -p [filename] -a [filename] -bslmm [num] -o [prefix]
+ to obtain predicted values: 
+         ./gemma -bfile [prefix] -epm [filename] -emu [filename] -ebv [filename] -k [filename] -predict [num] -o [prefix]
+         ./gemma -g [filename] -p [filename] -epm [filename] -emu [filename] -ebv [filename] -k [filename] -predict [num] -o [prefix]
+ to calculate correlations between SNPs: 
+         ./gemma -bfile [prefix] -calccor -o [prefix]
+         ./gemma -g [filename] -p [filename] -calccor -o [prefix]
+
+
+Data entry: need a .PED file
+http://www.shapeit.fr/pages/m02_formats/pedmap.html
+
+The PED file describes the individuals and the genetic data. The PED file corresponding to the example dataset is:
+FAM1 IND1  0     0     1 0 A A T T 0 0
+FAM2 IND2  0     0     1 0 A G T C T A
+FAM3 TRIOF 0     0     1 0 A G T C A T
+FAM4 TRIOM 0     0     2 0 A G T C A T
+FAM5 TRIOC TRIOF TRIOM 1 0 A A C T A T
+FAM6 DUOP  0     0     2 0 G A T C A A
+FAM7 DUOC  DUOP  0     2 0 A A T C A A
+
+This file can be SPACE or TAB delimited. Each line corresponds to a single individual. The first 6 columns are:
+Family ID [string]
+Individual ID [string]
+Father ID [string]
+Mother ID [string]
+Sex [integer]
+Phenotype [float]
+
+Columns 7 & 8 code for the observed alleles at SNP1, columns 9 & 10 code for the observed alleles at SNP2, and so on. Missing data are coded as "0 0" as for example for SNP3 of IND1. This file should have N lines and 2L+6 columns, where N and L are the numbers of individuals and SNPs contained in the dataset respectively.
+
+Martin first prepare the ped file in excel and then transfer (copy paste...exclude the column heading) the data to notepad...save as martin.ped. The first six columns are mandatory followed by the genotype data
+
+1). Family ID (Add unique alphanumeric individual's family ID or 1,2,3,.. )
+2). Individual ID (see above)
+3). Paternal ID (Add corresponding to father's individual ID or "0" if unknown)
+4). Maternal ID (Add corresponding to mother's individual ID or "0" if unknown)
+5). Sex (Add 1=male; 2=female; 0=unknown)
+6). Phenotype or Affection status (0=unaffected; 1= affected; 0=unkown)
+
+Each SNP should be represented by two columns (one for each allele, separated by a space eg. A A or A G ) and coded either ACGT or 1-4 where: 1=A, 2=C, 3=G, T=4.  
+
+How do I convert a SNP genotype table into plink binary PED files?. Available from: https://www.researchgate.net/post/How_do_I_convert_a_SNP_genotype_table_into_plink_binary_PED_files [accessed Jun 22, 2017].
+
+http://www.gwaspi.org/?page_id=145
