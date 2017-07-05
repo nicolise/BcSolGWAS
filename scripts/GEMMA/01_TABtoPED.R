@@ -55,30 +55,40 @@ mySNPs <- mySNPs[(mySNPs$max + mySNPs$missing) < 78,]
 #fix column order
 mySNPs2 <- mySNPs[,-c(1:3, 101:107)]
 write.csv(mySNPs2, "GEMMA_files/02_csvPrep/hp_charMAF20_10NA_forPED.csv")
-df2[,c(1,3,2,4)]
 #df2[,c(1,3,2,4)]
 
-<<<<<<< HEAD
-# #in ~3 hours, R completes 1/3 of this.
-# mySNPs3 <- as.data.frame(NULL)
-# for(i in 1:nrow(mySNPs2)){
-#   mySNPs3<-rbind(mySNPs3, mySNPs2[i,])
-#   mySNPs3<-rbind(mySNPs3, mySNPs2[i,])
-# }
-=======
 #in 48 + 19 hours, finished 46,5853 rows = 85% of 54,6540
 #I'll finish from there. 465853/2 = 232926 is done. 232927 was half done
 #mySNPs3 <- rbind(mySNPs3, mySNPs2[232927,])
 #now start from 232928 
+
 Sys.time()
 mySNPs3 <- as.data.frame(NULL)
-for(i in 232928:nrow(mySNPs2)){
+for(i in 1:nrow(mySNPs2)){
   mySNPs3<-rbind(mySNPs3, mySNPs2[i,])
   mySNPs3<-rbind(mySNPs3, mySNPs2[i,])
 }
 Sys.time()
->>>>>>> c1ac92489139c2a75006e8d39ccff550234d5305
+
+mySNPs3 <- read.csv("GEMMA_files/02_csvPrep/dp_charMAF20_10NA.csv")
+#transpose and format for PED
+mySNPs3 <- mySNPs3[,-c(1)]
+mySNPs4 <- as.data.frame(t(mySNPs3))
+#add binary phenotype = 1 (6)
+mySNPs4 <- cbind("Pheno" = 1, mySNPs4)
+#add individual sex = 1 (5)
+mySNPs4 <- cbind("sex" = 1, mySNPs4)
+#add Mother = 0 (4)
+mySNPs4 <- cbind("Mother" = 0, mySNPs4)
+#add Father = 0 (3)
+mySNPs4 <- cbind("Father" = 0, mySNPs4)
+#turn row names into column 2
+mySNPs4 <- cbind(rownames(mySNPs4), mySNPs4)
+colnames(mySNPs4)[1] <- 'Isolate'
+#add the fam column (1)
+mySNPs4 <- cbind("FAM" = "FAM1", mySNPs4)
 
 
 write.csv(mySNPs3, "GEMMA_files/02_csvPrep/dp_charMAF20_10NA.csv")
 write.csv(mySNPs, "GEMMA_files/02_csvPrep/hp_charMAF20_10NA.csv")
+write.csv(mySNPs4, "GEMMA_files/02_csvPrep/PED_hpcharMAF20NA10.csv")
