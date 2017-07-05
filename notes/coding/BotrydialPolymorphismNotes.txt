@@ -1,0 +1,35 @@
+Notes: SNPdat for botrydial polymorphisms
+https://code.google.com/archive/p/snpdat/
+
+On windows: open (strawberry) Perl command line
+
+Usage: perl SNPdat –I Input_file –f Fasta_file –g Gene_transfer_file –o output_file 
+
+default for -o if not specified is Input_file.OUTPUT
+
+The version for Domestication:
+
+perl Programs/SNPdat_package_v1.0.5/SNPdat_v1.0.5.pl -i Projects/BcSolGWAS/data/SNPdat_Annotate/Domestication_TopSNPs_SegLong_trueMAF20_10NA_FORPERL.txt -f Projects/BcSolGWAS/data/Annotate/suziT4.fasta -g Projects/BcSolGWAS/data/SNPdat_Annotate/genes_Chromosome.gtf
+
+Optional usage: -o output_file
+
+-i
+tab-delimited input file: chromosome_id    position    mutation
+must remove headers from file ***
+format: “chr1” in gtf, “Chromosome1” in fasta
+From: Projects\BcSolGWAS\data\GWAS_files\05_annotation\12Plants_Top1000SNPs_SegWide_trueMAF20_20NA_forPERL.csv
+In:
+Projects/BcSolGWAS/data/Annotate/12Plants_Top1000SNPs_SegWide_trueMAF20_20NA_forPERL.csv
+
+-f
+From:
+the T4 reference fasta file. FULL GENOME.
+C:\Users\nesoltis\Documents\Projects\BcSolGWAS\data\genome\WGS\suziT4.fasta
+In: 
+Projects/BcSolGWAS/data/Annotate/suziT4.fasta
+
+-g
+The gtf file
+From: C:\Users\nesoltis\Documents\Projects\BcSolGWAS\data\genome\WGS\genes.gtf
+In: 
+Projects/BcSolGWAS/data/Annotate/genes.gtf

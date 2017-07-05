@@ -57,11 +57,12 @@ mySNPs2 <- mySNPs[,-c(1:3, 101:107)]
 write.csv(mySNPs2, "GEMMA_files/02_csvPrep/hp_charMAF20_10NA_forPED.csv")
 df2[,c(1,3,2,4)]
 
-mySNPs3 <- as.data.frame(NULL)
-for(i in 1:nrow(mySNPs2)){
-  mySNPs3<-rbind(mySNPs3, mySNPs2[i,])
-  mySNPs3<-rbind(mySNPs3, mySNPs2[i,])
-}
+# #in ~3 hours, R completes 1/3 of this.
+# mySNPs3 <- as.data.frame(NULL)
+# for(i in 1:nrow(mySNPs2)){
+#   mySNPs3<-rbind(mySNPs3, mySNPs2[i,])
+#   mySNPs3<-rbind(mySNPs3, mySNPs2[i,])
+# }
 
 
 write.csv(mySNPs, "GEMMA_files/02_csvPrep/hp_charMAF20_10NA.csv")

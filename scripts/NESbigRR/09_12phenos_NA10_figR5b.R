@@ -22,11 +22,11 @@ Thresh <- Thresh[,c(2:14)]
 Threshval <- Thresh[7,]
 names(Threshval)
 SNPbin <- SNPlist
-for (i in 4:13){
-  assign(paste("Thresh_",colnames(SNPbin[i]),sep=''), Threshval[,i])
+for (i in 2:13){
+  assign(paste("Thresh_",colnames(SNPbin[i+2]),sep=''), Threshval[,i])
 }
-#4 to 13
-for (i in 4:13){
+#4 to 15
+for (i in 4:15){
   fxcol = SNPbin[,paste(colnames(SNPbin[i]),sep='')]
   mythresh = get(paste("Thresh_",colnames(SNPbin[i]),sep=''))
   SNPbin[,paste(colnames(SNPbin[i]),"pos",sep='')] <- ifelse(fxcol > mythresh, 1, 0)
@@ -36,10 +36,10 @@ for (i in 4:13){
 #but if the positive > 0, force negative to zero.
 Threshval <- Thresh[3,]
 for (i in 2:13){
-  assign(paste("Thresh_",colnames(SNPbin[i]),sep=''), Threshval[,i])
+  assign(paste("Thresh_",colnames(SNPbin[i+2]),sep=''), Threshval[,i])
 }
-#4 to 13
-for (i in 4:13){
+#4 to 15
+for (i in 4:15){
   fxcol = SNPbin[,paste(colnames(SNPbin[i]),sep='')]
   mythresh = get(paste("Thresh_",colnames(SNPbin[i]),sep=''))
   poscol = SNPbin[,paste(colnames(SNPbin[i]),"pos",sep='')]
@@ -52,6 +52,8 @@ SNPbin$SUMMpos <- rowSums(SNPbin[,c(17:28)])
 SNPbin$SUMMneg <- rowSums(SNPbin[,c(29:40)])
 SNPbin$SUMMneg
 SNPbin$SUMM <- SNPbin$SUMMneg + SNPbin$SUMMpos
+
+table(SNPbin$SUMM)
 
 SUMM.plot <- SNPbin
 #draw the plots!!!

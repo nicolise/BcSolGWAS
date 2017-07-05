@@ -16,8 +16,8 @@ DomestAnt <- read.csv("data/GWAS_files/05_annotation/TrueMAF_NAs/Domestication_T
 DoGenes <- read.csv("data/SNPdat_Annotate/Final_annots/Domestication_TopSNPs_SegLong_trueMAF20_10NA.output.csv")
 
 #includes the top 1000 SNPs per plant genotype (all >99% Thr)
-IPGenes <- read.csv("data/SNPdat_Annotate/12Plants_Top1000SNPs_SegWide_trueMAF20_10NA_FORPERL.output.csv")
-IndPlAnt <- read.csv("data/GWAS_files/05_annotation/12Plants_Top1000SNPs_SegWide_trueMAF20_10NA.csv")
+IPGenes <- read.csv("data/SNPdat_Annotate/Final_annots/12Plants_Top1000SNPs_SegWide_trueMAF20_10NA_FORPERL.output.csv")
+IndPlAnt <- read.csv("data/SNPdat_Annotate/Final_annots/12Plants_Top1000SNPs_SegWide_trueMAF20_10NA.csv")
 names(DomestAnt)
 #go long to wide
 
@@ -71,6 +71,7 @@ for (i in 2:13){
 
 IPant2$TotPhenos <- (IPant2$tot_LA0410 + IPant2$tot_LA0480 + IPant2$tot_LA1547 + IPant2$tot_LA1589 + IPant2$tot_LA1684 + IPant2$tot_LA2093 + IPant2$tot_LA2176 + IPant2$tot_LA2706 + IPant2$tot_LA3008 + IPant2$tot_LA3475 + IPant2$tot_LA4345 + IPant2$tot_LA4355)
 hist(IPant2$TotPhenos)
+table(IPant2$TotPhenos)
 
 IPant3 <- IPant2 %>%
   group_by(TotPhenos) %>%
