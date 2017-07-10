@@ -55,7 +55,6 @@ mySNPs <- mySNPs[(mySNPs$max + mySNPs$missing) < 78,]
 #fix column order
 mySNPs2 <- mySNPs[,-c(1:3, 101:107)]
 write.csv(mySNPs2, "GEMMA_files/02_csvPrep/hp_charMAF20_10NA_forPED.csv")
-df2[,c(1,3,2,4)]
 #df2[,c(1,3,2,4)]
 
 <<<<<<< HEAD
@@ -78,7 +77,6 @@ for(i in 232928:nrow(mySNPs2)){
 }
 Sys.time()
 >>>>>>> c1ac92489139c2a75006e8d39ccff550234d5305
-
 
 write.csv(mySNPs3, "GEMMA_files/02_csvPrep/dp_charMAF20_10NA.csv")
 write.csv(mySNPs, "GEMMA_files/02_csvPrep/hp_charMAF20_10NA.csv")
