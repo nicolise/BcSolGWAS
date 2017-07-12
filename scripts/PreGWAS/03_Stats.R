@@ -3,9 +3,9 @@
 #-------------------------------------------------------------
 rm(list=ls())
 setwd("~/Projects/BcSolGWAS")
-ModDat <- read.csv("data/SlBcDATAFRAME.csv")
+ModDat <- read.csv("data/preGWAS/SlBcDATAFRAME.csv")
 #get list of isolate groups
-IsoGroups <- read.csv("data/IsolateGroups.csv")
+IsoGroups <- read.csv("data/preGWAS/IsolateGroups.csv")
 IsoGroups <- IsoGroups[,1:4]
 #-------------------------------------------------
 
@@ -54,11 +54,49 @@ ModDat.cv <- ddply(ModDat, c("Igeno", "Species"), summarise,
 ModDat.cv$cvLS <- ModDat.cv$sdLS/ModDat.cv$mLS
 ModDat.cv$Species.Num <- as.numeric(ModDat.cv$Species)
 t.test(ModDat.cv$cvLS, ModDat.cv$Species.Num)
-wilcox.test(ModDat.cv$cvLS, ModDat.cv$Species.Num)
+wilcox.test(ModDat.cv$cvLS ~ ModDat.cv$Species.Num)
+wilcox.test(ModDat.cv$mLS ~ ModDat.cv$Species.Num)
 
-ModDat.cv <- ddply(ModDat, c("PlGenoNm", "Species"), summarise, 
+#ModDat.cv <- ddply(ModDat, c("PlGenoNm", "Species"), summarise, 
+#                   mLS = mean(Scale.LS),
+#                   sdLS = sd(Scale.LS))
+
+#wilcoxon signed-rank test between each PAIR of host genotypes
+#on isolate means
+ModDat.plant <- ddply(ModDat, c("Igeno", "PlGenoNm"), summarise, 
                    mLS = mean(Scale.LS),
                    sdLS = sd(Scale.LS))
+ModDat.plant$Plant.Num<- as.numeric(ModDat.plant$PlGenoNm)
+
+#now subset data frame to look at pairs of plant genotypes
+outdf <- as.data.frame(NULL)
+newdata <- NULL
+library(data.table)
+for (j in c(1:12)){
+  for (i in c(1:12)){
+    print(unique(newdata$Plant.Num))
+    tryCatch({
+      newdata <- ModDat.plant[ ModDat.plant$Plant.Num %in% c(i,j), ]
+      newout <- wilcox.test(newdata$mLS ~ newdata$Plant.Num)
+      #print(newout)
+      df <- as.data.frame(newout$statistic)
+      setDT(df, keep.rownames = T)[]
+      df$Plant1 <- unique(newdata$Plant.Num)[1]
+      df$Plant2 <- unique(newdata$Plant.Num)[2]
+      df$sig <- newout$p.value
+      outdf = rbind(outdf, df)
+      if (i==j) stop("Urgh, these are the same group !")
+    }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
+    #print(newout$statistic)
+    #print(newout$p.value)
+  }
+}
+outdf2 <- unique(outdf)
+outdf2$fdr.p <- p.adjust(outdf2$sig, method="fdr")
+write.csv(outdf2, "paper/plots/ActualPaper/Supp/WilcoxBYPLANT_out.csv")
+
+t.test(ModDat.cv$cvLS, ModDat.cv$Species.Num)
+wilcox.test(ModDat.cv$cvLS, ModDat.cv$Species.Num)
 
 #alternate way to do this: F-test for equality of variance of lesion size data between domesticated and wild
 dbottle <- lm(Scale.LS ~ Igeno * Species, data=ModDat)
