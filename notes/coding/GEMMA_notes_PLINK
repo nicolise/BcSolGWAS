@@ -92,3 +92,40 @@ Each SNP should be represented by two columns (one for each allele, separated by
 How do I convert a SNP genotype table into plink binary PED files?. Available from: https://www.researchgate.net/post/How_do_I_convert_a_SNP_genotype_table_into_plink_binary_PED_files [accessed Jun 22, 2017].
 
 http://www.gwaspi.org/?page_id=145
+
+NEXT need to generate a MAP file
+http://zzz.bwh.harvard.edu/plink/data.shtml
+
+By default, each line of the MAP file describes a single marker and must contain exactly 4 columns:
+     chromosome (1-22, X, Y or 0 if unplaced)
+     rs# or snp identifier
+     Genetic distance (morgans)
+     Base-pair position (bp units)
+Genetic distance can be specified in centimorgans with the --cm flag. Alternatively, you can use a MAP file with the genetic distance excluded by adding the flag --map3, i.e.
+plink --file mydata --map3
+In this case, the three columns are expected to be
+     chromosome (1-22, X, Y or 0 if unplaced)
+     rs# or snp identifier
+     Base-pair position (bp units)
+Base-pair positions are expected to correspond to positive integers within the range of typical human chromosome sizes.
+Note Most analyses do not require a genetic map to be specified in any case; specifying a genetic (cM) map is most crucial for a set of analyses that look for shared segments between individuals. For basic association testing, the genetic distance column can be set at 0.
+SNP identifers can contain any characters except spaces or tabs; also, you should avoid * symbols in names also.
+To exclude a SNP from analysis, set the 4th column (physical base-pair position) to any negative value (this will only work for MAP files, not for binary BIM files).
+     1  rs123456  0  1234555
+     1  rs234567  0  1237793
+     1  rs224534  0  -1237697        <-- exclude this SNP
+     1  rs233556  0  1337456
+     ...
+The MAP file must therefore contain as many markers as are in the PED file. The markers in the PED file do not need to be in genomic order: (i.e. the order MAP file should align with the order of the PED file markers).
+
+
+NEXT convert ped file to bed (binary ped)
+cd to data file folder. move a copy of plink executable there.
+./plink --file GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/dpcharMAF20NA10 --make-bed --map3 --out GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/dpcharMAF20NA10.out
+
+may need to use --map3 tag for map file
+can use --noweb to skip online version
+
+STILL getting an error here. It wants to see phenotypes??
+
+

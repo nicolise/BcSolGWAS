@@ -1,0 +1,11 @@
+Caryn notes on GEMMA - BIMBAM option
+
+In the shell files, the lines that are the most relevant to you are the converting VCF to bimbam (module_pipeline1.sh line 95), and then using GEMMA to make a relatedness matrix (module_pipeline2.sh, line 60) and running GEMMA (module_pipeline2.sh, line 62). In module_pipeline2.sh, the 'awk' commands are subsetting my phenotype file into columns for one phenotype.
+
+About pyVCF. It looks like you can install it using pip, which should be easy: https://stackoverflow.com/questions/23066322/how-does-one-install-python-modules
+
+The online manual doesn't really tell you how to install it: https://pyvcf.readthedocs.io/en/latest/INTRO.html
+
+Either way, install and try to run the vcf_to_bimbam.py on a small subset of your VCF and see what happens. If it is spitting out something that doesn't make any sense I would love to know :) We can put it up on git and fiddle with it.
+
+Thinking about it, the vcf_to_bimbam.py is written with diploids in mind... In order for it to work, we may need to change it, but not dramatically. I think we'd have to change the genoDict, line 19, to work for haploid input.

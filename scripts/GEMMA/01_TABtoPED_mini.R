@@ -42,6 +42,9 @@ mySNPs$missing <- apply(mySNPs[,c(4:100)], 1, function(x) sum(is.na(x)))
 #MAF is too low if: max + missing > 78
 mySNPs <- mySNPs[(mySNPs$max + mySNPs$missing) < 78,]
 
+#make it mini
+mySNPs <- mySNPs[c(1:10),]
+
 #and now for making PED format for PLINK!
   #do not need positional info: just SNP states for PED
 #turn df sideways (individuals as rows, SNPs as columns)
@@ -57,11 +60,6 @@ mySNPs2 <- mySNPs[,-c(1:3, 101:107)]
 #write.csv(mySNPs2, "GEMMA_files/02_csvPrep/hp_charMAF20_10NA_forPED.csv")
 #df2[,c(1,3,2,4)]
 
-#in 48 + 19 hours, finished 465,853 rows = 85% of 546,540
-#I'll finish from there. 465853/2 = 232926 is done. 232927 was half done
-#mySNPs3 <- rbind(mySNPs3, mySNPs2[232927,])
-#now start from 232928 
-#second time through: [1] "2017-07-05 13:52:59 PDT" until [1] "2017-07-09 14:22:10 PDT", so 4 days
 
 Sys.time()
 mySNPs3 <- as.data.frame(NULL)
@@ -70,9 +68,8 @@ for(i in 1:nrow(mySNPs2)){
   mySNPs3<-rbind(mySNPs3, mySNPs2[i,])
 }
 Sys.time()
-write.csv(mySNPs3, "GEMMA_files/02_csvPrep/dp_charMAF20_10NA.csv")
+write.csv(mySNPs3, "GEMMA_files/02_csvPrep/minidata/dp_charMAF20_10NA.csv")
 
-mySNPs3 <- read.csv("GEMMA_files/02_csvPrep/dp_charMAF20_10NA.csv")
 #transpose and format for PED
 mySNPs3 <- mySNPs3[,-c(1)]
 mySNPs4 <- as.data.frame(t(mySNPs3))
@@ -96,10 +93,10 @@ myMAP <- mySNPs[,c("X.CHROM","POS")]
 myMAP2 <- as.data.frame(lapply(myMAP, function(x) {
                  gsub("Chromosome", "", x)
               }))
-write.csv(myMAP2, "GEMMA_files/02_csvPrep/MAP_hpcharMAF20NA10.csv")
+write.csv(myMAP2, "GEMMA_files/02_csvPrep/minidata/MAP_hpcharMAF20NA10.csv")
 #add a column of "SNP identifiers" in excel and remove headers
 
-write.csv(mySNPs3, "GEMMA_files/02_csvPrep/dp_charMAF20_10NA.csv")
-write.csv(mySNPs, "GEMMA_files/02_csvPrep/hp_charMAF20_10NA.csv")
-write.csv(mySNPs4, "GEMMA_files/02_csvPrep/PED_hpcharMAF20NA10.csv")
-write.delim(mySNPs4, "GEMMA_files/02_csvPrep/PED_dpcharMAF20NA10.csv", quote = FALSE, col.names = F, row.names = FALSE, sep = "\t")
+write.csv(mySNPs3, "GEMMA_files/02_csvPrep/minidata/dp_charMAF20_10NA.csv")
+write.csv(mySNPs, "GEMMA_files/02_csvPrep/minidata/hp_charMAF20_10NA.csv")
+write.csv(mySNPs4, "GEMMA_files/02_csvPrep/minidata/PED_hpcharMAF20NA10.csv")
+write.delim(mySNPs4, "GEMMA_files/02_csvPrep/minidata/PED_dpcharMAF20NA10.csv", quote = FALSE, col.names = F, row.names = FALSE, sep = "\t")
