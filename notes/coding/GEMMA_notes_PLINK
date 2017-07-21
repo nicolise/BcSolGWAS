@@ -121,7 +121,12 @@ The MAP file must therefore contain as many markers as are in the PED file. The 
 
 NEXT convert ped file to bed (binary ped)
 cd to data file folder. move a copy of plink executable there.
-./plink --file GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/dpcharMAF20NA10 --make-bed --map3 --out GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/dpcharMAF20NA10.out
+
+plink --file [file_prefix] --make-bed --out [bedfile_prefix]
+
+failed with plink 1.07:
+
+./plink --file GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/fulldata/dpcharMAF20NA10 --make-bed --noweb --map3 --missing-genotype NA --out GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/fulldata/dpcharMAF20NA10_out
 
 may need to use --map3 tag for map file
 can use --noweb to skip online version
@@ -129,3 +134,51 @@ can use --noweb to skip online version
 STILL getting an error here. It wants to see phenotypes??
 
 
+#trying weird stuff:
+
+--make-just-bim fails:
+
+./plink --file GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/fulldata/dpcharMAF20NA10 --make-just-bim --noweb --out GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/fulldata/dpcharMAF20NA10_outJbim
+
+--make-just-fam also fails
+
+trying plink 1.9:
+./plink --file GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/fulldata/dpcharMAF20NA10 --make-bed --noweb --missing-genotype NA --out GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/fulldata/dpcharMAF20NA10_out
+
+./plink --file GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/fulldata/dpcharMAF20NA10 --make-bed --out GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/fulldata/dpcharMAF20NA10_out
+
+need to remove chromosome contig numbers from MAP file
+should I just remove that entirely, or make pseudochromosomes, 1 per contig?
+leaning toward pseudochromosomes
+
+now with pseudochromosomes: GEMMA_files/02_csvPrep/fulldata/MAP_dpcharMAF20NA10_55chrom.tsv
+
+Run here:
+
+GEMMA_files/02_csvPrep/fulldata/PLINK_55chrom/dpcharMAF20NA10
+
+./plink --file GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/fulldata/PLINK_55chrom/dpcharMAF20NA10 --make-bed --chr-set 55 --out GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/fulldata/PLINK_55chrom/dpcharMAF20NA10_out
+
+MAP has too few values? --> need to add a SNPID
+
+By default, each line of the MAP file describes a single marker and must contain exactly 4 columns:
+     chromosome (1-22, X, Y or 0 if unplaced)
+     rs# or snp identifier
+     Genetic distance (morgans)
+     Base-pair position (bp units)
+Genetic distance can be specified in centimorgans with the --cm flag. Alternatively, you can use a MAP file with the genetic distance excluded by adding the flag --map3, i.e.
+plink --file mydata --map3
+In this case, the three columns are expected to be
+     chromosome (1-22, X, Y or 0 if unplaced)
+     rs# or snp identifier
+     Base-pair position (bp units)
+
+and: need to define a different chromosome set (human data limited to go up to 26)
+my data goes up to 55
+--chr-set 55
+
+Scanning .ped file... 0%
+Error: Line 1 of .ped file has fewer tokens than expected.
+.ped should have: 6 + 2n columns, n = 273270 so == 546546
+
+YAY FINALLY WORKED!! see dpcharMAF20NA10_out.log
