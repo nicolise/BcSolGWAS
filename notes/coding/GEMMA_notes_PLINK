@@ -182,3 +182,64 @@ Error: Line 1 of .ped file has fewer tokens than expected.
 .ped should have: 6 + 2n columns, n = 273270 so == 546546
 
 YAY FINALLY WORKED!! see dpcharMAF20NA10_out.log
+
+NOW: 3.3
+Relatedness Matrix File Format
+
+So first run:
+4.4
+4.4.1
+Estimate Relatedness Matrix from Genotypes
+./gemma -bfile [prefix] -gk [num] -o [prefix]
+where the “-gk [num]” option specifies which relatedness matrix to estimate, i.e. “-gk 1” calculates
+the centered relatedness matrix while “-gk 2” calculates the standardized relatedness matrix; “-bfile
+[prefix]” specifies PLINK binary ped file prefix, “-o [prefix]” specifies output file
+prefix.
+
+Which of the two relatedness matrix to choose will largely depend on the underlying genetic
+architecture of the given trait. Specifically, if SNPs with lower minor allele frequency tend to
+have larger effects (which is inversely proportional to its genotype variance), then the standardized
+genotype matrix is preferred. If the SNP effect size does not depend on its minor allele frequency,
+then the centered genotype matrix is preferred. In our previous experience based on a limited
+examples, we typically find the centered genotype matrix provides better control for population
+structure in lower organisms, and the two matrices seem to perform similarly in humans.
+
+For mine:
+centered genotype matrix
+cd Documents/GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/fulldata/PLINK_55chrom/
+./gemma -bfile dpcharMAF20NA10_out -gk 1 -o dpcharMAF20NA10_relatOut
+
+relatedness matrix now at PLINK_55chrom/output/
+
+need to do for analysis:
+- set SNP missingness filter to 10% (default 5%). tag for this: “-miss 0.1”
+
+HAVE NOT imputed missing genotypes for SNPs. Recommended to do this for future steps.
+
+now try: perform association tests using both the univariate
+linear mixed model and the multivariate linear mixed model
+
+4.6
+4.6.1
+Association Tests with Univariate Linear Mixed Models
+Basic Usage
+The basic usages for association analysis with either the PLINK binary ped format or the BIMBAM
+format are:
+./gemma -bfile [prefix] -k [filename] -lmm [num] -o [prefix]
+
+where the “-lmm [num]” option specifies which frequentist test to use, i.e. “-lmm 1” performs Wald
+test, “-lmm 2” performs likelihood ratio test, “-lmm 3” performs score test, and “-lmm 4” performs
+all the three tests; “-bfile [prefix]” specifies PLINK binary ped file prefix; “-k [filename]” specifies
+relatedness matrix file name; “-o [prefix]” specifies output file prefix.
+
+for me:
+copied /home/nesoltis/Documents/GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/fulldata/PLINK_55chrom/dpcharMAF20NA10_out.bed to /home/nesoltis/Documents/GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_out.bed
+
+same for .bim and .fam
+
+and copied /home/nesoltis/Documents/GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/fulldata/PLINK_55chrom/output/dpcharMAF20NA10_relatOut.cXX.txt to /home/nesoltis/Documents/GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_relatOut.cXX.txt
+
+cd to Documents/
+./gemma -bfile GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_out -k GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_relatOut.cXX.txt -lmm 4 -miss 0.1 -o GEMMAfirstrun
+
+it ran! but phenotypes are probably missing, so none of the stats worked. Now to fix that...
