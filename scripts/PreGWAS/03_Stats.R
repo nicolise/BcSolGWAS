@@ -40,6 +40,28 @@ ModDat2W <- ModDat2[ModDat2$Species=="Wl",]
 t.test(ModDat2D$meanLS ~ ModDat2D$Tomato)
 t.test(ModDat2W$meanLS ~ ModDat2W$Tomato)
 t.test(ModDat2$meanLS ~ ModDat2$Tomato)
+
+#but: sample sizes are very unequal when looking at samples from tomato vs. others, so test is underpowered
+#pwr.2p2n.test power analysis for 2 proportions, unequal n. enter three of the four quantities (effect size, sample size, significance level, power) and the fourth is calculated. 
+library("pwr")
+#http://www.statmethods.net/stats/power.html
+#Cohen suggests that h values of 0.2, 0.5, and 0.8 represent small, medium, and large effect sizes respectively.
+#for IN DOMEST
+#h matters a lot an I'm not sure how to set it
+#estimate h - for a t test should be difference in means over sqrt( common error variance )
+mean(ModDat2D[ModDat2D$Tomato=="y",]$meanLS) - mean(ModDat2D[ModDat2D$Tomato=="n",]$meanLS) / (mean(ModDat2D[ModDat2D$Tomato=="y",]$meanLS) + mean(ModDat2D[ModDat2D$Tomato=="n",]$meanLS) / 2)
+count(ModDat2D$Tomato=="y")
+pwr.2p2n.test(h=0.27, n1=92, n2=5, power=, sig.level=0.05)
+#IN WILD
+mean(ModDat2W[ModDat2W$Tomato=="y",]$meanLS) - mean(ModDat2W[ModDat2W$Tomato=="n",]$meanLS) / (mean(ModDat2W[ModDat2W$Tomato=="y",]$meanLS) + mean(ModDat2W[ModDat2W$Tomato=="n",]$meanLS) / 2)
+count(ModDat2W$Tomato=="y")
+pwr.2p2n.test(h=0.16, n1=92, n2=5, power=, sig.level=0.05)
+#ALL HOSTS
+mean(ModDat2[ModDat2$Tomato=="y",]$meanLS) - mean(ModDat2[ModDat2$Tomato=="n",]$meanLS) / (mean(ModDat2[ModDat2$Tomato=="y",]$meanLS) + mean(ModDat2[ModDat2$Tomato=="n",]$meanLS) / 2)
+count(ModDat2$Tomato=="y")
+pwr.2p2n.test(h=0.21, n1=184, n2=10, power=, sig.level=0.05)
+#so, ~10% chance of finding a statistically significant difference, even if that difference exists.
+
 #can't do multiple observations per isolate (pool D and W directly?)
 #does no better when 1 mean per isolate
 ModDat3 <- ddply(ModDat, c("Igeno", "Tomato"), summarise,
@@ -104,11 +126,21 @@ anova(dbottle)
 summary(anova(dbottle))
 #test for homogeneity of variances 
 names(ModDat)
+#why summarize by isolate first?
 ModDat.vt <- ddply(ModDat, c("Igeno", "Species"), summarise, 
                    mLS = mean(Scale.LS))
 ModDat.vt.D <- ModDat.vt[ModDat.vt$Species=="Dm",]
 ModDat.vt.W <- ModDat.vt[ModDat.vt$Species=="Wl",]
+
+#this is an F test of the variances, which assumes normality:
 var.test(ModDat.vt.D$mLS, ModDat.vt.W$mLS)
+#test for normality: both appear to be normally distributed
+shapiro.test(ModDat.vt.D$mLS)
+shapiro.test(ModDat.vt.W$mLS)
+
+#Levene's F test - page
+#Levene's test does not assume normality:
 library(car)
+leveneTest()
 leveneTest(Scale.LS ~ Species, data=ModDat)
 leveneTest(Scale.LS ~ Igeno * Species, data=ModDat)
