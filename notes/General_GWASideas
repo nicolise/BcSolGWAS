@@ -1,0 +1,3 @@
+GWAS QC:
+- remove low-quality variants (loci)
+- remove low-quality individuals
