@@ -179,6 +179,266 @@ my data goes up to 55
 
 Scanning .ped file... 0%
 Error: Line 1 of .ped file has fewer tokens than expected.
-.ped should have: 6 + 2n columns, n = 273270 so == 546546
+my .ped should have: 6 + 2n columns, n = 273270 so == 546546
 
 YAY FINALLY WORKED!! see dpcharMAF20NA10_out.log
+
+NOW: 3.3
+Relatedness Matrix File Format
+
+So first run:
+4.4
+4.4.1
+Estimate Relatedness Matrix from Genotypes
+./gemma -bfile [prefix] -gk [num] -o [prefix]
+where the “-gk [num]” option specifies which relatedness matrix to estimate, i.e. “-gk 1” calculates
+the centered relatedness matrix while “-gk 2” calculates the standardized relatedness matrix; “-bfile
+[prefix]” specifies PLINK binary ped file prefix, “-o [prefix]” specifies output file
+prefix.
+
+Which of the two relatedness matrix to choose will largely depend on the underlying genetic
+architecture of the given trait. Specifically, if SNPs with lower minor allele frequency tend to
+have larger effects (which is inversely proportional to its genotype variance), then the standardized
+genotype matrix is preferred. If the SNP effect size does not depend on its minor allele frequency,
+then the centered genotype matrix is preferred. In our previous experience based on a limited
+examples, we typically find the centered genotype matrix provides better control for population
+structure in lower organisms, and the two matrices seem to perform similarly in humans.
+
+For mine:
+centered genotype matrix
+cd Documents/GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/fulldata/PLINK_55chrom/
+./gemma -bfile dpcharMAF20NA10_out -gk 1 -o dpcharMAF20NA10_relatOut
+
+relatedness matrix now at PLINK_55chrom/output/
+
+need to do for analysis:
+- set SNP missingness filter to 10% (default 5%). tag for this: “-miss 0.1”
+
+HAVE NOT imputed missing genotypes for SNPs. Recommended to do this for future steps.
+
+now try: perform association tests using both the univariate
+linear mixed model and the multivariate linear mixed model
+
+4.6
+4.6.1
+Association Tests with Univariate Linear Mixed Models
+Basic Usage
+The basic usages for association analysis with either the PLINK binary ped format or the BIMBAM
+format are:
+./gemma -bfile [prefix] -k [filename] -lmm [num] -o [prefix]
+
+where the “-lmm [num]” option specifies which frequentist test to use, i.e. “-lmm 1” performs Wald
+test, “-lmm 2” performs likelihood ratio test, “-lmm 3” performs score test, and “-lmm 4” performs
+all the three tests; “-bfile [prefix]” specifies PLINK binary ped file prefix; “-k [filename]” specifies
+relatedness matrix file name; “-o [prefix]” specifies output file prefix.
+
+for me:
+copied /home/nesoltis/Documents/GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/fulldata/PLINK_55chrom/dpcharMAF20NA10_out.bed to /home/nesoltis/Documents/GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_out.bed
+
+same for .bim and .fam
+
+and copied /home/nesoltis/Documents/GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/fulldata/PLINK_55chrom/output/dpcharMAF20NA10_relatOut.cXX.txt to /home/nesoltis/Documents/GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_relatOut.cXX.txt
+
+cd to Documents/
+./gemma -bfile GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_out -k GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_relatOut.cXX.txt -lmm 4 -miss 0.1 -o GEMMAfirstrun
+
+it ran! but phenotypes are probably missing, so none of the stats worked. Now to fix that...
+
+3.1
+PLINK Binary PED File Format
+For the *.fam file, GEMMA only reads the second column (individual id) and the sixth column
+(phenotype). One can specify a different column as the phenotype column by using “-n [num]”,
+where ”-n 1” uses the original sixth column as phenotypes, and “-n 2” uses the seventh column,
+and so on and so forth.
+
+Phenotype: copied from BcSolGWAS/data/GWAS_files/03_bigRRinput/NewModel0711/Sl_Pheno_bigRR_trueMAF20_10NA.csv
+to /home/nesoltis/Documents/GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/Sl_Pheno_bigRR_trueMAF20_10NA.csv
+
+Corrected phenotypes in script 03_FAM_addPhenotypes.R and copied from:
+/home/nesoltis/Documents/GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/fulldata/PLINK_55chrom/FAM_dpcharMAF20NA10_55chrom_Phenos.fam
+to:
+/home/nesoltis/Documents/GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_out.fam
+
+OK now re-running GEMMA just without imputing missing genotypes
+cd to Documents/
+./gemma -bfile GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_out -k GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_relatOut.cXX.txt -lmm 4 -miss 0.1 -n 1 -o GEMMAfirstrun
+
+now need to edit kinship file to match number of phenotypes
+
+going back to 4.4 to recalculate kinship file with corrected .fam for phenotypes
+
+centered genotype matrix
+copied documents from Documents/GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/fulldata/01_PLINK_55chrom/
+to 
+Documents/GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/fulldata/02_runKinship/
+but deleted original .fam and replaced with 
+/home/nesoltis/Documents/GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/fulldata/01_PLINK_55chrom/FAM_dpcharMAF20NA10_55chrom_Phenos.fam
+
+
+RERUN kinship:
+./gemma -bfile GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/fulldata/02_runKinship/dpcharMAF20NA10_out -gk 1 -o dpcharMAF20NA10_relatOut
+
+relatedness matrix now at 02_runKinship/
+
+OK now re-running GEMMA just without imputing missing genotypes
+first copy kinship output from 02_csvPrep/fulldata/02_runKinship/output/ to 03_runGEMMA
+cd to Documents/
+./gemma -bfile GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_out -k GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_relatOut.cXX.txt -lmm 4 -miss 0.1 -n 1 -o GEMMAfirstrun
+
+It ran, but seems full of errors. I'll try it once with each phenotype?
+LA1547
+./gemma -bfile GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_out -k GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_relatOut.cXX.txt -lmm 4 -miss 0.1 -n 1 -o GEMMAfirstLA1547
+
+LA1589
+./gemma -bfile GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_out -k GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_relatOut.cXX.txt -lmm 4 -miss 0.1 -n 2 -o GEMMAfirstLA1589
+
+LA1684
+./gemma -bfile GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_out -k GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_relatOut.cXX.txt -lmm 4 -miss 0.1 -n 3 -o GEMMAfirstLA1684
+
+LA2093
+./gemma -bfile GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_out -k GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_relatOut.cXX.txt -lmm 4 -miss 0.1 -n 4 -o GEMMAfirstLA2093
+
+LA2176
+./gemma -bfile GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_out -k GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_relatOut.cXX.txt -lmm 4 -miss 0.1 -n 5 -o GEMMAfirstLA2176
+
+LA2706
+./gemma -bfile GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_out -k GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_relatOut.cXX.txt -lmm 4 -miss 0.1 -n 6 -o GEMMAfirstLA2706
+
+LA3008
+./gemma -bfile GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_out -k GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_relatOut.cXX.txt -lmm 4 -miss 0.1 -n 7 -o GEMMAfirstLA3008
+
+LA3475
+./gemma -bfile GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_out -k GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_relatOut.cXX.txt -lmm 4 -miss 0.1 -n 8 -o GEMMAfirstLA3475
+
+LA0410
+./gemma -bfile GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_out -k GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_relatOut.cXX.txt -lmm 4 -miss 0.1 -n 9 -o GEMMAfirstLA0410
+
+LA4345
+./gemma -bfile GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_out -k GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_relatOut.cXX.txt -lmm 4 -miss 0.1 -n 10 -o GEMMAfirstLA4345
+
+LA4355
+./gemma -bfile GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_out -k GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_relatOut.cXX.txt -lmm 4 -miss 0.1 -n 11 -o GEMMAfirstLA4355
+
+LA0480
+./gemma -bfile GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_out -k GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_relatOut.cXX.txt -lmm 4 -miss 0.1 -n 12 -o GEMMAfirstLA0480
+
+All of these fail in the same way.
+
+Going to try: imputing missing genotypes.
+
+1.4
+1.4.1
+Missing Data
+Missing Genotypes
+As mentioned before [7], the tricks used in the GEMMA algorithm rely on having complete or
+imputed genotype data at each SNP. That is, GEMMA requires the user to impute all missing
+genotypes before association testing. This imputation step is arguably preferable than simply
+dropping individuals with missing genotypes, since it can improve power to detect associations [1].
+Therefore, for fitting both LMM or BSLMM, missing genotypes are recommended to be imputed
+first. Otherwise, any SNPs with missingness above a certain threshold (default 5%) will not be
+analyzed, and missing genotypes for SNPs that do not pass this threshold will be simply replaced
+with the estimated mean genotype of that SNP. For predictions, though, all SNPs will be used
+regardless of their missingness. Missing genotypes in the test set will be replaced by the mean
+genotype in the training set.
+http://zzz.bwh.harvard.edu/plink/pimputation.shtml
+
+trying this:
+./plink --bfile GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10_out --proxy-impute all
+
+Error: PLINK 1 proxy association and imputation commands have been retired due
+to poor accuracy.  (See Nothnagel M et al. (2009) A comprehensive evaluation of
+SNP genotype imputation.)  We suggest using another tool, such as BEAGLE 4 or
+IMPUTE2, for imputation instead, and performing association analysis on those
+results.  ('--recode vcf' and --vcf can be used to exchange data with BEAGLE 4,
+while '--recode oxford' and --data let you work with IMPUTE2.)
+
+IMPUTE2
+http://mathgen.stats.ox.ac.uk/impute/impute_v2.html
+
+~/Documents/impute_v2.3.2_x86_64_dynamic$ ./impute2 \
+>  -m ./Example/example.chr22.map \
+>  -h ./Example/example.chr22.1kG.haps \
+>  -l ./Example/example.chr22.1kG.legend \
+>  -g ./Example/example.chr22.study.gens \
+>  -strand_g ./Example/example.chr22.study.strand \
+>  -int 20.4e6 20.5e6 \
+>  -Ne 20000 \
+>  -o ./Example/example.chr22.one.phased.impute2
+
+Here we have used the -strand_g option to provide a strand file to the program. This file tells IMPUTE2 how to align the allele coding between the study genotypes (-g file) and the reference haplotypes (-h and -l files). You must always align the allele codings across your input datasets, either before running IMPUTE2 or during a run with the options described here.
+
+- int
+Genomic interval to use for inference, as specified by <lower> and <upper> boundaries in base pair position. The boundaries can be expressed either in long form (e.g., -int 5420000 10420000) or in exponential notation (e.g., -int 5.42e6 10.42e6). This option is particularly useful for restricting test jobs to small regions or splitting whole-chromosome analyses into manageable chunks, as discussed in the section on analyzing whole chromosomes. 
+IMPUTE2 requires that you specify an analysis interval in order to prevent accidental whole-chromosome analyses. If you want to impute a region larger than 7 Mb (which is not generally recommended), you must activate the -allow_large_regions flag.
+https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#required_args
+
+problems: IMPUTE2 designed to only do small sections of each chromosome. and lots of file requirements to align strands and phase variants to reference panel. None of this makes sense for my dataset. 
+and, PLINK will lose phasing anyway.
+
+mine: 
+copy my data to impute_v2 nesdata/\
+/home/nesoltis/Documents/GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10.map
+
+cd Documents/impute_v2.3.2_x86_64_dynamic$ ./impute2 \
+-m ./nesdata/dpcharMAF20NA10.map
+-h
+-l
+-g
+-strand_g
+-int
+-NE
+-o ./nesdata/dpcharMAF20NA10.firstimpt.impute2
+
+
+BEAGLE 4
+https://faculty.washington.edu/browning/beagle/beagle.html
+
+beagle.08Jun17.d8b.jar
+
+Error from wrong java version (need 8)
+got the correct java version https://askubuntu.com/questions/508546/howto-upgrade-java-on-ubuntu-14-04-lts
+confirmed: java -version
+
+java -jar beagle.08Jun17.d8b.jar 
+
+data input/output parameters ...
+  gt=<VCF file: use GT field>                        (optional)
+  gl=<VCF file: use GL/PL field>                     (optional)
+  gtgl=<VCF file: use GT (preferred) or GL/PL field> (optional)
+  ref=<VCF file with phased genotypes>               (optional)
+  out=<output file prefix>                           (required)
+  excludesamples=<file with 1 sample ID per line>    (optional)
+  excludemarkers=<file with 1 marker ID per line>    (optional)
+  map=<PLINK map file with cM units>                 (optional)
+  chrom=<[chrom] or [chrom]:[start]-[end]>           (optional)
+  maxlr=<max GL/PL likelihood ratio>                 (default=5000)
+
+general parameters ...
+  nthreads=<number of threads>                       (default: machine-dependent)
+  lowmem=<use low-memory algorithm (true/false)>     (default=false)
+  window=<markers per window>                        (default=50000)
+  overlap=<overlap between windows>                  (default=3000)
+  seed=<random seed>                                 (default=-99999)
+
+phasing and imputation parameters ...
+  niterations=<number of phasing iterations>         (default=5)
+  impute=<impute ungenotyped markers (true/false)>   (default=true)
+  gprobs=<print GP field for imputed markers>        (default=false)
+  ne=<effective population size>                     (default=1000000)
+  err=<allele miscall rate>                          (default=0.0001)
+  cluster=<max cM in a marker cluster>               (default=0.005)
+
+IBD parameters ...
+  ibd=<perform IBD detection (true/false)>           (default=false)
+  ibdlod=<min LOD score of reported IBD segments>    (default=3.0)
+  ibdcm=<min cM length of reported IBD segments>     (default=1.5)
+  ibdscale=<model scale factor for Refined IBD>      (default: data-dependent)
+  ibdtrim=<markers at each segment end>              (default=40)
+
+  beagle also does haplotype phasing. imputation is supposedly very fast and accurate.
+  input must be vcf.
+  this is stored at: /home/nesoltis/Documents/GitRepos/BcSolGWAS/data/genome/big_set_v97iso_SNPs_filtered_qual30_dp6_maf20_recode.vcf
+
+BUT I haven't used the .vcf with PLINK, so I might need to start over with PLINK or BIMBAM
+So-- maybe IMPUTE2 is more compatible with my work so far in PLINK
+
