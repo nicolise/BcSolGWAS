@@ -19,6 +19,10 @@ DoGenes <- read.csv("data/SNPdat_Annotate/Final_annots/Domestication_TopSNPs_Seg
 IPGenes <- read.csv("data/SNPdat_Annotate/Final_annots/12Plants_Top1000SNPs_SegWide_trueMAF20_10NA_FORPERL.output.csv")
 IndPlAnt <- read.csv("data/SNPdat_Annotate/Final_annots/12Plants_Top1000SNPs_SegWide_trueMAF20_10NA.csv")
 names(DomestAnt)
+
+#top overlap SNPs
+HOSNP <- read.csv("data/SNPdat_Annotate/Final_annots/12Plants_HiOverlapSNPs_trueMAF20_10NA.output.csv")
+
 #go long to wide
 
 #for IndPlant: merge with genes

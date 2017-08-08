@@ -55,6 +55,10 @@ SNPbin$SUMM <- SNPbin$SUMMneg + SNPbin$SUMMpos
 
 table(SNPbin$SUMM)
 
+#high overlap SNP list for annotation
+HOSNP <- SNPbin[SNPbin$SUMM > 6,]
+write.csv(HOSNP, "data/GWAS_files/05_annotation/TrueMAF_NAs/12Plants_HiOverlapSNPs_trueMAF20_10NA.csv")
+
 SUMM.plot <- SNPbin
 #draw the plots!!!
 #write.csv(SUMM.plot, "data/genome/SummaryManhattanPlot_data.csv")

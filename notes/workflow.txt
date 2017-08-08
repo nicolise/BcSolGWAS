@@ -1,0 +1,15 @@
+a. 09_12phenos_NA10_figR6b.R
+Input: bigRR outputs 
+- (SNPlist) data/GWAS_files/04_bigRRoutput/trueMAF_10NA/SlBc_12plants_trueMAF20_10NA.HEM.PlotFormat.final.csv
+- (Thresh) data/GWAS_files/04_bigRRoutput/trueMAF_10NA/SlBc_12plants_trueMAF20_10NA.HEM.Thresh.final.csv
+Output: High Overlap SNP list (HOSNP), data/GWAS_files/05_annotation/TrueMAF_NAs/12Plants_HiOverlapSNPs_trueMAF20_10NA.csv
+Plot: Scatterplot of number of phenotypes per sig SNP as manhattan plot.
+
+b. Add genes to SNP list: SNPdat
+Instructions here: notes/coding/Methods for genome annotation and circle plots.docx
+copy output files from a. into data/SNPdat_Annotate/Final_annots
+
+
+
+c. 10_GeneANnot_10NA_venns_figR8figR7b.R
+Input: SNP lists from 09_12phenos and 09_domest and 08_peaks, with genes added through SNPdat

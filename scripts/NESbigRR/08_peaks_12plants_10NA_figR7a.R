@@ -58,11 +58,11 @@ assign(paste("HEMpos.", names(HEM.plotdata[i]), sep=""), subset(HEM.plotdata, HE
 assign(paste("HEMneg.", names(HEM.plotdata[i]), sep=""), subset(HEM.plotdata, HEM.plotdata[i] < get(paste("TH99neg_", names(HEM.plotdata[i]), sep="")), select=c(Chrom,Segment,Pos,Index,i)))
 }
 
-# #for top 1000 only
-# for (i in c(4:15)){
-#   assign(paste("HEMpos.", names(HEM.plotdata[i]), sep=""), head(arrange(get(paste("HEMpos.", names(HEM.plotdata[i]), sep="")), desc(get(paste("HEMpos.", names(HEM.plotdata[i]), sep=""))[,5])), n=500))
-#   assign(paste("HEMneg.", names(HEM.plotdata[i]), sep=""), tail(arrange(get(paste("HEMneg.", names(HEM.plotdata[i]), sep="")), desc(get(paste("HEMneg.", names(HEM.plotdata[i]), sep=""))[,5])), n=500))
-# }
+#for top 1000 only
+for (i in c(4:15)){
+  assign(paste("HEMpos.", names(HEM.plotdata[i]), sep=""), head(arrange(get(paste("HEMpos.", names(HEM.plotdata[i]), sep="")), desc(get(paste("HEMpos.", names(HEM.plotdata[i]), sep=""))[,5])), n=500))
+  assign(paste("HEMneg.", names(HEM.plotdata[i]), sep=""), tail(arrange(get(paste("HEMneg.", names(HEM.plotdata[i]), sep="")), desc(get(paste("HEMneg.", names(HEM.plotdata[i]), sep=""))[,5])), n=500))
+}
 
 #combine pos and neg by group
 for (i in c(4:15)){
@@ -83,7 +83,6 @@ HEM.topSNPs <- rbind(HEM.LA410, HEM.LA0480, HEM.LA1547, HEM.LA1589, HEM.LA1684, 
 
 #total sig SNPs per trait here
 table(HEM.topSNPs$Trait)
-
 
 
 #omit LA0480 because it's so high compared to the rest
@@ -116,6 +115,28 @@ ggplot(TopSNP.wide.DM, aes(TopSNP.wide.DM$TotTraits)) +
   scale_y_continuous(name= "Number of SNPs")+
   scale_x_continuous(name= "Plant Genotypes per Candidate SNP", breaks=c(1,2,3,4,5,6,7,8,9,10,11,12),labels=c(1,2,3,4,5,6,7,8,9,10,11,12), limits = c(0, 12))
 dev.off()
+
+#better version with probabilities of overlaps from binomials
+myprobs <- read.csv("paper/plots/ActualPaper/FigR7/Probabilities.csv")
+names(myprobs)
+library(ggplot2)
+
+#x=myprobs$NumberofGenos, y=myprobs$ObsOverlap
+#aes(x=myprobs$NumberofGenos, y=myprobs$ObsOverlap)+
+ggplot(myprobs)+
+  geom_col(aes(x=myprobs$NumberOfGenos, y=ObsOverlap))+
+  geom_line(aes(x=myprobs$NumberOfGenos, y=ExpectOverlap))+
+  theme_bw()+
+  scale_y_continuous(name= "Number of SNPs")+
+  scale_x_continuous(name="Plant Genotypes per Candidate SNP", breaks=c(1,2,3,4,5),labels=c(1,2,3,4,5), limits = c(0, 6))
+
+ggplot(myprobs)+
+  geom_col(aes(x=myprobs$NumberOfGenos, y=ObsOverlap))+
+  geom_line(aes(x=myprobs$NumberOfGenos, y=ExpectOverlap))+
+  theme_bw()+
+  scale_y_continuous(name= "Number of SNPs", limits = c(0,1500))+
+  scale_x_continuous(name="Plant Genotypes per Candidate SNP", breaks=c(6,7,8,9,10,11,12),labels=c(6,7,8,9,10,11,12), limits = c(5, 13))
+
 
 #make it wide format
 #currently long format : Chrom, Segment, Pos, Index, Effect, Trait
