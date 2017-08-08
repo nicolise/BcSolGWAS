@@ -5,7 +5,7 @@
 rm(list=ls())
 setwd("~/Projects/BcSolGWAS")
 setwd("~/Documents/GitRepos/BcSolGWAS/data/preGWAS")
-ModDat <- read.csv("data/SlBc_ModelData.csv")
+ModDat <- read.csv("data/preGWAS/SlBc_ModelData.csv")
 
 #-----------------------------------------------------
 #ASSUMPTIONS BEFORE STATISTICS!
@@ -96,6 +96,8 @@ SummDat <- ddply(ModDat, c("PlGenoNm", "Igeno", "Species", "ExpBlock"), summaris
 SummDat$cvLS <- SummDat$sdLS / SummDat$mLS
 SummDat$PbyI <- paste(SummDat$PlGenoNm, SummDat$Igeno, sep=".")
 
+#how many isolates for this model? 95
+#ModDatblah <- ddply(ModDat, c("Igeno"), summarise, meanLS = mean(Scale.LS))
 
 flatmod <- lmer(Scale.LS ~ (1|ExpBlock) + (1|ExpBlock/PExpRep.x) + (1|ExpBlock/PExpRep.x/AgFlat) , data = ModDat)
 flatmod2 <- lmer(Scale.LS ~ Igeno + Species + Species/PlGenoNm + (1|ExpBlock) + (1|ExpBlock/PExpRep.x) + (1|ExpBlock/PExpRep.x/AgFlat) , data = ModDat)

@@ -4,9 +4,9 @@
 #-------------------------------------------------------------
 rm(list=ls())
 setwd("~/Projects/BcSolGWAS")
-FigDat3 <- read.csv("data/BcSolGWAS_PhenotypePlotData_FigDat3.csv")
-ModDat <- read.csv("data/BcSolGWAS_PhenotypePlotData_ModDat.csv")
-FigDat4 <- read.csv("data/BcSolGWAS_PhenotypePlotData_FigDat4.csv")
+FigDat3 <- read.csv("data/preGWAS/BcSolGWAS_PhenotypePlotData_FigDat3.csv")
+ModDat <- read.csv("data/preGWAS/BcSolGWAS_PhenotypePlotData_ModDat.csv")
+FigDat4 <- read.csv("data/preGWAS/BcSolGWAS_PhenotypePlotData_FigDat4.csv")
 #-------------------------------------------------
 #-------------------------------------------------------
 #after loading dataframe have to reorder domestication levels to plot

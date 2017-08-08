@@ -119,8 +119,9 @@ write.csv(outdf2, "paper/plots/ActualPaper/Supp/WilcoxBYPLANT_out.csv")
 
 #now, make a rank-order plot of only the most extreme pair (smallest p-value from wilcoxon)
 newdata <- ModDat.plant[ ModDat.plant$Plant.Num %in% c(1,9), ]
-
-tiff("plots/paper/DomestRight/Sl_LesionSize_IntMean_DW.tif", width=3.5, height=4, units='in', res=600)
+levels(newdata$PlGenoNm) <- c(levels(newdata$PlGenoNm), "LA0410") 
+newdata$PlGenoNm[newdata$PlGenoNm == "LA410"]  <- "LA0410" 
+tiff("paper/plots/ActualPaper/FigR5/FigR5_Sl_LesionSize_IntMean_wilcoxtop.tif", width=3.5, height=4, units='in', res=600)
 ggplot(newdata, aes(x = PlGenoNm, y = mLS, group=factor(Igeno)))+
   theme_bw()+
   geom_line(size=0.5, alpha=0.4, show.legend = F)+
