@@ -1,0 +1,9 @@
+R script 04_Troubleshoot.R
+produces PED file with no missing data GEMMA_files/02_csvPrep/noMissing/PED_dpcharMAF20NA10.csv
+
+This includes the correct LA1547 phenotype, but no other traits.
+
+Now need to make correctly formatted MAP file:
+
+
+./plink --file GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/noMissing/dpcharMAF20NA10 --make-bed --out GitRepos/BcSolGWAS/data/GEMMA_files/02_csvPrep/noMissing/dpcharMAF20NA10_out
