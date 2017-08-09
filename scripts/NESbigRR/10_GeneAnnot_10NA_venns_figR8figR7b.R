@@ -21,7 +21,8 @@ IndPlAnt <- read.csv("data/SNPdat_Annotate/Final_annots/12Plants_Top1000SNPs_Seg
 names(DomestAnt)
 
 #top overlap SNPs
-HOSNP <- read.csv("data/SNPdat_Annotate/Final_annots/12Plants_HiOverlapSNPs_trueMAF20_10NA.output.csv")
+HOGenes <- read.csv("data/SNPdat_Annotate/Final_annots/12Plants_HiOverlapSNPs_trueMAF20_10NA_output.csv")
+HOSNP <- read.csv("data/SNPdat_Annotate/Final_annots/12Plants_HiOverlapSNPs_trueMAF20_10NA.csv")
 
 #go long to wide
 
@@ -173,3 +174,90 @@ DoGenAnt$TotTraits <- ifelse(abs(DoGenAnt$mean_Domest) > 0 & abs(DoGenAnt$mean_W
 table(DoGenAnt$TotTraits)
 
 write.csv(DoGenAnt, "data/GWAS_files/05_annotation/Domest_TopSNPs_10NA_intoAnt.csv")
+
+#------------------------------------------------------------------------------------
+#for HiOverlapGenes: merge with genes
+#need to match on chromosome.pos for both dataframes
+head(HOSNP)
+head(HOGenes)
+HOSNP$Chrom2 <- paste("CHROMOSOME",HOSNP$Chrom, sep='')
+HOSNP$Chrom.Pos <- paste(HOSNP$Chrom2, HOSNP$Pos, sep='.')
+HOGenes$Chrom.Pos <- paste(HOGenes$Chromosome.Number, HOGenes$SNP.Position, sep='.')
+#now, need to narrow down IPGenes list to only include genes WITHIN WINDOW of SNP
+#window options to try:
+#1kb (500 bp each side), 2kb (1kb each side), 4kb (2kb each side)
+#sticking with 2kb (1kb each side)
+HOGenes$Distance.to.nearest.feature <- as.numeric(HOGenes$Distance.to.nearest.feature)
+HOGenes$Distance.to.nearest.feature[is.na(HOGenes$Distance.to.nearest.feature)] <-0
+HOgen2 <- HOGenes[HOGenes$Distance.to.nearest.feature<1000,]
+
+
+#sub in IPgen1, IPgen2, IPgen4
+HOgen <- HOgen2[,c(25,11)]
+#this includes multiple SNPs per gene
+HOgen <- unique(HOgen) #this way each gene will only get annotated to this SNP set once. Should not lose any genes this way.
+HOSNP <- HOSNP[,-c(1)]
+HOplant <- merge(HOSNP, HOgen, by="Chrom.Pos") #this includes multiple SNPs per gene again
+
+#also count number of phenotypes PER GENE
+names(HOplant)
+colnames(HOplant)[46] <- "geneID"
+
+#if any SNP is > 0 for a given gene, will get sum > 0
+#else, sum = 0
+HOplant2 <- HOplant %>%
+  group_by(geneID) %>%
+  summarize(tot_LA0410 = sum(abs(LA410), na.rm = TRUE),
+            tot_LA0480 = sum(abs(LA0480), na.rm = TRUE),
+            tot_LA1547 = sum(abs(LA1547), na.rm = TRUE),
+            tot_LA1589 = sum(abs(LA1589), na.rm = TRUE),
+            tot_LA1684 = sum(abs(LA1684), na.rm = TRUE),
+            tot_LA2093 = sum(abs(LA2093), na.rm = TRUE),
+            tot_LA2176 = sum(abs(LA2176), na.rm = TRUE),
+            tot_LA2706 = sum(abs(LA2706), na.rm = TRUE),
+            tot_LA3008 = sum(abs(LA3008), na.rm = TRUE),
+            tot_LA3475 = sum(abs(LA3475), na.rm = TRUE),
+            tot_LA4345 = sum(abs(LA4345), na.rm = TRUE),
+            tot_LA4355 = sum(abs(LA4355), na.rm = TRUE))
+
+#try this instead:
+HOplant2 <- HOplant %>%
+  group_by(geneID) %>%
+  summarize(tot_LA0410 = sum(LA410pos, LA410neg, na.rm = TRUE),
+            tot_LA0480 = sum(LA0480pos, LA0480neg, na.rm = TRUE),
+            tot_LA1547 = sum(LA1547pos, LA1547neg, na.rm = TRUE),
+            tot_LA1589 = sum(LA1589pos, LA1589neg, na.rm = TRUE),
+            tot_LA1684 = sum(LA1684pos, LA1684neg, na.rm = TRUE),
+            tot_LA2093 = sum(LA2093pos, LA2093neg, na.rm = TRUE),
+            tot_LA2176 = sum(LA2176pos, LA2176neg, na.rm = TRUE),
+            tot_LA2706 = sum(LA2706pos, LA2706neg, na.rm = TRUE),
+            tot_LA3008 = sum(LA3008pos, LA3008neg, na.rm = TRUE),
+            tot_LA3475 = sum(LA3475pos, LA3475neg, na.rm = TRUE),
+            tot_LA4345 = sum(LA4345pos, LA4345neg, na.rm = TRUE),
+            tot_LA4355 = sum(LA4355pos, LA4345neg, na.rm = TRUE))
+names(HOplant2)
+for (i in 2:13){
+  fxcol = HOplant2[,paste(colnames(HOplant2[i]),sep='')]
+  HOplant2[,paste(colnames(HOplant2[i]))] <- ifelse(fxcol > 0, 1, 0)
+  #assign(IPant2[i], fxcol)
+}
+
+HOplant2$TotPhenos <- (HOplant2$tot_LA0410 + HOplant2$tot_LA0480 + HOplant2$tot_LA1547 + HOplant2$tot_LA1589 + HOplant2$tot_LA1684 + HOplant2$tot_LA2093 + HOplant2$tot_LA2176 + HOplant2$tot_LA2706 + HOplant2$tot_LA3008 + HOplant2$tot_LA3475 + HOplant2$tot_LA4345 + HOplant2$tot_LA4355)
+hist(HOplant2$TotPhenos)
+table(HOplant2$TotPhenos)
+
+#gene level phenotype overlap for top overlapping SNPs!
+HOplant3 <- HOplant2 %>%
+  group_by(TotPhenos) %>%
+  summarise(n = n())
+
+write.csv(HOplant2, "data/GWAS_files/05_annotation/FINAL_2kbWindow/12plants_HO_genesTOANNOT.csv")
+
+jpeg("paper/plots/ActualPaper/FigR7/topGenesOverlap_IndPlants_1kbWin.jpg", width=8, height=5, units='in', res=600)
+ggplot(IPant2, aes(IPant2$TotPhenos)) + 
+  geom_bar()+
+  theme_bw()+
+  scale_y_continuous(name= "Number of Genes")+
+  scale_x_continuous(name= "Plant Genotypes per Candidate Gene", breaks=c(1,2,3,4,5,6,7,8,9,10,11,12),labels=c(1,2,3,4,5,6,7,8,9,10,11,12))
+dev.off()
+#-----------------------------------

@@ -8,8 +8,13 @@ Plot: Scatterplot of number of phenotypes per sig SNP as manhattan plot.
 b. Add genes to SNP list: SNPdat
 Instructions here: notes/coding/Methods for genome annotation and circle plots.docx
 copy output files from a. into data/SNPdat_Annotate/Final_annots
+May need to run on Linux if Strawberry PERL is malfunctioning
 
-
-
-c. 10_GeneANnot_10NA_venns_figR8figR7b.R
+c. 10_GeneAnnot_10NA_venns_figR8figR7b.R
 Input: SNP lists from 09_12phenos and 09_domest and 08_peaks, with genes added through SNPdat
+Output: Gene lists from these SNP sets (no duplicate genes by SNP)
+
+d. 11_GeneAnnot_function.R
+Input: Gene lists from c.
+Output: Functionally annotated genes from list
+data/GWAS_files/05_annotation/FINAL_2kbWindow/HiOverlap12p_AnnotatedGenes.csv
