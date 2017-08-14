@@ -16,7 +16,9 @@ setwd("~/Projects/BcSolGWAS/")
 Top50SNP.wide.PL <- read.csv("results/Plants_TopSNPs_SegWide.csv")
 #combine plant with domestication data
 #easiest: take wide data for plant. take wide data for domestication. Omit effects: we only need a count of phenotypes per level.
-Top50SNP.wide.DM <- read.csv("results/Domestication_Top1000SNPs_SegWide_trueMAF20_10NA.csv")
+
+#this isn't top50SNP. It's top 500 pos Domest + top 500 neg Domest + top 500 pos Wild + top 500 neg Wild + all > 99% thr DmWoD
+Top50SNP.wide.DM <- read.csv("data/GWAS_files/05_annotation/TrueMAF_NAs/Domestication_Top1kSNPs_SegWide_trueMAF20_10NA.csv")
 #remove X column
 Top50SNP.wide.DM <- Top50SNP.wide.DM[,2:8]
 #count the number of phenotypes
@@ -42,7 +44,7 @@ Top50SNP.all.w$PlantPhenos.Both <- (Top50SNP.all.w$PlantPhenos.Domest + Top50SNP
 #and BOTH does not double-count, because 0 = NA for Plant and Domest. X + NA = NA.
 
 #read in Domestication file for DmWoD vs. Domesticated vs. Wild. This will overwrite the Top50SNP.wide.DM in memory for making the BOTH phenos plot.
-Top50SNP.wide.DM <- read.csv("data/GWAS_files/05_annotation/TrueMAF_NAs/Domestication_Top1000SNPs_SegWide_trueMAF20_10NA.csv")
+Top50SNP.wide.DM <- read.csv("data/GWAS_files/05_annotation/TrueMAF_NAs/Domestication_Top1kSNPs_SegWide_trueMAF20_10NA.csv")
 
 #make plots for each phenotype
 

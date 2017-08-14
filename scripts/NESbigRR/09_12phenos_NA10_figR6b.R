@@ -18,7 +18,7 @@ SNPlist <- SNPlist[,c(2:14,16,17,15)]
 names(Thresh)
 Thresh <- Thresh[,c(2:14)]
 
-#positives
+#positive: over 99% positive thresh
 Threshval <- Thresh[7,]
 names(Threshval)
 SNPbin <- SNPlist
