@@ -146,5 +146,6 @@ dev.off()
 #currently long format : Chrom, Segment, Pos, Index, Effect, Trait
 #write.csv(HEM.plotdata, "data/GWAS_files/05_annotation/TrueMAF_NAs/Domestication_TopSNPs_SegLong_trueMAF20_10NA.csv")
 write.csv(HEM.plotdata, "data/GWAS_files/05_annotation/TrueMAF_NAs/12Plants_Top1000SNPs_SegLong_trueMAF20_10NA.csv")
+write.csv(HEM.topSNPs, "data/GWAS_files/05_annotation/TrueMAF_NAs/12Plants_AllSNPsOver99_SegLong_trueMAF20_10NA.csv")
 
 write.csv(TopSNP.wide.DM, "data/GWAS_files/05_annotation/12Plants_Top1000SNPs_SegWide_trueMAF20_10NA.csv")

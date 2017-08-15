@@ -17,11 +17,11 @@ HEM.thresh <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF_20NA/SlBc_12plant
 
 #take the SNPs over the threshold for each phenotype
 
-TH99pos <- HEM.thresh[7,]
+TH99pos <- HEM.thresh[3,]
 for (i in 2:ncol(TH99pos)){
   assign(paste("TH99pos_", names(TH99pos[i]), sep=""),as.numeric(TH99pos[i]))
 }
-TH99neg <- HEM.thresh[3,]
+TH99neg <- HEM.thresh[7,]
 for (i in 2:ncol(TH99neg)){
   assign(paste("TH99neg_", names(TH99neg[i]), sep=""),as.numeric(TH99neg[i]))
 }
@@ -74,13 +74,13 @@ for (i in c(4:15)){
   myblob <- rep(names(HEM.plotdata[i]), nrow(get(mydf)))
   assign(mydf, cbind(get(mydf), Trait = myblob))
 }
+HEM.topSNPsB <- rbind(HEM.LA410, HEM.LA480, HEM.LA1547, HEM.LA1589, HEM.LA1684, HEM.LA2093, HEM.LA2176, HEM.LA2706, HEM.LA3008, HEM.LA3475, HEM.LA4345, HEM.LA4355)
 
-HEM.topSNPs <- rbind(HEM.LA410, HEM.LA480, HEM.LA1547, HEM.LA1589, HEM.LA1684, HEM.LA2093, HEM.LA2176, HEM.LA2706, HEM.LA3008, HEM.LA3475, HEM.LA4345, HEM.LA4355)
 
-HEM.topSNPs <- rbind(HEM.NS, HEM.topSNPs)
+HEM.topSNPs <- rbind(HEM.NS, HEM.topSNPsB)
 #create a custom color scale
 #myColors <- c("grey40", "grey60", "grey40", "grey60", "grey40", "grey60", "grey40", "grey60", "grey40", "grey60", "grey40", "grey60", "grey40", "grey60", "grey40", "grey60")
-myColors <- c("gray97", "#999999", "#292929","#684800" ,"#CBA22A", "#63B2D3", "#1FA69D", "#57B761", "#DAD94C","#2B869D", "#EE82EE", "#D2652D", "#CC79A7")
+myColors <- c("gray85", "#999999", "#292929","#684800" ,"#CBA22A", "#63B2D3", "#1FA69D", "#57B761", "#DAD94C","#2B869D", "#EE82EE", "#D2652D", "#CC79A7")
 names(myColors) <- levels(HEM.topSNPs$Trait)
 colScale <- scale_colour_manual(name = "Chrom",values = myColors)
 
@@ -96,23 +96,23 @@ min(HEM.topSNPs$Chr16Index)
 #my feature: about 1kb
 #345785 to 346542
 #and I'll add 2kb on each side
-HEM.topSNPsSM <- HEM.topSNPs[which(HEM.topSNPs$Chr16Index < 347542),]
-HEM.topSNPsSM <- HEM.topSNPsSM[which(HEM.topSNPsSM$Chr16Index > 344785),]
+HEM.topSNPsSM <- HEM.topSNPs[which(HEM.topSNPs$Pos < 347542),]
+HEM.topSNPsSM <- HEM.topSNPsSM[which(HEM.topSNPsSM$Pos > 344785),]
 
 HEM.topSNPs.P <- HEM.topSNPsSM
-jpeg("paper/plots/FigR8/Sl_LesionSize_trueMAF20_NA10_lowTR.gene01Chr16.ManhattanPlot.jpg", width=8, height=5, units='in', res=600)
-  ggplot(HEM.topSNPs.P, aes(x=Chr16Index, y=Effect))+
+jpeg("paper/plots/FigR8/Sl_LesionSize_trueMAF20_NA10_lowTR.gene01Chr16.ManhattanPlot.jpg", width=7, height=5, units='in', res=600)
+  ggplot(HEM.topSNPs.P, aes(x=Pos, y=Effect))+
          theme_bw()+
          colScale+
          geom_point(aes(color = factor(Trait)))+
          labs(list(y="SNP Effect Estimate"))+
          guides(col = guide_legend(nrow = 8, title="SNP position"))+
          theme(legend.position="none")+
-         scale_x_continuous(name="SNP position")+
+         scale_y_continuous(breaks=c(3e-05, 2e-05, 1e-05, 0, -1e-05, -2e-05, -3e-05))+
+         scale_x_continuous(name="SNP position on Chr 16 (kb)", limits=c(344785, 347542), breaks=c(344500, 345000, 345500, 346000, 346500, 347000, 347500), labels=c("344.5", "345", "345.5", "346", "346.5", "347", "347.5"))+
     #exon 1 345785	345965
-         geom_rect(mapping=aes(ymin=-1.6e-05, ymax=-1.4e-05, xmin=345785, xmax=345965))+
+    geom_rect(mapping=aes(ymin=-0.2e-05, ymax=0.2e-05, xmin=345785, xmax=345965), alpha=0.01, fill="darkturquoise")+
     #exon 2 346028	346542
-         geom_rect(mapping=aes(ymin=-1.6e-05, ymax=-1.4e-05, xmin=346028, xmax=346542))+
-    #breaks = c(1), labels = c("1")
-         expand_limits(y=0)
+    geom_rect(mapping=aes(ymin=-0.2e-05, ymax=0.2e-05, xmin=346028, xmax=346542), alpha=0.01, fill="darkturquoise")+
+    expand_limits(y=0)
 dev.off()
