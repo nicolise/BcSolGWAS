@@ -25,9 +25,11 @@ Funcs <- Funcs[!duplicated(Funcs[,1]),]
 colnames(Funcs)[1] <- "geneID"
 GenesDForAnnot <- GenesDForAnnot[,-c(1)]
 DoGenAnt <- merge(GenesDForAnnot, Funcs, by="geneID")
+write.csv(DoGenAnt, "paper/plots/TableS1/AllDOannots_byGene.csv")
 
-HOGenAnt <- HOGenesForAnnot[,-c(1)]
+HOGenAnt <- HOGenesForAnnot
 HOGenAnt <- merge(HOGenAnt, Funcs, by="geneID")
+write.csv(HOGenAnt, "paper/plots/TableS1/AllHOannots_byGene.csv")
 
 #summary DF for WHOLE GENOME
 #remove empty levels of the variable (in case function appears 0 times in whole genome)
