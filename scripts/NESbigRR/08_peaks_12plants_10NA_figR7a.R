@@ -58,11 +58,11 @@ assign(paste("HEMpos.", names(HEM.plotdata[i]), sep=""), subset(HEM.plotdata, HE
 assign(paste("HEMneg.", names(HEM.plotdata[i]), sep=""), subset(HEM.plotdata, HEM.plotdata[i] < get(paste("TH99neg_", names(HEM.plotdata[i]), sep="")), select=c(Chrom,Segment,Pos,Index,i)))
 }
 
-# #for top 1000 only
-# for (i in c(4:15)){
-#   assign(paste("HEMpos.", names(HEM.plotdata[i]), sep=""), head(arrange(get(paste("HEMpos.", names(HEM.plotdata[i]), sep="")), desc(get(paste("HEMpos.", names(HEM.plotdata[i]), sep=""))[,5])), n=500))
-#   assign(paste("HEMneg.", names(HEM.plotdata[i]), sep=""), tail(arrange(get(paste("HEMneg.", names(HEM.plotdata[i]), sep="")), desc(get(paste("HEMneg.", names(HEM.plotdata[i]), sep=""))[,5])), n=500))
-# }
+#for top 1000 only
+for (i in c(4:15)){
+  assign(paste("HEMpos.", names(HEM.plotdata[i]), sep=""), head(arrange(get(paste("HEMpos.", names(HEM.plotdata[i]), sep="")), desc(get(paste("HEMpos.", names(HEM.plotdata[i]), sep=""))[,5])), n=500))
+  assign(paste("HEMneg.", names(HEM.plotdata[i]), sep=""), tail(arrange(get(paste("HEMneg.", names(HEM.plotdata[i]), sep="")), desc(get(paste("HEMneg.", names(HEM.plotdata[i]), sep=""))[,5])), n=500))
+}
 
 #combine pos and neg by group
 for (i in c(4:15)){
@@ -83,7 +83,6 @@ HEM.topSNPs <- rbind(HEM.LA410, HEM.LA0480, HEM.LA1547, HEM.LA1589, HEM.LA1684, 
 
 #total sig SNPs per trait here
 table(HEM.topSNPs$Trait)
-
 
 
 #omit LA0480 because it's so high compared to the rest
@@ -109,7 +108,7 @@ TopSNP.wide.DM$TotTraits <- TopSNP.wide.DM$TotNeg + TopSNP.wide.DM$TotPos
 hist(TopSNP.wide.DM$TotTraits)
 table(TopSNP.wide.DM$TotTraits)
 
-jpeg("paper/plots/ActualPaper/FigR7/R7a_topSNPssOverlap_12Plants.jpg", width=8, height=5, units='in', res=600)
+jpeg("paper/plots/FigR7/R7a_topSNPssOverlap_12Plants.jpg", width=8, height=5, units='in', res=600)
 ggplot(TopSNP.wide.DM, aes(TopSNP.wide.DM$TotTraits)) + 
   geom_bar()+
   theme_bw()+
@@ -117,9 +116,42 @@ ggplot(TopSNP.wide.DM, aes(TopSNP.wide.DM$TotTraits)) +
   scale_x_continuous(name= "Plant Genotypes per Candidate SNP", breaks=c(1,2,3,4,5,6,7,8,9,10,11,12),labels=c(1,2,3,4,5,6,7,8,9,10,11,12), limits = c(0, 12))
 dev.off()
 
+#better version with probabilities of overlaps from binomials
+myprobs <- read.csv("paper/plots/FigR7/Probabilities.csv")
+names(myprobs)
+library(ggplot2)
+
+#x=myprobs$NumberofGenos, y=myprobs$ObsOverlap
+#aes(x=myprobs$NumberofGenos, y=myprobs$ObsOverlap)+
+jpeg("paper/plots/FigR7/R7a_topSNPssOverlap_12Plants_prob.jpg", width=7.5, height=5, units='in', res=600)
+ggplot(myprobs)+
+  geom_col(aes(x=myprobs$NumberOfGenos, y=ObsOverlap))+
+  geom_line(aes(x=myprobs$NumberOfGenos, y=ExpectV2))+
+  theme_bw()+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
+  theme(text = element_text(size=14), axis.text.x = element_text(size=14), axis.text.y = element_text(size=14))+
+  scale_y_continuous(name= "Number of SNPs", limits = c(0,48000))+
+  scale_x_continuous(name="Plant Genotypes per Candidate SNP", breaks=c(1,2,3,4,5,6,7,8,9,10,11,12),labels=c(1,2,3,4,5,6,7,8,9,10,11,12), limits = c(0, 12))
+dev.off()
+
+jpeg("paper/plots/FigR7/R7a_topSNPssOverlap_12Plants_probSmall.jpg", width=4, height=3, units='in', res=600)
+ggplot(myprobs)+
+  geom_col(aes(x=myprobs$NumberOfGenos, y=ObsOverlap))+
+  geom_line(aes(x=myprobs$NumberOfGenos, y=ExpectOverlap))+
+  theme_bw()+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
+  theme(text = element_text(size=14), axis.text.x = element_text(size=14), axis.text.y = element_text(size=14))+
+  scale_y_continuous(name= "Number of SNPs", limits = c(0,1500))+
+  scale_x_continuous(name="Plant Genotypes per Candidate SNP", breaks=c(6,7,8,9,10,11,12),labels=c(6,7,8,9,10,11,12), limits = c(5, 13))
+dev.off()
+
+
 #make it wide format
 #currently long format : Chrom, Segment, Pos, Index, Effect, Trait
 #write.csv(HEM.plotdata, "data/GWAS_files/05_annotation/TrueMAF_NAs/Domestication_TopSNPs_SegLong_trueMAF20_10NA.csv")
 write.csv(HEM.plotdata, "data/GWAS_files/05_annotation/TrueMAF_NAs/12Plants_Top1000SNPs_SegLong_trueMAF20_10NA.csv")
+write.csv(HEM.topSNPs, "data/GWAS_files/05_annotation/TrueMAF_NAs/12Plants_AllSNPsOver99_SegLong_trueMAF20_10NA.csv")
 
 write.csv(TopSNP.wide.DM, "data/GWAS_files/05_annotation/12Plants_Top1000SNPs_SegWide_trueMAF20_10NA.csv")

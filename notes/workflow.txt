@@ -1,0 +1,25 @@
+a. 08_peaks_12plants_10NA_figR7a.R
+Input: bigRR outputs // probabilities of SNP overlap list
+Plot: Histograms of expected and observed frequencies of SNP-level overlap
+
+b. 09_12phenos_NA10_figR6b.R
+Input: bigRR outputs 
+- (SNPlist) data/GWAS_files/04_bigRRoutput/trueMAF_10NA/SlBc_12plants_trueMAF20_10NA.HEM.PlotFormat.final.csv
+- (Thresh) data/GWAS_files/04_bigRRoutput/trueMAF_10NA/SlBc_12plants_trueMAF20_10NA.HEM.Thresh.final.csv
+Output: High Overlap SNP list (HOSNP), data/GWAS_files/05_annotation/TrueMAF_NAs/12Plants_HiOverlapSNPs_trueMAF20_10NA.csv
+Plot: Scatterplot of number of phenotypes per sig SNP as manhattan plot.
+
+c. Add genes to SNP list: SNPdat
+Instructions here: notes/coding/Methods for genome annotation and circle plots.docx
+copy output files from 09_12phenos into data/SNPdat_Annotate/Final_annots
+May need to run on Linux if Strawberry PERL is malfunctioning
+
+d. 10_GeneAnnot_10NA_venns_figR8figR7b.R
+Input: SNP lists from 09_12phenos and 09_domest and 08_peaks, with genes added through SNPdat
+Output: Gene lists from these SNP sets (no duplicate genes by SNP)
+Plot: histograms of expected and observed frequencies of Gene-level overlap
+
+e. 11_GeneAnnot_function.R
+Input: Gene lists from c.
+Output: Functionally annotated genes from list
+data/GWAS_files/05_annotation/FINAL_2kbWindow/HiOverlap12p_AnnotatedGenes.csv

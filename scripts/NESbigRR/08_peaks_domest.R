@@ -100,14 +100,14 @@ HEM.DmWoD$Trait <- "DmWoD"
 HEM.topSNPs <- rbind(HEM.Domesticated, HEM.Wild, HEM.DmWoD)
 
 library(ggplot2)
-plot1 <- ggplot(HEM.plotdata, aes(x=Index, y=Effect))
+plot1 <- ggplot(HEM.topSNPs, aes(x=Index, y=Effect))
 plot1 + geom_point(aes(color=factor(Trait)))+
   theme_bw()
   
 #make it wide format
 #currently long format : Chrom, Segment, Pos, Index, Effect, Trait
 write.csv(HEM.plotdata, "data/GWAS_files/05_annotation/TrueMAF_NAs/Domestication_TopSNPs_SegLong_trueMAF20_10NA.csv")
-write.csv(HEM.plotdata, "data/GWAS_files/05_annotation/TrueMAF_NAs/Domestication_Top1kSNPs_SegLong_trueMAF20_10NA.csv")
+write.csv(HEM.topSNPs, "data/GWAS_files/05_annotation/TrueMAF_NAs/Domestication_Top1kSNPs_SegLong_trueMAF20_10NA.csv")
 
 TopSNP.wide.DM <- reshape(HEM.topSNPs, 
                          timevar = "Trait",
