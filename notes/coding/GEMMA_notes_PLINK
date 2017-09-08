@@ -352,6 +352,7 @@ IMPUTE2, for imputation instead, and performing association analysis on those
 results.  ('--recode vcf' and --vcf can be used to exchange data with BEAGLE 4,
 while '--recode oxford' and --data let you work with IMPUTE2.)
 
+-------------------------------------------------------------------------------------------------------------------
 IMPUTE2
 http://mathgen.stats.ox.ac.uk/impute/impute_v2.html
 
@@ -375,6 +376,39 @@ https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#required_args
 problems: IMPUTE2 designed to only do small sections of each chromosome. and lots of file requirements to align strands and phase variants to reference panel. None of this makes sense for my dataset. 
 and, PLINK will lose phasing anyway.
 
+the -g file format is unique to IMPUTE2.
+http://www.stats.ox.ac.uk/~marchini/software/gwas/file_format.html
+
+current format is .ped
+The PED file describes the individuals and the genetic data. The PED file corresponding to the example dataset is:
+FAM1 IND1  0     0     1 0 A A T T 0 0
+FAM2 IND2  0     0     1 0 A G T C T A
+FAM3 TRIOF 0     0     1 0 A G T C A T
+FAM4 TRIOM 0     0     2 0 A G T C A T
+FAM5 TRIOC TRIOF TRIOM 1 0 A A C T A T
+FAM6 DUOP  0     0     2 0 G A T C A A
+FAM7 DUOC  DUOP  0     2 0 A A T C A A
+
+This file can be SPACE or TAB delimited. Each line corresponds to a single individual. The first 6 columns are:
+Family ID [string]
+Individual ID [string]
+Father ID [string]
+Mother ID [string]
+Sex [integer]
+Phenotype [float]
+
+Columns 7 & 8 code for the observed alleles at SNP1, columns 9 & 10 code for the observed alleles at SNP2, and so on. Missing data are coded as "0 0" as for example for SNP3 of IND1. This file should have N lines and 2L+6 columns, where N and L are the numbers of individuals and SNPs contained in the dataset respectively.
+
+from .ped I'd have to:
+- transpose data (SNPs as columns --> SNPs as rows)
+- list all states per SNP (row)
+- each SNP currently has 2 rows, because of the way diploid data are listed
+- 2 most common states per 2-SNP rows are allele1 and allele2
+- each individual with allele1 gets coded with "1 0 0" (3 columns)
+- each individual with allele2 gets coded with "0 0 1"
+- I have no heterozygotes because this is actually haploid data, so there will be no "0 1 0"s
+- this is probably way easier to do from the .tab data. Look into that next.
+
 mine: 
 copy my data to impute_v2 nesdata/\
 /home/nesoltis/Documents/GitRepos/BcSolGWAS/data/GEMMA_files/03_runGEMMA/dpcharMAF20NA10.map
@@ -389,7 +423,7 @@ cd Documents/impute_v2.3.2_x86_64_dynamic$ ./impute2 \
 -NE
 -o ./nesdata/dpcharMAF20NA10.firstimpt.impute2
 
-
+--------------------------------------------------------------------------------------------------
 BEAGLE 4
 https://faculty.washington.edu/browning/beagle/beagle.html
 
