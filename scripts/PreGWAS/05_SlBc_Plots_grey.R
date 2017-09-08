@@ -17,7 +17,7 @@ library(ggplot2)
 
 #domestication 2 set
 myColors <- c("grey60", "grey20")
-myColors2 <- c("grey60", "grey20")
+myColors2 <- c("grey20", "grey60")
 #fill = grey20 (dark) for domesticated, grey60 for wild
 names(myColors) <- levels(ModDat$Species)
 names(myColors2) <- levels(ModDat2$SpLabs)
@@ -38,7 +38,7 @@ ModDat$Plant.Label <- mapvalues(ModDat$PlantNum,
                                  c("LA4345", "LA3008", "LA4355", "LA2706", "LA3475", "LA0410", "LA1547", "LA2093", "LA1684", "LA1589", "LA0480", "LA2176"))
 ModDat$Plant.Lab.Ord <- factor(ModDat$Plant.Label, levels = c("LA4345", "LA3008", "LA4355", "LA2706", "LA3475", "LA0410", "LA1547", "LA2093", "LA1684", "LA1589", "LA0480", "LA2176"))
 
-tiff("paper/plots/ActualPaper/FigR2/FigR2_beanplot.tiff", width=7.5, height=5.4, units='in', res=600)
+tiff("paper/plots/FigR2/FigR2_beanplot_nogrid.tiff", width=7.5, height=5.4, units='in', res=600)
 ggplot(ModDat, aes(x = factor(Plant.Lab.Ord), y = Scale.LS)) + 
   theme_bw() +
   guides(fill=F)+
@@ -48,6 +48,9 @@ ggplot(ModDat, aes(x = factor(Plant.Lab.Ord), y = Scale.LS)) +
   facet_grid(.~SpLabs, scales="free") +
   geom_boxplot(width = 0.2) +
   theme(text = element_text(size=14), axis.text.x = element_text(size = 14, angle = 45, hjust = 1), axis.text.y = element_text(size = 14), strip.text.x = element_text(size = 14), strip.background=element_blank())+
+  #remove grid lines
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
   labs(y = expression (Mean ~ Lesion ~ Area ~ (cm^{2})), x=element_blank())
 dev.off()
 #--------------------------------------------------------------
@@ -60,12 +63,15 @@ dev.off()
 #attach(FigDat3)
 #FigDat3 <- FigDat3[order(mmLS),]
 
-tiff("plots/paper/DomestRight/Sl_LesionSize_IntMean_DW.tif", width=3.5, height=4, units='in', res=600)
+tiff("paper/plots/FigR3/Sl_LesionSize_IntMean_DW.tif", width=3.5, height=4, units='in', res=600)
 ggplot(FigDat4, aes(x = SpLabs, y = mLS, group=factor(Igeno)))+
   theme_bw()+
   geom_line(size=0.5, alpha=0.4, show.legend = F)+
   ylim(0,1.7)+
-  theme(text = element_text(size=14), axis.text.x = element_text(), strip.background = element_blank())+
+  theme(text = element_text(size=14), axis.text = element_text(size=14), strip.background = element_blank())+
+  #remove grid lines
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
   labs(y=expression(Lesion ~ Area ~ (cm^{2})), x=element_blank())
 dev.off()
 
@@ -76,7 +82,7 @@ ModDat2 <- ddply(ModDat, c("Igeno", "SpLabs", "Pgeno"), summarise,
 ModDat2$SpLabs <- factor(ModDat2$SpLabs, levels=c("Wild", "Domesticated"))
 
 #can draw half-violins if I download vioplot2, but I'm lazy
-tiff("plots/paper/DomestRight/Sl_LesionSize_vio_DW.tif", width=3.5, height=4, units='in', res=600)
+tiff("paper/plots/FigR3/Sl_LesionSize_vio_DW.tif", width=3.5, height=4, units='in', res=600)
 ggplot(ModDat2, aes(x = SpLabs, y = mLS))+
   theme_bw() +
   geom_violin(aes(fill = factor(SpLabs)))+
@@ -85,6 +91,9 @@ ggplot(ModDat2, aes(x = SpLabs, y = mLS))+
   guides(fill=F)+
   ylim(0,1.7) + 
   theme(text = element_text(size=14), axis.text.x = element_text(size = 14, hjust = 1), axis.text.y = element_text(size = 14), aspect.ratio=1.5/1)+
+  #remove grid lines
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
   labs(y = expression (Mean ~ Lesion ~ Area ~ (cm^{2})), x=element_blank())
 dev.off()
 
@@ -159,7 +168,9 @@ p1 <- ggplot(FigDat3, aes(x = Plant.Lab.Ord, y = mLS))+
   scale_color_manual(values = c("black", "black",  "black", "black", "black"))+
   geom_line(size=0.5, aes(color=factor(Group), group=factor(Igeno)), show.legend=F, alpha=0.4)+
   facet_grid(.~SpLabs, scales="free_x")+
-  theme(text = element_text(size=14), axis.text.x = element_text(angle=45, hjust=1, color=NA), strip.background = element_blank(), aspect.ratio=1/1, axis.title.x=element_text(color=NA))+
+  theme(text = element_text(size=14), axis.text.x = element_text(size=14, angle=45, hjust=1, color=NA), strip.background = element_blank(), aspect.ratio=1/1, axis.title.x=element_text(color=NA), axis.text.y = element_text(size=14), strip.text.x = element_text(size=14))+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
   labs(y=expression(Lesion ~ Area ~ (cm^{2})))
 
 #second panel: b05.10
@@ -170,7 +181,9 @@ p2 <- ggplot(FigDat3, aes(x = Plant.Lab.Ord, y = mLS))+
   scale_color_manual(values = c("grey80", "black",  "grey80", "grey80"))+
   geom_line(size=0.5, aes(color=factor(Group), group=factor(Igeno)), show.legend=F, alpha=0.8)+
   facet_grid(.~SpLabs, scales="free_x")+
-  theme(text = element_text(size=14), axis.text.x = element_text(angle=45, hjust=1, color=NA), axis.title.y = element_text(color=NA), strip.background = element_blank(), axis.title.x=element_text(color=NA), aspect.ratio=1/1)+
+  theme(text = element_text(size=14), axis.text.x = element_text(size=14, angle=45, hjust=1, color=NA), axis.text.y = element_text(size=14), axis.title.y = element_text(color=NA), strip.background = element_blank(), axis.title.x=element_text(color=NA), aspect.ratio=1/1, strip.text.x = element_text(size=14))+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
   labs(y=expression(Lesion ~ Area ~ (cm^{2})))
 
 #third panel: high subset
@@ -180,7 +193,9 @@ p3 <- ggplot(FigDat3, aes(x = Plant.Lab.Ord, y = mLS))+
   scale_color_manual(values = c("grey80", "grey80",  "black", "grey80"))+
   geom_line(size=0.5, aes(color=factor(Group), group=factor(Igeno)), show.legend=F, alpha=0.8)+
   facet_grid(.~SpLabs, scales="free_x")+
-  theme(text = element_text(size=14), axis.text.x = element_text(angle=45, hjust=1, color=NA), strip.background = element_blank(), strip.text.x=element_text(color=NA), aspect.ratio=1/1, axis.title.x=element_text(color=NA))+
+  theme(text = element_text(size=14), axis.text.y = element_text(size=14), axis.text.x = element_text(angle=45, hjust=1, color=NA), strip.background = element_blank(), strip.text.x=element_text(color=NA), aspect.ratio=1/1, axis.title.x=element_text(color=NA))+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
   labs(y=expression(Lesion ~ Area ~ (cm^{2})))
 
 #fourth panel: low subset
@@ -190,70 +205,68 @@ p4 <- ggplot(FigDat3, aes(x = Plant.Lab.Ord, y = mLS))+
   scale_color_manual(values = c("grey80",  "grey80", "grey80", "black"))+
   geom_line(size=0.5, aes(color=factor(Group), group=factor(Igeno)), show.legend=F, alpha=0.8)+
   facet_grid(.~SpLabs, scales="free_x")+
-  theme(text = element_text(size=14), axis.text.x = element_text(angle=45, hjust=1, color=NA), strip.background = element_blank(), axis.title.y = element_text(color=NA), axis.title.x=element_text(color=NA), strip.text.x= element_text(color=NA), aspect.ratio=1/1)+
+  theme(text = element_text(size=14), axis.text.y = element_text(size=14), axis.text.x = element_text(angle=45, hjust=1, color=NA), strip.background = element_blank(), axis.title.y = element_text(color=NA), axis.title.x=element_text(color=NA), strip.text.x= element_text(color=NA), aspect.ratio=1/1)+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
   labs(y=expression(Lesion ~ Area ~ (cm^{2})))
 
 #fifth panel: varying subset
+#removed this, but here is the color line:
+#  geom_line(size=0.5, aes(color=factor(PlFxFIX), group=factor(Igeno)), show.legend=F, alpha=0.8)+
 #GroupsB, second level out of 3 is also varying
-p5 <- ggplot(FigDat3, aes(x = Plant.Lab.Ord, y = mLS))+
-  theme_bw()+
   #order: all, Intx, tomato
-  scale_color_manual(values = c("black", "grey80"))+
-  geom_line(size=0.5, aes(color=factor(PlFxFIX), group=factor(Igeno)), show.legend=F, alpha=0.8)+
-  facet_grid(.~SpLabs, scales="free_x")+
-  theme(text = element_text(size=14), axis.text.x = element_text(angle=45, hjust=1, color=NA), strip.background = element_blank(), strip.text.x=element_text(color=NA), aspect.ratio=1/1, axis.title.x=element_text(color=NA))+
-  labs(y=expression(Lesion ~ Area ~ (cm^{2})))
 
-#sixth panel: tomato subset
-p6 <- ggplot(FigDat3, aes(x = Plant.Lab.Ord, y = mLS))+
+#fifth panel: tomato subset
+p5 <- ggplot(FigDat3, aes(x = Plant.Lab.Ord, y = mLS))+
   theme_bw()+
   #order: all, b05.10, high10, intx, low10
   scale_color_manual(values = c("grey80",  "grey80", "black"))+
   geom_line(size=0.5, aes(color=factor(GroupsB), group=factor(Igeno)), show.legend=F, alpha=0.8)+
   facet_grid(.~SpLabs, scales="free_x")+
-  theme(text = element_text(size=14), axis.text.x = element_text(angle = 45, hjust = 1), strip.background = element_blank(), strip.text.x=element_text(color=NA), axis.title.y = element_text(color=NA), axis.title.x=element_text(color=NA), aspect.ratio=1/1)+
+  theme(text = element_text(size=14), axis.text.y = element_text(size=14), axis.text.x = element_text(size=14, angle = 45, hjust = 1), strip.background = element_blank(), strip.text.x=element_text(color=NA), axis.title.y = element_text(size=14), axis.title.x=element_text(color=NA), aspect.ratio=1/1)+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
   labs(y=expression(Lesion ~ Area ~ (cm^{2})))
 
-#seventh panel: domestication subset
+#sixth panel: domestication subset
 #FdrSpp, first 3 out of 4 factors is also Species
-p7 <- ggplot(FigDat3, aes(x = Plant.Lab.Ord, y = mLS))+
+p6 <- ggplot(FigDat3, aes(x = Plant.Lab.Ord, y = mLS))+
   theme_bw()+
   #order: all, b05.10, high10, intx, low10
   scale_color_manual(values = c("black", "black", "grey80"))+
   geom_line(size=0.5, aes(color=factor(FdrSpp), group=factor(Igeno)), show.legend=F, alpha=0.8)+
   facet_grid(.~SpLabs, scales="free_x")+
-  theme(text = element_text(size=14), axis.text.x = element_text(angle = 45, hjust = 1), strip.background = element_blank(), strip.text.x=element_text(color=NA),  axis.title.x=element_text(color=NA), aspect.ratio=1/1)+
+  theme(text = element_text(size=14), axis.text.x = element_text(size=14, angle = 45, hjust = 1), axis.text.y = element_text(size=14), strip.background = element_blank(), strip.text.x=element_text(color=NA),  axis.title.x=element_text(color=NA), axis.title.y=element_text(color=NA), aspect.ratio=1/1)+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
   labs(y=expression(Lesion ~ Area ~ (cm^{2})))
 
 #really can't use facet_grid with margins, so have to fix this by hand, plot.margin=unit(c(0,0,0,0), "cm")
 ############################
-tiff("plots/paper/DomestRight/Sl_LesionSize_Intx_a.tif", width=6, height=3, units='in', res=600)
+tiff("paper/plots/FigR4/Sl_LesionSize_Intx_a.tif", width=4, height=3, units='in', res=600)
 p1 
 dev.off()
 
-tiff("plots/paper/DomestRight/Sl_LesionSize_Intx_b.tif", width=6, height=3, units='in', res=600)
+tiff("paper/plots/FigR4/Sl_LesionSize_Intx_b.tif", width=4, height=3, units='in', res=600)
 p2
 dev.off()
 
-tiff("plots/paper/DomestRight/Sl_LesionSize_Intx_c.tif", width=6, height=3, units='in', res=600)
+tiff("paper/plots/FigR4/Sl_LesionSize_Intx_c.tif", width=4, height=3, units='in', res=600)
 p3 
 dev.off()
 
-tiff("plots/paper/DomestRight/Sl_LesionSize_Intx_d.tif", width=6, height=3, units='in', res=600)
+tiff("paper/plots/FigR4/Sl_LesionSize_Intx_d.tif", width=4, height=3, units='in', res=600)
 p4 
 dev.off()
 
-tiff("plots/paper/DomestRight/Sl_LesionSize_Intx_e.tif", width=6, height=3, units='in', res=600)
+tiff("paper/plots/FigR4/Sl_LesionSize_Intx_e.tif", width=4, height=3, units='in', res=600)
 p5
 dev.off()
 
-tiff("plots/paper/DomestRight/Sl_LesionSize_greyIntx_f.tif", width=6, height=3, units='in', res=600)
+tiff("paper/plots/FigR4/Sl_LesionSize_greyIntx_f.tif", width=4, height=3, units='in', res=600)
 p6
 dev.off()
 
-tiff("plots/paper/DomestRight/Sl_LesionSize_greyIntx_g.tif", width=6, height=3, units='in', res=600)
-p7
-dev.off()
 
 library(gridExtra)
 tiff("plots/paper/DomestRight/Sl_LesionSize_PANELS.tif", width=12, height=8, units='in', res=600)

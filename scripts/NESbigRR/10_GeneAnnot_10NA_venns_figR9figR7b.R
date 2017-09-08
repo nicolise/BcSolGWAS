@@ -84,11 +84,14 @@ IPant3 <- IPant2 %>%
 
 write.csv(IPant2, "data/GWAS_files/05_annotation/FINAL_2kbWindow/12plants_genesTOANNOT.csv")
 
-jpeg("paper/plots/FigR7/topGenesOverlap_IndPlants_1kbWin_Small.jpg", width=4, height=3, units='in', res=600)
+jpeg("paper/plots/FigR7/R7b_topGenesOverlap_IndPlants_1kbWin_Small.jpg", width=4, height=3, units='in', res=600)
 ggplot(IPant2, aes(IPant2$TotPhenos)) + 
   geom_bar()+
   theme_bw()+
   scale_y_continuous(name= "Number of Genes")+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
+  theme(text = element_text(size=14), axis.text.x = element_text(size=14), axis.text.y = element_text(size=14))+
   scale_x_continuous(name= "Plant Genotypes per Candidate Gene", breaks=c(6,7,8,9,10,11,12),labels=c(6,7,8,9,10,11,12), limits=c(5,13))
 dev.off()
 #-------------------------------------------------------------------
@@ -200,7 +203,7 @@ HOSNP <- HOSNP[,-c(1)]
 HOplant <- merge(HOSNP, HOgen, by="Chrom.Pos") #this includes multiple SNPs per gene again
 #also count number of phenotypes PER GENE
 names(HOplant)
-colnames(HOplant)[56] <- "geneID"
+colnames(HOplant)[46] <- "geneID"
 #for SNP info per gene, only keep first mention of each gene
 
 #now summarize by gene (just counting phenotypes per gene)
@@ -244,11 +247,14 @@ HOplant3 <- HOplant2 %>%
 write.csv(HOplant2, "data/GWAS_files/05_annotation/FINAL_2kbWindow/12plants_HO_genesTOANNOT.csv")
 write.csv(FullGeneInfo, "data/GWAS_files/05_annotation/FINAL_2kbWindow/12plants_HO_geneINFO.csv")
 
-bjpeg("paper/plots/ActualPaper/FigR7/topGenesOverlap_IndPlants_1kbWin.jpg", width=8, height=5, units='in', res=600)
+jpeg("paper/plots/FigR7/R7b_topGenesOverlap_IndPlants_1kbWin.jpg", width=7.5, height=5, units='in', res=600)
 ggplot(IPant2, aes(IPant2$TotPhenos)) + 
   geom_bar()+
   theme_bw()+
   scale_y_continuous(name= "Number of Genes")+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
+  theme(text = element_text(size=14), axis.text.x = element_text(size=14), axis.text.y = element_text(size=14))+
   scale_x_continuous(name= "Plant Genotypes per Candidate Gene", breaks=c(1,2,3,4,5,6,7,8,9,10,11,12),labels=c(1,2,3,4,5,6,7,8,9,10,11,12))
 dev.off()
 #-----------------------------------

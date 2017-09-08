@@ -99,20 +99,39 @@ min(HEM.topSNPs$Chr16Index)
 HEM.topSNPsSM <- HEM.topSNPs[which(HEM.topSNPs$Pos < 347542),]
 HEM.topSNPsSM <- HEM.topSNPsSM[which(HEM.topSNPsSM$Pos > 344785),]
 
+#trying a bigger window (8kb) to find missing phenos
+HEM.topSNPsSM <- HEM.topSNPs[which(HEM.topSNPs$Pos < 355042),]
+HEM.topSNPsSM <- HEM.topSNPsSM[which(HEM.topSNPsSM$Pos > 337285),]
+
+#modify colors so that wild are oranges and domesticated are blues
+levels(HEM.topSNPs$Trait)
+#"NS"     "LA410"  "LA480"  "LA1547" "LA1589" "LA1684" "LA2093"
+#"LA2176" "LA2706" "LA3008" "LA3475" "LA4345" "LA4355"
+#NS, D, W, W, W, W, W, W, D, D, D, D, D
+#oranges: coral1, deeppink3, yellow1, darkorange, red4, pink1
+#blues: darkblue, dodgerblue1, blueviolet, lawngreen, seagreen4, mediumorchid1
+myColors <- c("gray85", "darkblue", "coral1", "deeppink3", "goldenrod2", "darkorange", "red4", "pink1", "dodgerblue1", "blueviolet", "lawngreen", "seagreen4", "mediumorchid1")
+
+names(myColors) <- levels(HEM.topSNPs$Trait)
+colScale <- scale_colour_manual(name = "Chrom",values = myColors)
+
 HEM.topSNPs.P <- HEM.topSNPsSM
 jpeg("paper/plots/FigR8/Sl_LesionSize_trueMAF20_NA10_lowTR.gene01Chr16.ManhattanPlot.jpg", width=7, height=5, units='in', res=600)
-  ggplot(HEM.topSNPs.P, aes(x=Pos, y=Effect))+
+  ggplot(HEM.topSNPs.P, aes(x=Pos, y=100*Effect))+
          theme_bw()+
          colScale+
          geom_point(aes(color = factor(Trait)))+
-         labs(list(y="SNP Effect Estimate"))+
+         labs(list(y=expression(paste("Estimated SNP Effect Size (",mm^{2},")"))))+
          guides(col = guide_legend(nrow = 8, title="SNP position"))+
-         theme(legend.position="none")+
-         scale_y_continuous(breaks=c(3e-05, 2e-05, 1e-05, 0, -1e-05, -2e-05, -3e-05))+
+         #theme(legend.position="none")+
+         scale_y_continuous(breaks=c(3e-03, 2e-03, 1e-03, 0, -1e-03, -2e-03, -3e-03))+
          scale_x_continuous(name="SNP position on Chr 16 (kb)", limits=c(344785, 347542), breaks=c(344500, 345000, 345500, 346000, 346500, 347000, 347500), labels=c("344.5", "345", "345.5", "346", "346.5", "347", "347.5"))+
+    theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
+    theme(text = element_text(size=14), axis.text.x = element_text(size=14), axis.text.y = element_text(size=14))+
     #exon 1 345785	345965
-    geom_rect(mapping=aes(ymin=-0.2e-05, ymax=0.2e-05, xmin=345785, xmax=345965), alpha=0.01, fill="darkturquoise")+
+    geom_rect(mapping=aes(ymin=-0.2e-03, ymax=0.2e-03, xmin=345785, xmax=345965), alpha=0.01, fill="darkturquoise")+
     #exon 2 346028	346542
-    geom_rect(mapping=aes(ymin=-0.2e-05, ymax=0.2e-05, xmin=346028, xmax=346542), alpha=0.01, fill="darkturquoise")+
+    geom_rect(mapping=aes(ymin=-0.2e-03, ymax=0.2e-03, xmin=346028, xmax=346542), alpha=0.01, fill="darkturquoise")+
     expand_limits(y=0)
 dev.off()

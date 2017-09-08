@@ -18,13 +18,18 @@ library(ggplot2)
 library(grid)
 
 #Import data (reorganized from script ReformatBigRRouts.R)
-HEM.plotdata <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF_10NA/SlBc_12plants_trueMAF20_10NA.HEM.PlotFormat.final.csv")
+HEM.plotdata.og <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF_10NA/SlBc_12plants_trueMAF20_10NA.HEM.PlotFormat.final.csv")
+
+HEM.plotdata <- HEM.plotdata.og
 
 HEM.plotdata <- HEM.plotdata[,-c(1)]
 
 #get threshhold values 
 HEM.thresh <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF_10NA/SlBc_12plants_trueMAF20_10NA.HEM.Thresh.final.csv")
 HEM.thresh <- HEM.thresh[,-c(1)]
+
+#average 99% threshold
+mean(6.674198e-06, 1.493645e-05, 1.290865e-05, 8.490481e-06, 2.055714e-05, 1.492797e-05, 1.714183e-05, 1.756520e-05, 1.212998e-05, 1.376836e-05, 1.534867e-05, 1.443944e-05, 6.973896e-06, 1.520926e-05, 1.309197e-05, 8.455100e-06, 2.134363e-05, 1.549896e-05, 1.698335e-05, 1.761662e-05, 1.283858e-05, 1.418813e-05, 1.574277e-05, 1.534149e-05)
 
 TH95pos <- HEM.thresh[1,]
 for (i in 2:ncol(TH95pos)){
@@ -71,28 +76,43 @@ max(HEM.plotdata[which(HEM.plotdata$Chrom.Seg.F=='16.7'),]$Index) - min(HEM.plot
 #greyscale version
 #4 to 15
 for (i in c(7)){
-  #jpeg(paste("paper/plots/ActualPaper/bw_Sl_LesionSize_trueMAF20_NA10_lowTR_", names(HEM.plotdata[7]), ".ManhattanPlot.jpg", sep=""), width=8, height=5, units='in', res=600)
-jpeg(paste("plots/paper/bw_Sl_LesionSize_trueMAF20_NA10_lowTR_", names(HEM.plotdata[i]), ".ManhattanPlot.jpg", sep=""), width=8, height=5, units='in', res=600)
-  plot(ggplot(HEM.plotdata, aes(x=Index, y=HEM.plotdata[,i]))+
-    theme_bw()+
-    colScale+
-    geom_point(aes(color = factor(Chrom)))+
-    labs(list(y="SNP Effect Estimate", title=paste("Lesion Size on ", names(HEM.plotdata[i]))))+
-    guides(col = guide_legend(nrow = 8, title="Chromosome"))+
-    geom_hline(yintercept=get(paste("TH95pos_", names(HEM.plotdata[i]), sep="")), colour = "black", lty=3) +
-    geom_hline(yintercept=get(paste("TH95neg_", names(HEM.plotdata[i]), sep="")), colour = "black", lty=3) +
-    geom_text(aes(0,get(paste("TH95neg_", names(HEM.plotdata[i]), sep="")), label = "95% Threshold", vjust = 1.2, hjust=.05), col = "black")+
-   geom_hline(yintercept=get(paste("TH99pos_", names(HEM.plotdata[i]), sep="")), lty=2) +
-    geom_hline(yintercept=get(paste("TH99neg_", names(HEM.plotdata[i]), sep="")), lty=2) +
-   geom_text(aes(0,get(paste("TH99neg_", names(HEM.plotdata[i]), sep="")), label = "99% Threshold", vjust = 1.5, hjust=.05), col = "black")+
-    theme(legend.position="none")+
-    #NA20 chromosomes
-    scale_x_continuous(name="Chromosome", breaks = c(1677869, 5250031, 9006772, 11066464, 13584641, 17192569, 20021437, 22387756, 24411342, 26784999, 28587689, 30133032, 31892533, 34009041, 35807682, 38915229), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
-    #NA10 chromosomes
-   # scale_x_continuous(name="Chromosome", breaks = c(1674920, 5242762, 8999082, 11057880, 13580364, 17181767, 20009659, 22371413, 24388631, 26765466, 28559407, 30104939, 31864287, 33980281, 35775028, 38876579), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
-    expand_limits(y=0))
+  jpeg(paste("paper/plots/FigR6/bw_Sl_LesionSize_trueMAF20_NA10_lowTR_", names(HEM.plotdata[i]), ".ManhattanPlot.jpg", sep=""), width=7.5, height=5, units='in', res=600)
+  plot(ggplot(HEM.plotdata, aes(x=Index, y=100*HEM.plotdata[,i]))+
+         theme_bw()+
+         colScale+
+         geom_point(aes(color = factor(Chrom)))+
+         labs(list(y=expression(paste("Estimated Effect Size (",mm^{2},")")), title=paste("Lesion Size on ", names(HEM.plotdata[i]))))+
+         theme(text = element_text(size=14), axis.text.x = element_text(size=14), axis.text.y = element_text(size=14))+
+         guides(col = guide_legend(nrow = 8, title="Chromosome"))+
+         geom_hline(yintercept=100*get(paste("TH95pos_", names(HEM.plotdata[i]), sep="")), colour = "black", lty=3) +
+         geom_hline(yintercept=100*get(paste("TH95neg_", names(HEM.plotdata[i]), sep="")), colour = "black", lty=3) +
+         geom_text(aes(0,100*get(paste("TH95neg_", names(HEM.plotdata[i]), sep="")), label = "95% Threshold", size=14, vjust = 2, hjust=.05), col = "black")+
+         geom_hline(yintercept=100*get(paste("TH99pos_", names(HEM.plotdata[i]), sep="")), lty=2) +
+         geom_hline(yintercept=100*get(paste("TH99neg_", names(HEM.plotdata[i]), sep="")), lty=2) +
+         geom_text(aes(0,100*get(paste("TH99neg_", names(HEM.plotdata[i]), sep="")), label = "99% Threshold", size=14, vjust = 4.5, hjust=.05), col = "black")+
+         theme(legend.position="none")+
+         theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+               panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
+         #NA10 chromosomes
+         scale_x_continuous(name="Chromosome", breaks = c(1674920, 5242762, 8999082, 11057880, 13580364, 17181767, 20009659, 22371413, 24388631, 26765466, 28559407, 30104939, 31864287, 33980281, 35775028, 38876579), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
+         geom_vline(xintercept=1099438, lty=2)+
+         geom_vline(xintercept=1836245, lty=2)+
+         geom_vline(xintercept=31154483, lty=2)+
+         geom_vline(xintercept=33853054, lty=2)+
+         geom_vline(xintercept=36555407, lty=2)+
+         geom_vline(xintercept=41350409, lty=2)+
+         #geom_vline(xintercept=5703231, lty=2)+
+         geom_vline(xintercept=6589294, lty=2)+
+         geom_vline(xintercept=7955289, lty=2)+
+         geom_vline(xintercept=11188054, lty=2)+
+         geom_vline(xintercept=22332692, lty=2)+
+         geom_vline(xintercept=24530790, lty=2)
+  )
   dev.off()
 }
+
+#NA20 chromosomes
+#scale_x_continuous(name="Chromosome", breaks = c(1677869, 5250031, 9006772, 11066464, 13584641, 17192569, 20021437, 22387756, 24411342, 26784999, 28587689, 30133032, 31892533, 34009041, 35807682, 38915229), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
 
 #highTR BW
   #plot 2706 as example, [9]
@@ -113,7 +133,7 @@ for (i in c(15)){
     theme(legend.position="none")+
   scale_x_continuous(name="Chromosome", breaks = c(1677869, 5250031, 9006772, 11066464, 13584641, 17192569, 20021437, 22387756, 24411342, 26784999, 28587689, 30133032, 31892533, 34009041, 35807682, 38915229), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
   expand_limits(y=0))
-dev.off()
+#dev.off()
 }
 #stop [i]
 

@@ -33,6 +33,10 @@ quantile(tmp1$Wl, 0.05)
 #t-test of tomato isolates vs. other isolates
 #first, take summary data: mean of isolate per species
 library(plyr)
+ModDat.D <- ModDat[ModDat$Species=="Dm",]
+ModDat.W <- ModDat[ModDat$Species=="Wl",]
+sd(ModDat.W$Scale.LS)^2
+sd(ModDat.D$Scale.LS)^2
 ModDat2 <- ddply(ModDat, c("Igeno", "Species", "Tomato"), summarise,
                  meanLS = mean(Scale.LS))
 ModDat2D <- ModDat2[ModDat2$Species=="Dm",]
@@ -40,6 +44,13 @@ ModDat2W <- ModDat2[ModDat2$Species=="Wl",]
 t.test(ModDat2D$meanLS ~ ModDat2D$Tomato)
 t.test(ModDat2W$meanLS ~ ModDat2W$Tomato)
 t.test(ModDat2$meanLS ~ ModDat2$Tomato)
+
+#check isolate direction on D vs. W
+MyIsoDir <- reshape(ModDat2, idvar="Igeno", timevar="Species", direction="wide")
+MyIsoDir$Diff <- MyIsoDir$meanLS.Dm - MyIsoDir$meanLS.Wl
+sum(MyIsoDir$Diff <0)
+sum(MyIsoDir$Diff > 0)
+
 
 #but: sample sizes are very unequal when looking at samples from tomato vs. others, so test is underpowered
 #pwr.2p2n.test power analysis for 2 proportions, unequal n. enter three of the four quantities (effect size, sample size, significance level, power) and the fourth is calculated. 
@@ -121,12 +132,14 @@ write.csv(outdf2, "paper/plots/ActualPaper/Supp/WilcoxBYPLANT_out.csv")
 newdata <- ModDat.plant[ ModDat.plant$Plant.Num %in% c(1,9), ]
 levels(newdata$PlGenoNm) <- c(levels(newdata$PlGenoNm), "LA0410") 
 newdata$PlGenoNm[newdata$PlGenoNm == "LA410"]  <- "LA0410" 
-tiff("paper/plots/ActualPaper/FigR5/FigR5_Sl_LesionSize_IntMean_wilcoxtop.tif", width=3.5, height=4, units='in', res=600)
+tiff("paper/plots/FigR5/FigR5_Sl_LesionSize_IntMean_wilcoxtop.tif", width=3.5, height=4, units='in', res=600)
 ggplot(newdata, aes(x = PlGenoNm, y = mLS, group=factor(Igeno)))+
   theme_bw()+
   geom_line(size=0.5, alpha=0.4, show.legend = F)+
   ylim(0,1.7)+
-  theme(text = element_text(size=14), axis.text.x = element_text(), strip.background = element_blank())+
+  theme(text = element_text(size=14), axis.text.x = element_text(size=14), axis.text.y = element_text(size=14), strip.background = element_blank())+
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
   labs(y=expression(Lesion ~ Area ~ (cm^{2})), x=element_blank())
 dev.off()
 
