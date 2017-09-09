@@ -55,11 +55,15 @@ HEM.topSNPsSM <- HEM.topSNPsSM[which(HEM.topSNPsSM$Pos > 337285),]
 #this requires 3 file formats, none of which I have
 library("snp.plotter")
 
+
+#-------------------------------------------------------------------------
+#START HERE, ACTUALLY
+#this might make DNAbin files, from vcf files
+#let's try just a 4kb region on Chromosome 16
+#goes from POS 341 to POS 664510
+#try POS 344785 to POS 347542
+library("vcfR")
+vcf <- read.vcfR("data/genome/chr16_analysis/chr16_analysis_seg.recode.vcf", verbose = FALSE)
+my_dnabin1 <- vcfR2DNAbin(vcf, consensus = TRUE, extract.haps = FALSE, verbose = FALSE)
 #this might make haplotype files, from DNAbin files
 library("pegas")
-#this might make DNAbin files, from vcf files
-library("vcfR")
-myH <- haplotype(HEM.topSNPsSM)
-
-vcf <- read.vcfR("data/genome/WGS/big_set_v97iso_SNPs_filtered_qual30_dp6_maf20.recode.vcf.zip", verbose = FALSE)
-
