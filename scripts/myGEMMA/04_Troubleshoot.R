@@ -15,6 +15,8 @@ head(myPed[,1:30], 12)
 is.na(myPed[7,26])
 #Individuals are rows, SNPs are columns (but each 2 columns = 1 SNP)
 
+myMAP <- 
+
 #This will remove all SNP columns containing at least one NA:
 myPed2 <- myPed[ , colSums(is.na(myPed)) == 0]
 #myPed2 has only SNPs with complete data for all isolates
@@ -40,6 +42,7 @@ myPhenos.rn <- myPhenos.rn[,c(15,3)]
 names(myPhenos.rn)[1] <- "Isolate"
 
 #then: merge myPhenos file to myPed
+#for now only LA1547 phenotype is in use
 names(myPed)[1:7]
 head(myPed2.2.p[,1:30], 12)
 myPed2.2.p <- merge(myPed2.2, myPhenos.rn, by="Isolate")
