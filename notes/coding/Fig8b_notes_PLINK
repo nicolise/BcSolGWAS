@@ -4,8 +4,10 @@ cd Documents/
 
 STEP1.0: make .ped file
 see R script: 14_A_TABtoPED.R
+**ASSURE match with HEM.topSNPsSM in 14_Fig8b.R
 
 STEP1.1: make .map file
+see R script: 14_A_TABtoPED.R
 
 STEP1.2: convert .ped file to .bed file
 
@@ -21,8 +23,10 @@ output is plink.assoc.hap
 STEP3.0: input plink.assoc.hap into HAP.FILE format
 
 STEP3.1: make GENOTYPE.FILE
+see R script: 14_A_TABtoPED.R
 
 STEP3.2: make SNP.FILE
+from: HEM.topSNPsSM in my 14_Fig8b.R
 
 STEP4.0: make settings file for SNP.plotter
 

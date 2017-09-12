@@ -26,15 +26,19 @@ HEM.thresh <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF20_20NA/SlBc_12pla
 #  assign(paste("TH99neg_", names(TH99neg[i]), sep=""),as.numeric(TH99neg[i]))
 #}
 
-mySNPlist
-
-saveit <- HEM.plotdata[HEM.plotdata$Pos %in% mySNPlist, ]
-
 names(HEM.plotdata)
 HEM.plotdata <- HEM.plotdata[,-c(1)]
 #only look at chromosome 16
 #chrom and segment are separate already here
 HEM.plotdata <- HEM.plotdata[which(HEM.plotdata$Chrom=='16'),]
+
+mySNPlist <- read.csv("data/genome/chr16_analysis/SNPlistfromPED.csv")
+mySNPlist <- mySNPlist[,2]
+HEM.plotdata <- HEM.plotdata[HEM.plotdata$Pos %in% mySNPlist, ]
+#there is some duplication here due to Segment ambiguity. I am going to assume that Segment 11 is the worst contig and on down, and as such only keep the first mention of each Chr.Pos
+HEM.plotdata <- HEM.plotdata[with(HEM.plotdata, order(Segment)), ]
+HEM.plotdata <- HEM.plotdata[!duplicated(HEM.plotdata$Pos), ]
+
 HEM.topSNPs <- HEM.plotdata
 #get the start position of chromosome 16
 min(HEM.topSNPs$Index)

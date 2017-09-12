@@ -47,19 +47,25 @@ mySNPs_Chr16 <- mySNPs_Chr16[(mySNPs_Chr16$max + mySNPs_Chr16$missing) < 78,]
 mySNPs_Chr16 <- mySNPs_Chr16[which(mySNPs_Chr16$POS < 355042),]
 mySNPs_Chr16 <- mySNPs_Chr16[which(mySNPs_Chr16$POS > 337285),]
 #save a list of SNPs to match with 14_Fig8b_LDplot.R where I'm writing SNP.FILE
-mySNPlist <- mySNPs_Chr16$POS
+mySNPlist <- as.data.frame(mySNPs_Chr16$POS)
 
+write.csv(mySNPlist, "data/genome/chr16_analysis/SNPlistfromPED.csv")
+
+#and remove any duplicated POS here
+mySNPs_Chr16 <- mySNPs_Chr16[!duplicated(mySNPs_Chr16$POS), ]
+#excellent, now this matches the SNPs file
 
 #and now for making PED format for PLINK!
   #do not need positional info: just SNP states for PED
 #turn df sideways (individuals as rows, SNPs as columns)
 #split each genotype into 2 identical columns (PED assumes diploid)
-mySNPs_Chr16_2 <- mySNPs_Chr16[,-c(1:3, 101:107)]
+#keeping REF variable for now, to make binary phenotype for GENOTYPE.FILE
+mySNPs_Chr16_2 <- mySNPs_Chr16[,-c(1:2, 101:107)]
 #write.csv(mySNPs_Chr16_2, "GEMMA_files/02_csvPrep/hp_charMAF20_10NA_forPED.csv")
 #df2[,c(1,3,2,4)]
 
 #duplicate all the rows, to fake a diploid genome
-#this is slow
+#this is slow (but only takes ~4 seconds if 600 SNPs)
 Sys.time()
 mySNPs_Chr16_3 <- as.data.frame(NULL)
 for(i in 1:nrow(mySNPs_Chr16_2)){
@@ -68,11 +74,11 @@ for(i in 1:nrow(mySNPs_Chr16_2)){
 }
 Sys.time()
 
-write.csv(mySNPs_Chr16_3, "data/genome/chr16_analysis/dp_charMAF20_10NA.csv")
+#write.csv(mySNPs_Chr16_3, "data/genome/chr16_analysis/dp_charMAF20_10NA.csv")
+#mySNPs_Chr16_3 <- read.csv("data/genome/chr16_analysis/dp_charMAF20_10NA.csv")
 
-mySNPs_Chr16_3 <- read.csv("data/genome/chr16_analysis/dp_charMAF20_10NA.csv")
 #transpose and format for PED
-mySNPs_Chr16_3 <- mySNPs_Chr16_3[,-c(1)]
+#mySNPs_Chr16_3 <- mySNPs_Chr16_3[,-c(1)]
 mySNPs_Chr16_4 <- as.data.frame(t(mySNPs_Chr16_3))
 #add binary phenotype = 1 (6)
 mySNPs_Chr16_4 <- cbind("Pheno" = 1, mySNPs_Chr16_4)
@@ -87,31 +93,45 @@ mySNPs_Chr16_4 <- cbind(rownames(mySNPs_Chr16_4), mySNPs_Chr16_4)
 colnames(mySNPs_Chr16_4)[1] <- 'Isolate'
 #add the fam column (1)
 mySNPs_Chr16_4 <- cbind("FAM" = "FAM1", mySNPs_Chr16_4)
+#remove ref for myPED
+myPED <- mySNPs_Chr16_4[-c(1),] 
+
+#finally, make the GENOTYPE.FILE for SNPplotter
+#transposed and formatted for modified PED
+myGENOTYPE.FILE <- mySNPs_Chr16_4
+rownames(myGENOTYPE.FILE)
+# family ID, individual ID, father ID, mother ID, sex, and affection status followed by marker loci coded as binary factors, as shown in the example below. This file should not have column headers.
+#make marker loci binary
+
+mytest <- myGENOTYPE.FILE[1:10,7:10]
+mynames <- myGENOTYPE.FILE[1:10,1:6]
+
+for (i in rownames(mytest[2:10,])){
+  mytest[i,][mytest[i,]!=mytest[1,]] <- "A"
+  mytest[i,][mytest[i,]==mytest[1,]] <- 0
+}
+
+#this works as logical:
+mytest[2,]!=mytest[1,]
+#this works as logical: 
+mytest[,1]!=mytest[1,1]
+
+for (i in names(mySNPs[4:100])) {
+  mySNPs[i][mySNPs[i]!=mySNPs$REF] <- 1
+  mySNPs[i][mySNPs[i]==mySNPs$REF] <- 0
+}
+
 
 #make a MAP file for plink (need it to make the bed (binary ped) file from ped)
 myMAP <- mySNPs_Chr16[,c("X.CHROM","POS")]
 #remove "Chromosome" from X.CHROM
-myMAP2 <- as.data.frame(lapply(myMAP, function(x) {
+myMAP <- as.data.frame(lapply(myMAP, function(x) {
                  gsub("Chromosome", "", x)
               }))
 
-#finally, make the GENOTYPE.FILE for SNPplotter
-#transpose and format for modified PED
-#add binary phenotype = 1 (6)
-mySNPs_Chr16_4 <- cbind("Pheno" = 1, mySNPs_Chr16_4)
-#add individual sex = 1 (5)
-mySNPs_Chr16_4 <- cbind("sex" = 1, mySNPs_Chr16_4)
-#add Mother = 0 (4)
-mySNPs_Chr16_4 <- cbind("Mother" = 0, mySNPs_Chr16_4)
-#add Father = 0 (3)
-mySNPs_Chr16_4 <- cbind("Father" = 0, mySNPs_Chr16_4)
-#turn row names into column 2
-mySNPs_Chr16_4 <- cbind(rownames(mySNPs_Chr16_4), mySNPs_Chr16_4)
-colnames(mySNPs_Chr16_4)[1] <- 'Isolate'
-#add the fam column (1)
-mySNPs_Chr16_4 <- cbind("FAM" = "FAM1", mySNPs_Chr16_4)
-
-write.csv(myMAP2, "data/genome/chr16_analysis/MAP_dpcharMAF20NA10.csv")
+#----------------------------------------------------------------------
+#save all of the files
+write.csv(myMAP, "data/genome/chr16_analysis/MAP_dpcharMAF20NA10.csv")
 #add a column of "SNP identifiers" in excel and remove headers
 
 write.csv(mySNPs_Chr16_3, "data/genome/chr16_analysis/dp_charMAF20_10NA.csv")
