@@ -184,8 +184,9 @@ write.csv(DoGenAnt, "data/GWAS_files/05_annotation/Domest_TopSNPs_10NA_intoAnt.c
 head(HOSNP)
 head(HOGenes)
 HOSNP$Chrom2 <- paste("CHROMOSOME",HOSNP$Chrom, sep='')
-HOSNP$Chrom.Pos <- paste(HOSNP$Chrom2, HOSNP$Pos, sep='.')
-HOGenes$Chrom.Pos <- paste(HOGenes$Chromosome.Number, HOGenes$SNP.Position, sep='.')
+HOSNP$Chrom.Seg.Pos <- paste(HOSNP$Chrom2, HOSNP$Segment, HOSNP$Pos, sep='.')
+#NEED TO FIX HOGENES
+HOGenes$Chrom.Seg.Pos <- paste(HOGenes$Chromosome.Number, HOGenes$SNP.Position, sep='.')
 #now, need to narrow down IPGenes list to only include genes WITHIN WINDOW of SNP
 #window options to try:
 #1kb (500 bp each side), 2kb (1kb each side), 4kb (2kb each side)

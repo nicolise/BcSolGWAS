@@ -100,6 +100,7 @@ TopSNP.wide.DM <- reshape(HEM.topSNPs,
                           direction = "wide")
 
 #count total number of traits per SNP
+#this counts each segment independently, so overlaps are real
 TopSNP.wide.DM[is.na(TopSNP.wide.DM)] <- 0
 TopSNP.wide.DM$TotPos <- rowSums(TopSNP.wide.DM[,c(5:16)] > 0)
 TopSNP.wide.DM$TotNeg <- rowSums(TopSNP.wide.DM[,c(5:16)] < 0)
@@ -147,8 +148,6 @@ ggplot(myprobs)+
   scale_x_continuous(name="Plant Genotypes per Candidate SNP", breaks=c(6,7,8,9,10,11,12),labels=c(6,7,8,9,10,11,12), limits = c(5, 13))
 dev.off()
 
-
-#make it wide format
 #currently long format : Chrom, Segment, Pos, Index, Effect, Trait
 #write.csv(HEM.plotdata, "data/GWAS_files/05_annotation/TrueMAF_NAs/Domestication_TopSNPs_SegLong_trueMAF20_10NA.csv")
 write.csv(HEM.plotdata, "data/GWAS_files/05_annotation/TrueMAF_NAs/12Plants_Top1000SNPs_SegLong_trueMAF20_10NA.csv")
