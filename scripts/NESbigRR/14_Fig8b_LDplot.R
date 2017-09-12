@@ -5,15 +5,17 @@
 #12_singleGeneManhattan.R
 #---------------------------------------------
 rm(list=ls())
-#setwd("~/Documents/GitRepos/BcSolGWAS/")
+setwd("~/Documents/GitRepos/BcSolGWAS/")
 setwd("~/Projects/BcSolGWAS/")
 library(plyr); library(ggplot2); library(grid)
 
 #Import data (reorganized from script ReformatBigRRouts.R)
-HEM.plotdata <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF_20NA/SlBc_12plants_trueMAF20_20NA.HEM.PlotFormat.csv")
+HEM.plotdata <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF20_20NA/SlBc_12plants_trueMAF20_20NA.HEM.PlotFormat.csv")
+
+
 
 #get threshhold values 
-HEM.thresh <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF_20NA/SlBc_12plants_trueMAF20_20NA.HEM.Thresh.csv")
+HEM.thresh <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF20_20NA/SlBc_12plants_trueMAF20_20NA.HEM.Thresh.csv")
 
 #take the SNPs over the threshold for each phenotype
 
@@ -50,6 +52,14 @@ HEM.topSNPsSM <- HEM.topSNPsSM[which(HEM.topSNPsSM$Pos > 344785),]
 #trying a bigger window (8kb) to find missing phenos
 HEM.topSNPsSM <- HEM.topSNPs[which(HEM.topSNPs$Pos < 355042),]
 HEM.topSNPsSM <- HEM.topSNPsSM[which(HEM.topSNPsSM$Pos > 337285),]
+
+#now convert to SNP.FILE format
+#try it just for the first plant genotype, for now
+mySNP.FILE <- HEM.topSNPsSM
+mySNP.FILE$ASSOC <- ifelse(mySNP.FILE$phenotype > 0, "+", "-")
+mySNP.FILE$SNP.NAME <- paste("mysnp", sep="_")
+mySNP.FILE$LOC <- mySNP.FILE$POS
+mySNP.FILE$SS.PVAL <- mySNP.FILE$phenotype
 
 #-------------------------------------------------------------------------
 #START HERE, ACTUALLY

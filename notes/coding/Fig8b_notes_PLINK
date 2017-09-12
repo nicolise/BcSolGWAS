@@ -1,0 +1,30 @@
+on Linux 
+cd Documents/
+./plink
+
+STEP1.0: make .ped file
+see R script: 14_A_TABtoPED.R
+
+STEP1.1: make .map file
+
+STEP1.2: convert .ped file to .bed file
+
+STEP1.3: check / make .fam file
+
+STEP2.0: generate haplotypes from sliding window 
+plink --bfile mydata --hap-window 3 --hap-assoc
+
+STEP2.1: calculate haplotype-specific association tests
+plink --file mydata --hap myfile.hlist --hap-assoc
+output is plink.assoc.hap
+
+STEP3.0: input plink.assoc.hap into HAP.FILE format
+
+STEP3.1: make GENOTYPE.FILE
+
+STEP3.2: make SNP.FILE
+
+STEP4.0: make settings file for SNP.plotter
+
+STEP4.1: run SNP.plotter
+
