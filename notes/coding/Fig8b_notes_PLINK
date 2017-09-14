@@ -23,6 +23,7 @@ STEP3.0: input plink.assoc.hap into HAP.FILE format
 STEP3.1: make GENOTYPE.FILE
 
 STEP3.2: make SNP.FILE
+Done: 14_Fig8b_LDplot.R
 
 STEP4.0: make settings file for SNP.plotter
 
