@@ -1,32 +1,47 @@
+STEP0.0: set up work environment
 on Linux 
 cd Documents/
 ./plink
 
 STEP1.0: make .ped file
 see R script: 14_A_TABtoPED.R
-**ASSURE match with HEM.topSNPsSM in 14_Fig8b.R
+**ASSURE match with HEM.topSNPsSM in 14_B_SNP.FILE.R
+done
 
 STEP1.1: make .map file
 see R script: 14_A_TABtoPED.R
+saved as myCHR16_A.map
+done
 
 STEP1.2: convert .ped file to .bed file
+./plink --file GitRepos/BcSolGWAS/data/genome/chr16_analysis/myCHR16_A --make-bed --out GitRepos/BcSolGWAS/data/genome/chr16_analysis/myCHR16_A
+produces .bed, .bim, and .fam
+done
 
 STEP1.3: check / make .fam file
+fine, except: phenotype is ~empty value (last column, all 1s)
+now: input real phenotype
+see: 14_C_FAM_importphenos.R
+final: plink/.fam
+done
 
-STEP2.0: generate haplotypes from sliding window 
+STEP2.0: generate haplotypes from sliding window and calculate haplotype-specific association tests
 plink --bfile mydata --hap-window 3 --hap-assoc
-
-STEP2.1: calculate haplotype-specific association tests
-plink --file mydata --hap myfile.hlist --hap-assoc
+./plink --bfile GitRepos/BcSolGWAS/data/genome/chr16_analysis/plink/myCHR16_A --hap-window 3 --hap-assoc
+ERROR: plink 1.9 recommends BEAGLE
+USE PLINK 1.07
+plink-1.07-x86_64/plink --noweb --bfile GitRepos/BcSolGWAS/data/genome/chr16_analysis/plink/myCHR16_A --hap-window 3 --hap-assoc --out GitRepos/BcSolGWAS/data/genome/chr16_analysis/haps/chr16_A 
 output is plink.assoc.hap
 
 STEP3.0: input plink.assoc.hap into HAP.FILE format
 
 STEP3.1: make GENOTYPE.FILE
 see R script: 14_A_TABtoPED.R
+done
 
 STEP3.2: make SNP.FILE
-from: HEM.topSNPsSM in my 14_Fig8b.R
+from: HEM.topSNPsSM in my 14_B_SNP.FILE.R
+done
 
 STEP4.0: make settings file for SNP.plotter
 
