@@ -20,7 +20,9 @@ SNPnames <- SNPnames[c(2,4)]
 names(SNPnames)[1] <- "Igeno"
 names(SNPnames)[2] <- "V2"
 
-myPhenos <- merge(myPhenos,SNPnames, by="Igeno")
+myPhenos <- merge(myPhenos,SNPnames, by="Igeno", all=TRUE)
+#remove empty isolates
+myPhenos <- myPhenos[c(1:94),]
 addPhenos <- myPhenos[,c("V2","LA1547")]
 
 #match files on myFAM$V2 (original )

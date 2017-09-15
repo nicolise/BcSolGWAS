@@ -110,16 +110,18 @@ addPhenos <- myPhenos[,c("Isolate","LA1547")]
 
 #match files on myFAM$V2 (original )
 #need to keep rows of myPED with no pheno match!
-myPED.2 <- merge(myPED,addPhenos, by="Isolate")
+myPED.2 <- merge(myPED,addPhenos, by="Isolate", all=TRUE)
 #fill in missing phenos with average
-mean(myPED.2$LA1547)
-myPED.2 <- rbind(myPED.2, c("B236", "FAM1", 0, 0, 1, 1, 0.5044))
-myPED.2 <- rbind(myPED.2, c("B4", "FAM1", 0, 0, 1, 1, 0.5044))
-myPED.2 <- rbind(myPED.2, c("B78", "FAM1", 0, 0, 1, 1, 0.5044))
-
-match(myFAM$V2,myFAM.2$V2)
-
-myPED$Pheno <- 
+mean(myPED.2$LA1547, na.rm=TRUE)
+#move phenotype column and remove dummy
+myPED.2 <- myPED.2[,c(1:5,1089,7:1088)]
+myPED.2$LA1547[is.na(myPED.2$LA1547)] <- mean(myPED.2$LA1547, na.rm=TRUE)
+#replace all NA with 0
+#first add 0 as a valid level
+for (i in 7:1088){
+  levels(myPED.2[,i]) <- c(levels(myPED.2[,i]),0)
+}
+myPED.2[is.na(myPED.2)] <- 0
 
 #finally, make the GENOTYPE.FILE for SNPplotter
 #transposed and formatted for modified PED
@@ -162,11 +164,10 @@ myMAP$X.CHROM <- 16
 #----------------------------------------------------------------------
 #save all of the files
 #MAP
-write.table(myMAP, file="data/genome/chr16_analysis/myCHR16_A.map", quote=FALSE, sep='\t', col.names=FALSE, row.names=FALSE)
-#add a column of "SNP identifiers" from 0 to x in excel and remove headers
+write.table(myMAP, file="data/genome/chr16_analysis/plink/myCHR16_A.map", quote=FALSE, sep='\t', col.names=FALSE, row.names=FALSE)
 
 #PED
-write.table(myPED, file="data/genome/chr16_analysis/myCHR16_A.ped", quote=FALSE, sep='\t', col.names=FALSE, row.names=FALSE)
+write.table(myPED.2, file="data/genome/chr16_analysis/plink/myCHR16_A.ped", quote=FALSE, sep='\t', col.names=FALSE, row.names=FALSE)
 
 #GENOTYPE.FILE
 write.table(myGENOTYPE.FILE, file="data/genome/chr16_analysis/GENOTYPE.FILE.tsv",quote=FALSE, sep='\t',col.names=FALSE,row.names=FALSE)
