@@ -22,22 +22,6 @@ myHAP.2 <-  read.csv("data/genome/chr16_analysis/haps/chr16_A.qassoc_test.hap.cs
 #Haplotypes are presented in a step-wise fashion with the major allele given as 1 and the minor allele as 2; haplotype variants for a set of SNPs should be grouped. SNP labels in HAP.FILE must be the same as in SNP.FILE, and only SNPs with corresponding haplotypes need to be included.
 
 myHAP <- myHAP.2
-
-#let's try to do this just for Win1
-head(myHAP, 7)
-
-#subset by LOCUS
-myHAP.win1 <- myHAP[which(myHAP$LOCUS=="WIN1"),]
-myHAP.win1
-#find the major allele for HAPLOTYPE.1
-tail(names(sort(table(myHAP.win1$HAPLOTYPE.1))), 1)
-#now code a new variable with 1 if HAPLOTYPE.2 matches this, 2 if it does not
-myHAP.win1$RECODE.1 <- ifelse(myHAP.win1$HAPLOTYPE.1 == tail(names(sort(table(myHAP.win1$HAPLOTYPE.1))), 1), 1, 2)
-#then H.2
-myHAP.win1$RECODE.2 <- ifelse(myHAP.win1$HAPLOTYPE.2 == tail(names(sort(table(myHAP.win1$HAPLOTYPE.2))), 1), 1, 2)
-#then H.3
-myHAP.win1$RECODE.3 <- ifelse(myHAP.win1$HAPLOTYPE.3 == tail(names(sort(table(myHAP.win1$HAPLOTYPE.3))), 1), 1, 2)
-
 myHAP.append <- myHAP 
 #make a nonsense vector with the right elements
 myHAP.append$RECODE.1 <- c(rep(1:2, each=1468),1)
@@ -66,11 +50,40 @@ myHAP.append <- myHAP.append[-c(1),]
 #4. many columns, named by haplotype LOCUS
 #Haplotypes are presented in a step-wise fashion with the major allele given as 1 and the minor allele as 2; haplotype variants for a set of SNPs should be grouped. SNP labels in HAP.FILE must be the same as in SNP.FILE, and only SNPs with corresponding haplotypes need to be included.
 
-myHAP.FILE <- myHAP.append[,c("STAT", "LOCUS","P", "HAPLOTYPE.1", "HAPLOTYPE.2", "HAPLOTYPE.3", "RECODE.1", "RECODE.2", "RECODE.3")]
+myHAP.FILE <- myHAP.append[,c("STAT", "LOCUS","P", "HAPLOTYPE.1", "HAPLOTYPE.2", "HAPLOTYPE.3", "RECODE.1", "RECODE.2", "RECODE.3", "SNPS.1","SNPS.2","SNPS.3")]
 myHAP.FILE$ASSOC <- ifelse(myHAP.FILE$STAT > 0, '+', '-')
-myHAP.FILE$I.PVAL <- as.numeric(myHAP.FILE$P)
+myHAP.FILE$I.PVAL <- as.numeric(as.character(myHAP.FILE$P))
+#this doesn't work: only lists each mean once
 
-myHAP.FILE$G.PVAL <- mean(myHAP.FILE$I.PVAL[myHAP.FILE$LOCUS == "WIN1"])
-blah <- by(myHAP.FILE$I.PVAL, myHAP.FILE$LOCUS, mean)
+mylist <- as.data.frame(tapply(myHAP.FILE$I.PVAL, myHAP.FILE$LOCUS, mean, na.rm=TRUE))
+mylist$LOCUS <- rownames(mylist)
+names(mylist)[1] <- "G.PVAL"
+myHAP.FILE <- merge(myHAP.FILE, mylist, by="LOCUS")
+
+#remove weird SNPS
+#1snp173 7snp116 7snp119 7snp307 7snp463 7snp464 9snp320  9snp84
+myHAP.FILE <- myHAP.FILE[!myHAP.FILE$SNPS.1 %in% c("1snp173", "7snp116", "7snp119", "7snp307", "7snp463", "7snp464", "9snp320",  "9snp84"), ]
 
 #new problem: how to fill in the SNPs in this staggered pattern
+unique(myHAP.FILE$SNPS.1)
+head(myHAP.FILE)
+HAP.FILE <- myHAP.FILE[,c("LOCUS","ASSOC", "G.PVAL", "I.PVAL", "SNPS.1", "SNPS.2", "SNPS.3", "RECODE.1","RECODE.2","RECODE.3")]
+#sort by SNPs
+HAP.FILE <- HAP.FILE[with(HAP.FILE, order(SNPS.1, SNPS.2, SNPS.3)), ]
+#now abbreviate
+HAP.FILE$SNPs <- paste(HAP.FILE$SNPS.1, HAP.FILE$SNPS.2, HAP.FILE$SNPS.3, sep=" ")
+HAP.FILE$HAPs <- paste(HAP.FILE$RECODE.1, HAP.FILE$RECODE.2, HAP.FILE$RECODE.3, sep=" ")
+HAP.FILE$myrows <- c(1:2929)
+#HAP.FILE <- HAP.FILE[,-c(4:9)]
+
+HAP.FILE.s <- HAP.FILE[,c("SNPs", "HAPs", "myrows")]
+
+#copy values of SNPs to be column names for HAPs
+bleh <- reshape(HAP.FILE.s, idvar = "myrows", timevar = "SNPs", direction = "wide")
+
+#and then maybe if it works, merge other variables back in
+HAP.FILE.r <- HAP.FILE[,c("ASSOC", "G.PVAL", "I.PVAL", "myrows")]
+HAP.FILE.r$G.PVAL <- as.numeric(HAP.FILE.r$G.PVAL)
+HAP.FILE.fin <- merge(HAP.FILE.r, bleh, by = "myrows")
+HAP.FILE.fin <- HAP.FILE.fin[,-c(1)]
+write.csv(HAP.FILE.fin, "data/genome/chr16_analysis/haps/HAP.FILE.csv")

@@ -8,6 +8,11 @@
 #now to draw that darn LD plot
 #this requires 3 file formats, none of which I have
 library("snp.plotter")
+setwd("~/Documents/GitRepos/BcSolGWAS/data/genome/chr16_analysis/")
+
+snp.plotter(config.file = "Chr16_config.txt")
+#----------------------------------------------------------------------------------
+#some stuff I tried before (archive)
 
 #this might make DNAbin files, from vcf files
 #let's try just a 4kb region on Chromosome 16
