@@ -25,7 +25,6 @@ see: 14_C_FAM_importphenos.R
 final: plink/.fam
 done
 
-STEP2.0: generate haplotypes from sliding window 
 STEP2.0: generate haplotypes from sliding window and calculate haplotype-specific association tests
 plink --bfile mydata --hap-window 3 --hap-assoc
 ./plink --bfile GitRepos/BcSolGWAS/data/genome/chr16_analysis/plink/myCHR16_A --hap-window 3 --hap-assoc

@@ -10,10 +10,10 @@ setwd("~/Projects/BcSolGWAS/")
 library(plyr); library(ggplot2); library(grid)
 
 #Import data (reorganized from script ReformatBigRRouts.R)
-HEM.plotdata <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF_20NA/SlBc_12plants_trueMAF20_20NA.HEM.PlotFormat.csv")
+HEM.plotdata <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF20_20NA/SlBc_12plants_trueMAF20_20NA.HEM.PlotFormat.csv")
 
 #get threshhold values 
-HEM.thresh <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF_20NA/SlBc_12plants_trueMAF20_20NA.HEM.Thresh.csv")
+HEM.thresh <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF20_20NA/SlBc_12plants_trueMAF20_20NA.HEM.Thresh.csv")
 
 #take the SNPs over the threshold for each phenotype
 
@@ -30,8 +30,8 @@ for (i in 2:ncol(TH99neg)){
 names(HEM.plotdata)
 HEM.plotdata <- HEM.plotdata[,-c(1)]
 #only look at chromosome 16
+#this includes all contigs (chrom and seg are separated)
 HEM.plotdata <- HEM.plotdata[which(HEM.plotdata$Chrom=='16'),]
-
 
 #All groups (4:6)
 #keep only: SNPs over 99% Threshold
@@ -100,6 +100,7 @@ HEM.topSNPsSM <- HEM.topSNPs[which(HEM.topSNPs$Pos < 347542),]
 HEM.topSNPsSM <- HEM.topSNPsSM[which(HEM.topSNPsSM$Pos > 344785),]
 
 #trying a bigger window (8kb) to find missing phenos
+#this matches with haplotype plot
 HEM.topSNPsSM <- HEM.topSNPs[which(HEM.topSNPs$Pos < 355042),]
 HEM.topSNPsSM <- HEM.topSNPsSM[which(HEM.topSNPsSM$Pos > 337285),]
 
@@ -123,7 +124,7 @@ jpeg("paper/plots/FigR8/Sl_LesionSize_trueMAF20_NA10_lowTR.gene01Chr16.Manhattan
          geom_point(aes(color = factor(Trait)))+
          labs(list(y=expression(paste("Estimated SNP Effect Size (",mm^{2},")"))))+
          guides(col = guide_legend(nrow = 8, title="SNP position"))+
-         #theme(legend.position="none")+
+         theme(legend.position="none")+
          scale_y_continuous(breaks=c(3e-03, 2e-03, 1e-03, 0, -1e-03, -2e-03, -3e-03))+
          scale_x_continuous(name="SNP position on Chr 16 (kb)", limits=c(344785, 347542), breaks=c(344500, 345000, 345500, 346000, 346500, 347000, 347500), labels=c("344.5", "345", "345.5", "346", "346.5", "347", "347.5"))+
     theme(panel.border = element_blank(), panel.grid.major = element_blank(),
