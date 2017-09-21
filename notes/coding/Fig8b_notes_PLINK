@@ -41,7 +41,7 @@ see: 14_A_TABtoPED.R
 done
 
 STEP3.2: make SNP.FILE
-see: 14_Fig8b_LDplot.R
+see: 14_B_SNP.FILE.R
 done
 
 STEP4.0: make settings file for SNP.plotter
