@@ -43,13 +43,13 @@ mySNPs_Chr16$missing <- apply(mySNPs_Chr16[,c(4:100)], 1, function(x) sum(is.na(
 mySNPs_Chr16 <- mySNPs_Chr16[(mySNPs_Chr16$max + mySNPs_Chr16$missing) < 78,]
 
 #NOW filter to just region of interest on Chromosome 16
-mySNPs_Chr16 <- mySNPs_Chr16[which(mySNPs_Chr16$POS < 355042),]
-mySNPs_Chr16 <- mySNPs_Chr16[which(mySNPs_Chr16$POS > 337285),]
+mySNPs_Chr16 <- mySNPs_Chr16[which(mySNPs_Chr16$POS < 347542),]
+mySNPs_Chr16 <- mySNPs_Chr16[which(mySNPs_Chr16$POS > 344785),]
 
 #originally: 544 SNPs here. But need to re-filter to match figure 8a
 #filter to only keep SNPs from Fig8a: 12_singleGeneManhattan_figR8.R
 mySNPlist_8a <- read.csv("data/genome/chr16_analysis/SNPlistFig8a.csv")
-mySNPs_Chr16 <- mySNPs_Chr16[mySNPs_Chr16$POS %in% mySNPlist_8a$HEM.topSNPsSM.Pos, ]
+mySNPs_Chr16 <- mySNPs_Chr16[mySNPs_Chr16$POS %in% mySNPlist_8a$SNPlist_8a.Pos, ]
 
 #and remove any duplicated POS here
 mySNPs_Chr16 <- mySNPs_Chr16[!duplicated(mySNPs_Chr16$POS), ]
@@ -183,4 +183,4 @@ write.table(myPED.null, file="data/genome/chr16_analysis/plink/fig8aMatch/myCHR1
 write.table(myPED.bin, file="data/genome/chr16_analysis/plink/fig8aMatch/myCHR16_A.binPheno.ped", quote=FALSE, sep='\t', col.names=FALSE, row.names=FALSE)
 
 #GENOTYPE.FILE
-write.table(myGENOTYPE.FILE, file="data/genome/chr16_analysis/GENOTYPE.FILE.txt",quote=FALSE, sep=' ',col.names=FALSE,row.names=FALSE)
+write.table(myGENOTYPE.FILE, file="data/genome/chr16_analysis/GENOTYPE.FILE_8aMatch.txt",quote=FALSE, sep=' ',col.names=FALSE,row.names=FALSE)

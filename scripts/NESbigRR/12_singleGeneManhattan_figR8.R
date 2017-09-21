@@ -28,30 +28,35 @@ for (i in 2:ncol(TH99neg)){
 
 
 names(HEM.plotdata)
-#HEM.plotdata <- HEM.plotdata[,-c(1)]
+HEM.plotdata <- HEM.plotdata[,-c(1)]
 #only look at chromosome 16
 HEM.plotdata <- HEM.plotdata[which(HEM.plotdata$Chrom=='16'),]
+
 #get the start position of chromosome 16
-min(HEM.topSNPs$Index)
-max(HEM.topSNPs$Index)
-max(HEM.topSNPs$Index) - min(HEM.topSNPs$Index)
+min(HEM.plotdata$Index)
+max(HEM.plotdata$Index)
+max(HEM.plotdata$Index) - min(HEM.plotdata$Index)
 
 #narrow window: +- 1 kb
-HEM.topSNPs$Chr16Index <- HEM.topSNPs$Index - min(HEM.topSNPs$Index) + 1
-min(HEM.topSNPs$Chr16Index)
+HEM.plotdata$Chr16Index <- HEM.plotdata$Index - min(HEM.plotdata$Index) + 1
+min(HEM.plotdata$Chr16Index)
 #now get target region within chromosome 16
 #my feature: about 1kb
 #345785 to 346542
 #and I'll add 2kb on each side
-HEM.topSNPsSM <- HEM.topSNPs[which(HEM.topSNPs$Pos < 347542),]
-HEM.topSNPsSM <- HEM.topSNPsSM[which(HEM.topSNPsSM$Pos > 344785),]
+HEM.plotdataSM <- HEM.plotdata[which(HEM.plotdata$Pos < 347542),]
+HEM.plotdataSM <- HEM.plotdataSM[which(HEM.plotdataSM$Pos > 344785),]
 
 #trying a bigger window (8kb) to find missing phenos
-HEM.topSNPsSM <- HEM.topSNPs[which(HEM.topSNPs$Pos < 355042),]
-HEM.topSNPsSM <- HEM.topSNPsSM[which(HEM.topSNPsSM$Pos > 337285),]
+#HEM.plotdataSM <- HEM.plotdata[which(HEM.plotdata$Pos < 355042),]
+#HEM.plotdataSM <- HEM.plotdataSM[which(HEM.plotdataSM$Pos > 337285),]
 
-SNPlist <- as.data.frame(HEM.topSNPsSM$Pos)
-write.csv(SNPlist,"data/genome/chr16_analysis/SNPlistFig8a.csv")
+#and remove any duplicated POS here
+SNPlist_8a <- HEM.plotdataSM[!duplicated(HEM.plotdataSM$Pos), ]
+
+#SNPlist <- as.data.frame(SNPlist_8a$Pos)
+#write.csv(SNPlist,"data/genome/chr16_analysis/SNPlistFig8a.csv")
+
 #All groups (4:6)
 #keep only: SNPs over 99% Threshold
 #now very few over 99.9% Thr
@@ -97,6 +102,7 @@ HEM.topSNPsB <- rbind(HEM.LA410, HEM.LA480, HEM.LA1547, HEM.LA1589, HEM.LA1684, 
 
 
 HEM.topSNPs <- rbind(HEM.NS, HEM.topSNPsB)
+
 #create a custom color scale
 #myColors <- c("grey40", "grey60", "grey40", "grey60", "grey40", "grey60", "grey40", "grey60", "grey40", "grey60", "grey40", "grey60", "grey40", "grey60", "grey40", "grey60")
 myColors <- c("gray85", "#999999", "#292929","#684800" ,"#CBA22A", "#63B2D3", "#1FA69D", "#57B761", "#DAD94C","#2B869D", "#EE82EE", "#D2652D", "#CC79A7")
@@ -116,7 +122,8 @@ names(myColors) <- levels(HEM.topSNPs$Trait)
 colScale <- scale_colour_manual(name = "Chrom",values = myColors)
 
 HEM.topSNPs.P <- HEM.topSNPsSM
-jpeg("paper/plots/FigR8/Sl_LesionSize_trueMAF20_NA10_lowTR.gene01Chr16.ManhattanPlot.jpg", width=7, height=5, units='in', res=600)
+#jpeg("paper/plots/FigR8/Sl_LesionSize_trueMAF20_NA10_lowTR.gene01Chr16.ManhattanPlot.jpg", width=7, height=5, units='in', res=600)
+jpeg("paper/Sl_LesionSize_trueMAF20_NA10_lowTR.gene01Chr16.ManhattanPlot.jpg", width=7, height=5, units='in', res=600)
   ggplot(HEM.topSNPs.P, aes(x=Pos, y=100*Effect))+
          theme_bw()+
          colScale+
