@@ -73,3 +73,5 @@ mySNP.FILE <- mySNP.FILE[,c(21:24)]
 #write it
 write.table(mySNP.FILE, file="data/genome/chr16_analysis/SNP.FILE.tsv",quote=FALSE, sep='\t',col.names=TRUE,row.names=FALSE)
 
+write.table(mySNP.FILE, file="data/genome/chr16_analysis/SNP.FILE.txt",quote=FALSE, sep=' ',col.names=TRUE,row.names=FALSE)
+

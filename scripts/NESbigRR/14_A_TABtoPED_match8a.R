@@ -20,7 +20,6 @@ mySNPs <- SNPsMAF20
 mySNPs[] <- lapply(mySNPs, as.character)
 mySNPs[mySNPs=="."]<-NA #this is a true NA
 allSNPs<- mySNPs
-#only keep Chr16, but all contigs within that
 mySNPs_Chr16 <- mySNPs[grep("Chromosome16", mySNPs$X.CHROM), ]
 
 #remove low MAFs!
@@ -46,14 +45,20 @@ mySNPs_Chr16 <- mySNPs_Chr16[(mySNPs_Chr16$max + mySNPs_Chr16$missing) < 78,]
 #NOW filter to just region of interest on Chromosome 16
 mySNPs_Chr16 <- mySNPs_Chr16[which(mySNPs_Chr16$POS < 355042),]
 mySNPs_Chr16 <- mySNPs_Chr16[which(mySNPs_Chr16$POS > 337285),]
-#save a list of SNPs to match with 14_Fig8b_LDplot.R where I'm writing SNP.FILE
-mySNPlist <- as.data.frame(mySNPs_Chr16$POS)
 
-#write.csv(mySNPlist, "data/genome/chr16_analysis/SNPlistfromPED.csv")
+#originally: 544 SNPs here. But need to re-filter to match figure 8a
+#filter to only keep SNPs from Fig8a: 12_singleGeneManhattan_figR8.R
+mySNPlist_8a <- read.csv("data/genome/chr16_analysis/SNPlistFig8a.csv")
+mySNPs_Chr16 <- mySNPs_Chr16[mySNPs_Chr16$POS %in% mySNPlist_8a$HEM.topSNPsSM.Pos, ]
 
 #and remove any duplicated POS here
 mySNPs_Chr16 <- mySNPs_Chr16[!duplicated(mySNPs_Chr16$POS), ]
 #excellent, now this matches the SNPs file
+
+#save a list of SNPs to match with 14_B_SNP.FILE.R where I'm writing SNP.FILE
+mySNPlist <- as.data.frame(mySNPs_Chr16$POS)
+
+#write.csv(mySNPlist, "data/genome/chr16_analysis/SNPlistfromPED.csv")
 
 #and now for making PED format for PLINK!
   #do not need positional info: just SNP states for PED
@@ -115,11 +120,11 @@ myPED.2 <- merge(myPED,addPhenos, by="Isolate", all=TRUE)
 #fill in missing phenos with average
 mean(myPED.2$LA1547, na.rm=TRUE)
 #move phenotype column and remove dummy
-myPED.2 <- myPED.2[,c(1:5,1089,7:1088)]
+myPED.2 <- myPED.2[,c(1:5,799,7:798)]
 myPED.2$LA1547[is.na(myPED.2$LA1547)] <- mean(myPED.2$LA1547, na.rm=TRUE)
 #replace all NA with 0
 #first add 0 as a valid level
-for (i in 7:1088){
+for (i in 7:798){
   levels(myPED.2[,i]) <- c(levels(myPED.2[,i]),0)
 }
 myPED.2[is.na(myPED.2)] <- 0
@@ -170,12 +175,12 @@ myMAP$X.CHROM <- 16
 #----------------------------------------------------------------------
 #save all of the files
 #MAP
-write.table(myMAP, file="data/genome/chr16_analysis/plink/myCHR16_A.map", quote=FALSE, sep='\t', col.names=FALSE, row.names=FALSE)
+write.table(myMAP, file="data/genome/chr16_analysis/plink/fig8aMatch/myCHR16_A.map", quote=FALSE, sep='\t', col.names=FALSE, row.names=FALSE)
 
 #PED
-write.table(myPED.2, file="data/genome/chr16_analysis/plink/myCHR16_A.ped", quote=FALSE, sep='\t', col.names=FALSE, row.names=FALSE)
-write.table(myPED.null, file="data/genome/chr16_analysis/plink/myCHR16_A.nullPheno.ped", quote=FALSE, sep='\t', col.names=FALSE, row.names=FALSE)
-write.table(myPED.bin, file="data/genome/chr16_analysis/plink/myCHR16_A.binPheno.ped", quote=FALSE, sep='\t', col.names=FALSE, row.names=FALSE)
+write.table(myPED.2, file="data/genome/chr16_analysis/plink/fig8aMatch/myCHR16_A.ped", quote=FALSE, sep='\t', col.names=FALSE, row.names=FALSE)
+write.table(myPED.null, file="data/genome/chr16_analysis/plink/fig8aMatch/myCHR16_A.nullPheno.ped", quote=FALSE, sep='\t', col.names=FALSE, row.names=FALSE)
+write.table(myPED.bin, file="data/genome/chr16_analysis/plink/fig8aMatch/myCHR16_A.binPheno.ped", quote=FALSE, sep='\t', col.names=FALSE, row.names=FALSE)
 
 #GENOTYPE.FILE
 write.table(myGENOTYPE.FILE, file="data/genome/chr16_analysis/GENOTYPE.FILE.txt",quote=FALSE, sep=' ',col.names=FALSE,row.names=FALSE)

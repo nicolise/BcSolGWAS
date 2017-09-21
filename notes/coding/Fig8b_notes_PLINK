@@ -6,6 +6,10 @@ cd Documents/
 STEP1.0: make .ped file
 see R script: 14_A_TABtoPED.R
 **ASSURE match with HEM.topSNPsSM in 14_B_SNP.FILE.R
+<<<<<<< HEAD
+=======
+and import real phenotypes
+>>>>>>> 2ff6afc5f4532a27086bb3ab6923fd135bcc6f24
 done
 
 STEP1.1: make .map file
@@ -14,28 +18,52 @@ saved as myCHR16_A.map
 done
 
 STEP1.2: convert .ped file to .bed file
+<<<<<<< HEAD
 ./plink --file GitRepos/BcSolGWAS/data/genome/chr16_analysis/myCHR16_A --make-bed --out GitRepos/BcSolGWAS/data/genome/chr16_analysis/myCHR16_A
+=======
+plink-1.07-x86_64/plink --noweb --file GitRepos/BcSolGWAS/data/genome/chr16_analysis/plink/myCHR16_A --make-bed --out GitRepos/BcSolGWAS/data/genome/chr16_analysis/plink/myCHR16_A
+>>>>>>> 2ff6afc5f4532a27086bb3ab6923fd135bcc6f24
 produces .bed, .bim, and .fam
 done
 
 STEP1.3: check / make .fam file
+<<<<<<< HEAD
 fine, except: phenotype is ~empty value (last column, all 1s)
 now: input real phenotype
 see: 14_C_FAM_importphenos.R
 final: plink/.fam
 done
+=======
+If .bed has real phenos, so does .fam
+done
+
+>>>>>>> 2ff6afc5f4532a27086bb3ab6923fd135bcc6f24
 
 STEP2.0: generate haplotypes from sliding window and calculate haplotype-specific association tests
 plink --bfile mydata --hap-window 3 --hap-assoc
+<<<<<<< HEAD
 ./plink --bfile GitRepos/BcSolGWAS/data/genome/chr16_analysis/plink/myCHR16_A --hap-window 3 --hap-assoc
 ERROR: plink 1.9 recommends BEAGLE
 USE PLINK 1.07
 plink-1.07-x86_64/plink --noweb --bfile GitRepos/BcSolGWAS/data/genome/chr16_analysis/plink/myCHR16_A --hap-window 3 --hap-assoc --out GitRepos/BcSolGWAS/data/genome/chr16_analysis/haps/chr16_A 
+=======
+ERROR: plink 1.9 recommends BEAGLE
+USE PLINK 1.07
+plink-1.07-x86_64/plink --noweb --bfile GitRepos/BcSolGWAS/data/genome/chr16_analysis/plink/myCHR16_A --hap-window 3 --hap-assoc --out GitRepos/BcSolGWAS/data/genome/chr16_analysis/haps/chr16_A 
+output is plink.qassoc.hap
+
+STEP2.1: calculate haplotype-specific association tests
+plink --file mydata --hap myfile.hlist --hap-assoc
+>>>>>>> 2ff6afc5f4532a27086bb3ab6923fd135bcc6f24
 output is plink.assoc.hap
 
-STEP3.0: input plink.assoc.hap into HAP.FILE format
+STEP3.0: input plink.qassoc.hap into HAP.FILE format
+see: 14_C_HAP.FILE.R
+edit in excel: remove HAP. from column names, replace all NA as " ", save .csv with " " separation and no character delimiters
+done
 
 STEP3.1: make GENOTYPE.FILE
+<<<<<<< HEAD
 see R script: 14_A_TABtoPED.R
 done
 
@@ -46,8 +74,18 @@ Done: 14_Fig8b_LDplot.R
 from: HEM.topSNPsSM in my 14_B_SNP.FILE.R
 done
 >>>>>>> 961e852c5e10ac61c34e0858e5a5b537058bf7f8
+=======
+see: 14_A_TABtoPED.R
+done
+
+STEP3.2: make SNP.FILE
+see: 14_B_SNP.FILE.R
+done
+>>>>>>> 2ff6afc5f4532a27086bb3ab6923fd135bcc6f24
 
 STEP4.0: make settings file for SNP.plotter
+from config.txt on snp.plotter website
+saved as Chr16_config.txt
 
-STEP4.1: run SNP.plotter
-
+STEP4.1: run snp.plotter
+library(snp.plotter

@@ -5,7 +5,7 @@
 #12_singleGeneManhattan.R
 #---------------------------------------------
 rm(list=ls())
-#setwd("~/Documents/GitRepos/BcSolGWAS/")
+setwd("~/Documents/GitRepos/BcSolGWAS/")
 setwd("~/Projects/BcSolGWAS/")
 library(plyr); library(ggplot2); library(grid)
 
@@ -28,11 +28,34 @@ for (i in 2:ncol(TH99neg)){
 
 
 names(HEM.plotdata)
-HEM.plotdata <- HEM.plotdata[,-c(1)]
+#HEM.plotdata <- HEM.plotdata[,-c(1)]
 #only look at chromosome 16
 #this includes all contigs (chrom and seg are separated)
 HEM.plotdata <- HEM.plotdata[which(HEM.plotdata$Chrom=='16'),]
+#get the start position of chromosome 16
+min(HEM.topSNPs$Index)
+max(HEM.topSNPs$Index)
+max(HEM.topSNPs$Index) - min(HEM.topSNPs$Index)
 
+#narrow window: +- 1 kb
+HEM.topSNPs$Chr16Index <- HEM.topSNPs$Index - min(HEM.topSNPs$Index) + 1
+min(HEM.topSNPs$Chr16Index)
+#now get target region within chromosome 16
+#my feature: about 1kb
+#345785 to 346542
+#and I'll add 2kb on each side
+HEM.topSNPsSM <- HEM.topSNPs[which(HEM.topSNPs$Pos < 347542),]
+HEM.topSNPsSM <- HEM.topSNPsSM[which(HEM.topSNPsSM$Pos > 344785),]
+
+<<<<<<< HEAD
+=======
+#trying a bigger window (8kb) to find missing phenos
+HEM.topSNPsSM <- HEM.topSNPs[which(HEM.topSNPs$Pos < 355042),]
+HEM.topSNPsSM <- HEM.topSNPsSM[which(HEM.topSNPsSM$Pos > 337285),]
+
+SNPlist <- as.data.frame(HEM.topSNPsSM$Pos)
+write.csv(SNPlist,"data/genome/chr16_analysis/SNPlistFig8a.csv")
+>>>>>>> 2ff6afc5f4532a27086bb3ab6923fd135bcc6f24
 #All groups (4:6)
 #keep only: SNPs over 99% Threshold
 #now very few over 99.9% Thr
@@ -84,6 +107,7 @@ myColors <- c("gray85", "#999999", "#292929","#684800" ,"#CBA22A", "#63B2D3", "#
 names(myColors) <- levels(HEM.topSNPs$Trait)
 colScale <- scale_colour_manual(name = "Chrom",values = myColors)
 
+<<<<<<< HEAD
 #get the start position of chromosome 16
 min(HEM.topSNPs$Index)
 max(HEM.topSNPs$Index)
@@ -104,6 +128,8 @@ HEM.topSNPsSM <- HEM.topSNPsSM[which(HEM.topSNPsSM$Pos > 344785),]
 HEM.topSNPsSM <- HEM.topSNPs[which(HEM.topSNPs$Pos < 355042),]
 HEM.topSNPsSM <- HEM.topSNPsSM[which(HEM.topSNPsSM$Pos > 337285),]
 
+=======
+>>>>>>> 2ff6afc5f4532a27086bb3ab6923fd135bcc6f24
 #modify colors so that wild are oranges and domesticated are blues
 levels(HEM.topSNPs$Trait)
 #"NS"     "LA410"  "LA480"  "LA1547" "LA1589" "LA1684" "LA2093"
