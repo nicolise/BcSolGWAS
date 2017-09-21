@@ -30,6 +30,7 @@ for (i in 2:ncol(TH99neg)){
 names(HEM.plotdata)
 HEM.plotdata <- HEM.plotdata[,-c(1)]
 #only look at chromosome 16
+#this includes all contigs (chrom and seg are separated)
 HEM.plotdata <- HEM.plotdata[which(HEM.plotdata$Chrom=='16'),]
 
 #get the start position of chromosome 16
@@ -47,6 +48,8 @@ min(HEM.plotdata$Chr16Index)
 HEM.plotdataSM <- HEM.plotdata[which(HEM.plotdata$Pos < 347542),]
 HEM.plotdataSM <- HEM.plotdataSM[which(HEM.plotdataSM$Pos > 344785),]
 
+<<<<<<< HEAD
+=======
 #trying a bigger window (8kb) to find missing phenos
 #HEM.plotdataSM <- HEM.plotdata[which(HEM.plotdata$Pos < 355042),]
 #HEM.plotdataSM <- HEM.plotdataSM[which(HEM.plotdataSM$Pos > 337285),]
@@ -57,6 +60,12 @@ SNPlist_8a <- HEM.plotdataSM[!duplicated(HEM.plotdataSM$Pos), ]
 #SNPlist <- as.data.frame(SNPlist_8a$Pos)
 #write.csv(SNPlist,"data/genome/chr16_analysis/SNPlistFig8a.csv")
 
+<<<<<<< HEAD
+=======
+SNPlist <- as.data.frame(HEM.topSNPsSM$Pos)
+write.csv(SNPlist,"data/genome/chr16_analysis/SNPlistFig8a.csv")
+>>>>>>> 2ff6afc5f4532a27086bb3ab6923fd135bcc6f24
+>>>>>>> 5da793300ed7f848f1cabb9dbddb001111d78546
 #All groups (4:6)
 #keep only: SNPs over 99% Threshold
 #now very few over 99.9% Thr
@@ -109,6 +118,29 @@ myColors <- c("gray85", "#999999", "#292929","#684800" ,"#CBA22A", "#63B2D3", "#
 names(myColors) <- levels(HEM.topSNPs$Trait)
 colScale <- scale_colour_manual(name = "Chrom",values = myColors)
 
+<<<<<<< HEAD
+#get the start position of chromosome 16
+min(HEM.topSNPs$Index)
+max(HEM.topSNPs$Index)
+max(HEM.topSNPs$Index) - min(HEM.topSNPs$Index)
+
+#narrow window: +- 1 kb
+HEM.topSNPs$Chr16Index <- HEM.topSNPs$Index - min(HEM.topSNPs$Index) + 1
+min(HEM.topSNPs$Chr16Index)
+#now get target region within chromosome 16
+#my feature: about 1kb
+#345785 to 346542
+#and I'll add 2kb on each side
+HEM.topSNPsSM <- HEM.topSNPs[which(HEM.topSNPs$Pos < 347542),]
+HEM.topSNPsSM <- HEM.topSNPsSM[which(HEM.topSNPsSM$Pos > 344785),]
+
+#trying a bigger window (8kb) to find missing phenos
+#this matches with haplotype plot
+HEM.topSNPsSM <- HEM.topSNPs[which(HEM.topSNPs$Pos < 355042),]
+HEM.topSNPsSM <- HEM.topSNPsSM[which(HEM.topSNPsSM$Pos > 337285),]
+
+=======
+>>>>>>> 2ff6afc5f4532a27086bb3ab6923fd135bcc6f24
 #modify colors so that wild are oranges and domesticated are blues
 levels(HEM.topSNPs$Trait)
 #"NS"     "LA410"  "LA480"  "LA1547" "LA1589" "LA1684" "LA2093"
@@ -130,7 +162,7 @@ jpeg("paper/Sl_LesionSize_trueMAF20_NA10_lowTR.gene01Chr16.ManhattanPlot.jpg", w
          geom_point(aes(color = factor(Trait)))+
          labs(list(y=expression(paste("Estimated SNP Effect Size (",mm^{2},")"))))+
          guides(col = guide_legend(nrow = 8, title="SNP position"))+
-         #theme(legend.position="none")+
+         theme(legend.position="none")+
          scale_y_continuous(breaks=c(3e-03, 2e-03, 1e-03, 0, -1e-03, -2e-03, -3e-03))+
          scale_x_continuous(name="SNP position on Chr 16 (kb)", limits=c(344785, 347542), breaks=c(344500, 345000, 345500, 346000, 346500, 347000, 347500), labels=c("344.5", "345", "345.5", "346", "346.5", "347", "347.5"))+
     theme(panel.border = element_blank(), panel.grid.major = element_blank(),

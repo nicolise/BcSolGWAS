@@ -20,6 +20,7 @@ mySNPs <- SNPsMAF20
 mySNPs[] <- lapply(mySNPs, as.character)
 mySNPs[mySNPs=="."]<-NA #this is a true NA
 allSNPs<- mySNPs
+#only keep Chr16, but all contigs within that
 mySNPs_Chr16 <- mySNPs[grep("Chromosome16", mySNPs$X.CHROM), ]
 
 #remove low MAFs!
