@@ -120,11 +120,11 @@ myPED.2 <- merge(myPED,addPhenos, by="Isolate", all=TRUE)
 #fill in missing phenos with average
 mean(myPED.2$LA1547, na.rm=TRUE)
 #move phenotype column and remove dummy
-myPED.2 <- myPED.2[,c(1:5,799,7:798)]
+myPED.2 <- myPED.2[,c(1:5,131,7:130)]
 myPED.2$LA1547[is.na(myPED.2$LA1547)] <- mean(myPED.2$LA1547, na.rm=TRUE)
 #replace all NA with 0
 #first add 0 as a valid level
-for (i in 7:798){
+for (i in 7:130){
   levels(myPED.2[,i]) <- c(levels(myPED.2[,i]),0)
 }
 myPED.2[is.na(myPED.2)] <- 0
