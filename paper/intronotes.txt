@@ -1,0 +1,25 @@
+how does crop domestication affect quantitative 
+interactions with generalist pathogens?
+how does this interact with the genetics in the pathogen?
+
+INTRO
+- plant and pathogen contribute to disease
+- depends on pathogen host range
+- much known about specialist qual-R
+
+- less known about generalist quant-R
+- evade qual-R by host shifts
+- what is the polygenic basis of interaction?
+
+- domestication affects resistance to specialists
+- low resistance, sensitivity
+- domestication genetic bottleneck
+- how does domestication affect resistance to generalists?
+
+- botrytis cinerea is a generalist with quantitative virulence
+- botrytis is genetically diverse
+
+- tomato x b cinerea show quant-R
+- tomato a model in resistance and physiology
+
+- study structure
