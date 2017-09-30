@@ -16,12 +16,12 @@ setwd("~/Projects/BcSolGWAS/")
 library(plyr); library(ggplot2); library(grid)
 
 #Import data (reorganized from script ReformatBigRRouts.R)
-HEM.plotdata <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF_10NA/SlBc_12plants_trueMAF20_10NA.HEM.PlotFormat.final.csv")
+HEM.plotdata <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF20_10NA/SlBc_12plants_trueMAF20_10NA.HEM.PlotFormat.final.csv")
 
 HEM.plotdata <- HEM.plotdata[,c(2:14,16,17,15)]
 
 #get threshhold values 
-HEM.thresh <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF_10NA/SlBc_12plants_trueMAF20_10NA.HEM.Thresh.final.csv")
+HEM.thresh <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF20_10NA/SlBc_12plants_trueMAF20_10NA.HEM.Thresh.final.csv")
 
 #take the top 50 over the threshold for each phenotype
 TH95pos <- HEM.thresh[5,]
