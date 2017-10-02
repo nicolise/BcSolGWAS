@@ -73,7 +73,6 @@ mySNPs_Chr16_2 <- mySNPs_Chr16[,-c(1:2, 101:107)]
 mydf <- as.data.frame(mySNPs_Chr16$POS)
 names(mydf)[1] <- "Pos"
 mydf$SNPnum <- c(1:62)
-read.csv("data/genome/chr16_analysis/IndexSNPs.csv")
 write.csv(mydf, "data/genome/chr16_analysis/plink/fig8aMatch/MatchDrawLines.csv")
 
 #duplicate all the rows, to fake a diploid genome
