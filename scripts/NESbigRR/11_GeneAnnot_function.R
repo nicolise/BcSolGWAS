@@ -12,24 +12,30 @@ rm(list=ls())
 setwd("~/Projects/BcSolGWAS")
 library(dplyr)
 GenesDForAnnot <- read.csv("data/GWAS_files/05_annotation/Domest_TopSNPs_10NA_intoAnt.csv")
-Genes12ForAnnot <- read.csv("data/GWAS_files/05_annotation/FINAL_2kbWindow/12plants_genestoANNOT.csv")
-HOGenesForAnnot <- read.csv("data/GWAS_files/05_annotation/FINAL_2kbWindow/12plants_HO_genesTOANNOT.csv")
+Genes12ForAnnot <- read.csv("data/GWAS_files/05_annotation/window2kb/hi12plants_genesTOANNOT.csv")
+HOGenesForAnnot <- read.csv("data/GWAS_files/05_annotation/window2kb/12plants_HO_genesTOANNOT.csv")
+
 FuncAnnot <- read.csv("data/genome/annotation/botrytis_cinerea__t4__1_pfam_to_genes_mycleaned.csv")
 
 head(FuncAnnot)
 
-Funcs <- FuncAnnot[,c(2,3,4)]
-Funcs <- Funcs[!duplicated(Funcs[,1]),]
+#keep only the columns we need
+Funcs <- FuncAnnot[,c("GENE","PFAM_NAME","PFAM_DESCRIPTION")]
+Funcs <- Funcs[!duplicated(Funcs[,"GENE"]),]
 
 #now within each gene, merge back onto AnnotGenes
 colnames(Funcs)[1] <- "geneID"
 GenesDForAnnot <- GenesDForAnnot[,-c(1)]
 DoGenAnt <- merge(GenesDForAnnot, Funcs, by="geneID")
-write.csv(DoGenAnt, "paper/plots/TableS1/AllDOannots_byGene.csv")
+write.csv(DoGenAnt, "data/GWAS_files/05_annotation/window2kb/AllDOannots_byGene.csv")
 
 HOGenAnt <- HOGenesForAnnot
 HOGenAnt <- merge(HOGenAnt, Funcs, by="geneID")
-write.csv(HOGenAnt, "paper/plots/TableS1/AllHOannots_byGene.csv")
+write.csv(HOGenAnt, "data/GWAS_files/05_annotation/window2kb/AllHOannots_byGene.csv")
+
+Gen12Ant <- Genes12ForAnnot
+Gen12Ant <- merge(Gen12Ant, Funcs, by="geneID")
+write.csv(Gen12Ant, "data/GWAS_files/05_annotation/window2kb/All12annots_byGene.csv")
 
 #summary DF for WHOLE GENOME
 #remove empty levels of the variable (in case function appears 0 times in whole genome)
@@ -47,74 +53,73 @@ HOGenAnt$PFAM_DESCRIPTION <- droplevels(HOGenAnt$PFAM_DESCRIPTION)
 #Summary DFs for phenotypes: overrepresentation of functions test
 #all phenos > 6
 HOAntCats <- as.data.frame(table(HOGenAnt$PFAM_DESCRIPTION))
-HOAntCats <- HOAntCats[-c(1),]
 colnames(HOAntCats)[2] <- "AllHOGenFreq"
 colnames(HOAntCats)[1] <- "Function"
 HOAntOverrep <- merge(WGAntCats, HOAntCats, by="Function", all=T)
 
 #summary DF for 12 phenotypes
-AntCatsSUB <- HOGenAnt[,c(1,14,15,16)]
+AntCatsSUB <- HOGenAnt[,c("geneID","TotPhenos","PFAM_NAME","PFAM_DESCRIPTION")]
 #remove rows when mean_Wild = 0
-AntCats12 <- subset(AntCatsSUB, AntCatsSUB[ ,2] == 12) 
+AntCats12 <- subset(AntCatsSUB, AntCatsSUB[ ,"TotPhenos"] == 12) 
 AntCats12$PFAM_DESCRIPTION <- droplevels(AntCats12$PFAM_DESCRIPTION)
 AntCats12 <- as.data.frame(table(AntCats12$PFAM_DESCRIPTION))
 colnames(AntCats12)[2] <-"GenFreq12p"
 colnames(AntCats12)[1]<- "Function"
 
 #now for 11 phenotypes
-AntCats11 <- subset(AntCatsSUB, AntCatsSUB[ ,2] == 11) 
+AntCats11 <- subset(AntCatsSUB, AntCatsSUB[ ,"TotPhenos"] == 11) 
 AntCats11$PFAM_DESCRIPTION <- droplevels(AntCats11$PFAM_DESCRIPTION)
 AntCats11 <- as.data.frame(table(AntCats11$PFAM_DESCRIPTION))
 colnames(AntCats11)[2] <-"GenFreq11p"
 colnames(AntCats11)[1]<- "Function"
 
 #10
-AntCats10 <- subset(AntCatsSUB, AntCatsSUB[ ,2] == 10) 
+AntCats10 <- subset(AntCatsSUB, AntCatsSUB[ ,"TotPhenos"] == 10) 
 AntCats10$PFAM_DESCRIPTION <- droplevels(AntCats10$PFAM_DESCRIPTION)
 AntCats10 <- as.data.frame(table(AntCats10$PFAM_DESCRIPTION))
 colnames(AntCats10)[2] <-"GenFreq10p"
 colnames(AntCats10)[1]<- "Function"
 
 #9
-AntCats9 <- subset(AntCatsSUB, AntCatsSUB[ ,2] == 9) 
+AntCats9 <- subset(AntCatsSUB, AntCatsSUB[ ,"TotPhenos"] == 9) 
 AntCats9$PFAM_DESCRIPTION <- droplevels(AntCats9$PFAM_DESCRIPTION)
 AntCats9 <- as.data.frame(table(AntCats9$PFAM_DESCRIPTION))
 colnames(AntCats9)[2] <-"GenFreq9p"
 colnames(AntCats9)[1]<- "Function"
 
 #8
-AntCats8 <- subset(AntCatsSUB, AntCatsSUB[ ,2] == 8) 
+AntCats8 <- subset(AntCatsSUB, AntCatsSUB[ ,"TotPhenos"] == 8) 
 AntCats8$PFAM_DESCRIPTION <- droplevels(AntCats8$PFAM_DESCRIPTION)
 AntCats8 <- as.data.frame(table(AntCats8$PFAM_DESCRIPTION))
 colnames(AntCats8)[2] <-"GenFreq8p"
 colnames(AntCats8)[1]<- "Function"
 
 #7
-AntCats7 <- subset(AntCatsSUB, AntCatsSUB[ ,2] == 7) 
+AntCats7 <- subset(AntCatsSUB, AntCatsSUB[ ,"TotPhenos"] == 7) 
 AntCats7$PFAM_DESCRIPTION <- droplevels(AntCats7$PFAM_DESCRIPTION)
 AntCats7 <- as.data.frame(table(AntCats7$PFAM_DESCRIPTION))
 colnames(AntCats7)[2] <-"GenFreq7p"
 colnames(AntCats7)[1]<- "Function"
 
 #6
-AntCats6 <- subset(AntCatsSUB, AntCatsSUB[ ,2] == 6) 
+AntCats6 <- subset(AntCatsSUB, AntCatsSUB[ ,"TotPhenos"] == 6) 
 AntCats6$PFAM_DESCRIPTION <- droplevels(AntCats6$PFAM_DESCRIPTION)
 AntCats6 <- as.data.frame(table(AntCats6$PFAM_DESCRIPTION))
 colnames(AntCats6)[2] <-"GenFreq6p"
 colnames(AntCats6)[1]<- "Function"
 
 #with all=T, can make underrepresentation work by filling in zeroes
-HOAntOverrep <- merge(HOAntOverrep, AntCats12, by="Function", all=T)
-HOAntOverrep <- merge(HOAntOverrep, AntCats11, by="Function", all=T)
-HOAntOverrep <- merge(HOAntOverrep, AntCats10, by="Function", all=T)
-HOAntOverrep <- merge(HOAntOverrep, AntCats9, by="Function", all=T)
-HOAntOverrep <- merge(HOAntOverrep, AntCats8, by="Function", all=T)
-HOAntOverrep <- merge(HOAntOverrep, AntCats7, by="Function", all=T)
-HOAntOverrep <- merge(HOAntOverrep, AntCats6, by="Function", all=T)
+HOAntOverrep <- merge(HOAntOverrep, AntCats12, by="Function", all=TRUE)
+HOAntOverrep <- merge(HOAntOverrep, AntCats11, by="Function", all=TRUE)
+HOAntOverrep <- merge(HOAntOverrep, AntCats10, by="Function", all=TRUE)
+HOAntOverrep <- merge(HOAntOverrep, AntCats9, by="Function", all=TRUE)
+HOAntOverrep <- merge(HOAntOverrep, AntCats8, by="Function", all=TRUE)
+HOAntOverrep <- merge(HOAntOverrep, AntCats7, by="Function", all=TRUE)
+HOAntOverrep <- merge(HOAntOverrep, AntCats6, by="Function", all=TRUE)
 HOAntOverrep[is.na(HOAntOverrep)] <- 0
 
 #remove blank rows
-HOAntOverrep <- HOAntOverrep[-c(1),]
+#HOAntOverrep <- HOAntOverrep[-c(1),]
 
 #test for overrepresentation of a function
 #https://stats.stackexchange.com/questions/72553/which-statistical-test-should-be-used-to-test-for-enrichment-of-gene-lists
@@ -160,7 +165,7 @@ HOAntOverrep$fisher.dn.7 <- fisher.p.under.GenFreq7p
 HOAntOverrep$fisher.up.6 <- fisher.p.over.GenFreq6p
 HOAntOverrep$fisher.dn.6 <- fisher.p.under.GenFreq6p
 
-write.csv(HOAntOverrep, "data/GWAS_files/05_annotation/FINAL_2kbWindow/HiOverlap12p_AnnotatedGenes.csv")
+write.csv(HOAntOverrep, "data/GWAS_files/05_annotation/window2kb/HiOverlap12p_AnnotatedGenes.csv")
 
 
 #-----------------------------------------------------------------------
@@ -168,22 +173,21 @@ write.csv(HOAntOverrep, "data/GWAS_files/05_annotation/FINAL_2kbWindow/HiOverlap
 #summary DF for ANY phenotype
 #if there is a row in the table, it must be significant for at least one pheno, so can count all rows
 DoAntCats <- as.data.frame(table(DoGenAnt$PFAM_DESCRIPTION))
-DoAntCats <- DoAntCats[-c(1),]
 colnames(DoAntCats)[2] <-"AllDoGenFreq"
 colnames(DoAntCats)[1]<- "Function"
 AntOverrep <- merge(WGAntCats, DoAntCats, by="Function", all=T)
 
 #summary DF for Wild phenotype
-WildAntCats <- DoGenAnt[,c(1,3,6,7)]
+WildAntCats <- DoGenAnt[,c("geneID","mean_Wild","PFAM_NAME","PFAM_DESCRIPTION")]
 #remove rows when mean_Wild = 0
-WildAntCats <- subset(WildAntCats, WildAntCats[ ,2] != 0) 
+WildAntCats <- subset(WildAntCats, WildAntCats[ ,"mean_Wild"] != 0) 
 WildAntCats$PFAM_DESCRIPTION <- droplevels(WildAntCats$PFAM_DESCRIPTION)
 WildAntCats <- as.data.frame(table(WildAntCats$PFAM_DESCRIPTION))
 colnames(WildAntCats)[2] <-"WildGenFreq"
 colnames(WildAntCats)[1]<- "Function"
 
 #summary DF for Domestication phenotype
-DomestAntCats <- DoGenAnt[,c(1,2,6,7)]
+DomestAntCats <- DoGenAnt[,c("geneID","mean_Domest","PFAM_NAME","PFAM_DESCRIPTION")]
 DomestAntCats <- subset(DomestAntCats, DomestAntCats[ ,2] != 0) 
 DomestAntCats$PFAM_DESCRIPTION <- droplevels(DomestAntCats$PFAM_DESCRIPTION)
 DomestAntCats <- as.data.frame(table(DomestAntCats$PFAM_DESCRIPTION))
@@ -191,7 +195,7 @@ colnames(DomestAntCats)[2] <-"DomestGenFreq"
 colnames(DomestAntCats)[1]<- "Function"
 
 #summary DF for Sensitivity phenotype
-SensAntCats <- DoGenAnt[,c(1,4,6,7)]
+SensAntCats <- DoGenAnt[,c("geneID","mean_DmWoD","PFAM_NAME","PFAM_DESCRIPTION")]
 SensAntCats <- subset(SensAntCats, SensAntCats[ ,2] != 0) 
 SensAntCats$PFAM_DESCRIPTION <- droplevels(SensAntCats$PFAM_DESCRIPTION)
 SensAntCats <- as.data.frame(table(SensAntCats$PFAM_DESCRIPTION))
@@ -244,4 +248,4 @@ AntOverrep$fisher.dn.Do <- fisher.p.under.DomestGenFreq
 AntOverrep$fisher.dn.Wi <- fisher.p.under.WildGenFreq
 AntOverrep$fisher.dn.Se <- fisher.p.under.SensGenFreq
 
-write.csv(AntOverrep, "data/GWAS_files/05_annotation/FINAL_2kbWindow/Domestication_AnnotatedGenes.csv")
+write.csv(AntOverrep, "data/GWAS_files/05_annotation/window2kb/Domestication_AnnotatedGenes.csv")

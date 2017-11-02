@@ -22,8 +22,9 @@ plant12snp.HO$position <- plant12snp.HO$Pos
 plant12snp.HO$mutation <- "A"
 plant12snp.HO.snpdat <- plant12snp.HO[,c("chromosome.id", "position", "mutation")]
 #get rid of ".0"s
-plant12snp.HO.snpdat$chromosome.id <- gsub(".0", "", plant12snp.HO.snpdat$chromosome.id)
-write.table(plant12snp.HO.snpdat, file="data/SNPdat_Annotate/MyAnnots/plant12snp.HO.FORPERL.txt", sep=" ", col.names=TRUE, row.names=FALSE, quote=FALSE)
+plant12snp.HO.snpdat$chromosome.id <- gsub("\\.0$", "", plant12snp.HO.snpdat$chromosome.id)
+unique(plant12snp.HO.snpdat$chromosome.id)
+write.table(plant12snp.HO.snpdat, file="data/SNPdat_Annotate/MyAnnots/plant12snp.HO.FORPERL.txt", sep="\t", col.names=TRUE, row.names=FALSE, quote=FALSE)
 
 names(domestsnp)
 domestsnp$chromosome.id <- paste(domestsnp$Chrom, domestsnp$Segment, sep=".")
@@ -32,5 +33,15 @@ domestsnp$position <- domestsnp$Pos
 domestsnp$mutation <- "A"
 domestsnp.snpdat <- domestsnp[,c("chromosome.id", "position", "mutation")]
 #get rid of ".0"s
-domestsnp.snpdat$chromosome.id <- gsub(".0", "", domestsnp.snpdat$chromosome.id)
-write.table(domestsnp.snpdat, file="data/SNPdat_Annotate/MyAnnots/domestsnp.FORPERL.txt", sep=" ", col.names=TRUE, row.names=FALSE, quote=FALSE)
+domestsnp.snpdat$chromosome.id <- gsub("\\.0$", "", domestsnp.snpdat$chromosome.id)
+write.table(domestsnp.snpdat, file="data/SNPdat_Annotate/MyAnnots/domestsnp.FORPERL.txt", sep="\t", col.names=TRUE, row.names=FALSE, quote=FALSE)
+
+names(plant12snp.w)
+plant12snp.w$chromosome.id <- paste(plant12snp.w$Chrom, plant12snp.w$Segment, sep=".")
+plant12snp.w$chromosome.id <- paste("Chromosome",plant12snp.w$chromosome.id, sep="")
+plant12snp.w$position <- plant12snp.w$Pos
+plant12snp.w$mutation <- "A"
+plant12snp.w.snpdat <- plant12snp.w[,c("chromosome.id", "position", "mutation")]
+#get rid of ".0"s
+plant12snp.w.snpdat$chromosome.id <- gsub("\\.0$", "", plant12snp.w.snpdat$chromosome.id)
+write.table(plant12snp.w.snpdat, file="data/SNPdat_Annotate/MyAnnots/plant12snp.top1k.FORPERL.txt", sep="\t", col.names=TRUE, row.names=FALSE, quote=FALSE)
