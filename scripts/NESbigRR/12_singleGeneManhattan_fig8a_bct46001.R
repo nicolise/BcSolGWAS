@@ -46,8 +46,8 @@ min(HEM.plotdata$Chr2.2Index)
 #825306 to 826345
 
 #and I'll add 2kb on each side
-HEM.plotdataSM <- HEM.plotdata[which(HEM.plotdataSM$Pos > 823306),]
-HEM.plotdataSM <- HEM.plotdataSM[which(HEM.plotdata$Pos < 828345),]
+HEM.plotdataSM <- HEM.plotdata[which(HEM.plotdata$Pos > 823306),]
+HEM.plotdataSM <- HEM.plotdataSM[which(HEM.plotdataSM$Pos < 828345),]
 
 #trying a bigger window (8kb) to find missing phenos
 #HEM.plotdataSM <- HEM.plotdata[which(HEM.plotdata$Pos < 355042),]
@@ -66,27 +66,12 @@ HEM.plotdata <- HEM.plotdataSM
 HEM.plotdata$Seg.Pos <- paste(HEM.plotdata$Segment, HEM.plotdata$Pos, sep='.')
 HEM.plotdata <- HEM.plotdata[order(HEM.plotdata$Segment, HEM.plotdata$Pos),]
 
-#Make newindex for chromosome 16
-HEM.plotdata$newindex = NA
-lastbase = 0
-for (i in unique(HEM.plotdata$Segment)) {
-  print(i)
-  if (i<1) {
-    HEM.plotdata[HEM.plotdata$Segment==i, ]$newindex=HEM.plotdata[HEM.plotdata$Segment==i, ]$Pos
-  }	else {
-    lastbase=lastbase+max(subset(HEM.plotdata,HEM.plotdata$Segment==i-1)$Pos, 1)
-    HEM.plotdata[HEM.plotdata$Segment==i, ]$newindex=HEM.plotdata[HEM.plotdata$Segment==i, ]$Pos+lastbase-min(subset(HEM.plotdata,HEM.plotdata$Segment==i)$Pos)
-  }
-}
-
-getmyindex <- HEM.plotdata[,c(3,22)]
-
 #All groups (4:6)
 #keep only: SNPs over 99% Threshold
 #now very few over 99.9% Thr
 for (i in c(4:15)){
-  assign(paste("HEMpos.", names(HEM.plotdata[i]), sep=""), subset(HEM.plotdata, HEM.plotdata[i] > get(paste("TH99pos_", names(HEM.plotdata[i]), sep="")), select=c(Chrom,Segment,Pos,newindex,i)))
-  assign(paste("HEMneg.", names(HEM.plotdata[i]), sep=""), subset(HEM.plotdata, HEM.plotdata[i] < get(paste("TH99neg_", names(HEM.plotdata[i]), sep="")), select=c(Chrom,Segment,Pos,newindex,i)))
+  assign(paste("HEMpos.", names(HEM.plotdata[i]), sep=""), subset(HEM.plotdata, HEM.plotdata[i] > get(paste("TH99pos_", names(HEM.plotdata[i]), sep="")), select=c(Chrom,Segment,Pos,i)))
+  assign(paste("HEMneg.", names(HEM.plotdata[i]), sep=""), subset(HEM.plotdata, HEM.plotdata[i] < get(paste("TH99neg_", names(HEM.plotdata[i]), sep="")), select=c(Chrom,Segment,Pos,i)))
 }
 
 #combine pos and neg by group
@@ -96,8 +81,8 @@ for (i in c(4:15)){
 
 #also keep non-sig SNPs as grey dots
 for (i in c(4:15)){
-  assign(paste("ns.HEMpos.", names(HEM.plotdata[i]), sep=""), subset(HEM.plotdata, HEM.plotdata[i] < get(paste("TH99pos_", names(HEM.plotdata[i]), sep="")), select=c(Chrom,Segment,Pos,newindex,i)))
-  assign(paste("ns.HEMneg.", names(HEM.plotdata[i]), sep=""), subset(HEM.plotdata, HEM.plotdata[i] > get(paste("TH99neg_", names(HEM.plotdata[i]), sep="")), select=c(Chrom,Segment,Pos,newindex,i)))
+  assign(paste("ns.HEMpos.", names(HEM.plotdata[i]), sep=""), subset(HEM.plotdata, HEM.plotdata[i] < get(paste("TH99pos_", names(HEM.plotdata[i]), sep="")), select=c(Chrom,Segment,Pos,i)))
+  assign(paste("ns.HEMneg.", names(HEM.plotdata[i]), sep=""), subset(HEM.plotdata, HEM.plotdata[i] > get(paste("TH99neg_", names(HEM.plotdata[i]), sep="")), select=c(Chrom,Segment,Pos,i)))
 }
 for (i in c(4:15)){
   assign(paste("ns.HEM.", names(HEM.plotdata[i]), sep=""), rbind(get(paste("ns.HEMpos.", names(HEM.plotdata[i]), sep="")),get(paste("ns.HEMneg.", names(HEM.plotdata[i]), sep=""))))
@@ -105,7 +90,7 @@ for (i in c(4:15)){
 for (i in c(4:15)){
   mydf <- paste("ns.HEM.", names(HEM.plotdata[i]), sep="")
   renamedf <- get(mydf)
-  colnames(renamedf)[5] <- "Effect"
+  colnames(renamedf)[4] <- "Effect"
   assign(mydf, renamedf)
   myblob <- rep("NS", nrow(get(mydf)))
   assign(mydf, cbind(get(mydf), Trait = myblob))
@@ -117,7 +102,7 @@ HEM.NS <- rbind(ns.HEM.LA410, ns.HEM.LA480, ns.HEM.LA1547, ns.HEM.LA1589, ns.HEM
 for (i in c(4:15)){
   mydf <- paste("HEM.", names(HEM.plotdata[i]), sep="")
   renamedf <- get(mydf)
-  colnames(renamedf)[5] <- "Effect"
+  colnames(renamedf)[4] <- "Effect"
   assign(mydf, renamedf)
   myblob <- rep(names(HEM.plotdata[i]), nrow(get(mydf)))
   assign(mydf, cbind(get(mydf), Trait = myblob))
@@ -157,6 +142,9 @@ mylines <- mylines[,c(1,3)]
 mylines <- merge(mylines, getmyindex, by="Pos")
 
 names(HEM.topSNPs.P)
+
+SNPlist <- HEM.plotdataSM$Pos
+write.csv(SNPlist, "data/genome/chr2_analysis/SNPlistFig8a.csv")
 
 #jpeg("paper/plots/FigR8/Sl_LesionSize_trueMAF20_NA10_lowTR.gene01Chr16.ManhattanPlot.jpg", width=7, height=5, units='in', res=600)
 jpeg("paper/plots/FigR8/Sl_LesionSize_trueMAF20_NA10_lowTR.gene01Chr2.2.ManhattanPlot.jpg", width=7, height=5, units='in', res=600)

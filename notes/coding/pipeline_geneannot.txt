@@ -81,3 +81,14 @@ C:\Users\nesoltis\Documents\Projects\BcSolGWAS\data\GWAS_files\05_annotation\win
 		then cut rows with no highlighting
 
 9. check online functions
+	BotPortal http://botbioger.versailles.inra.fr/botportal/
+
+10. select focal gene for Fig R8
+	gene from C:\Users\nesoltis\Documents\Projects\BcSolGWAS\data\GWAS_files\05_annotation\window2kb\AllAnnots_byGene.xlsx
+	in C:\Users\nesoltis\Documents\Projects\BcSolGWAS\data\SNPdat_Annotate\genes_Chromosomev2.gtf find gene of interest
+	search for BcT4 gene name --> extract all features of gene name
+	then draw 8a with 12_singleGeneManhattan_fig8a.R
+	draw 8b according to Fig8b_notes_PLINK.txt
+
+SNPs in perfect linkage: real?? check variation
+could help with venn diagram resolution
