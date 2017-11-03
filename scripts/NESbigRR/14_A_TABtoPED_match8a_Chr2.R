@@ -180,8 +180,8 @@ write.table(myMAP, file="data/genome/chr2_analysis/PLINK/myCHR2_A.map", quote=FA
 
 #PED
 write.table(myPED.2, file="data/genome/chr2_analysis/PLINK/myCHR2_A.ped", quote=FALSE, sep='\t', col.names=FALSE, row.names=FALSE)
-write.table(myPED.null, file="data/genome/chr2_analysis/PLINK/myCHR16_A.nullPheno.ped", quote=FALSE, sep='\t', col.names=FALSE, row.names=FALSE)
-write.table(myPED.bin, file="data/genome/chr2_analysis/PLINK/myCHR16_A.binPheno.ped", quote=FALSE, sep='\t', col.names=FALSE, row.names=FALSE)
+write.table(myPED.null, file="data/genome/chr2_analysis/PLINK/myCHR2_A.nullPheno.ped", quote=FALSE, sep='\t', col.names=FALSE, row.names=FALSE)
+write.table(myPED.bin, file="data/genome/chr2_analysis/PLINK/myCHR2_A.binPheno.ped", quote=FALSE, sep='\t', col.names=FALSE, row.names=FALSE)
 
 #GENOTYPE.FILE
 write.table(myGENOTYPE.FILE, file="data/genome/chr2_analysis/GENOTYPE.FILE_8aMatch.txt",quote=FALSE, sep=' ',col.names=FALSE,row.names=FALSE)

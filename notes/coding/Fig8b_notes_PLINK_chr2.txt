@@ -1,0 +1,54 @@
+on Linux 
+cd Documents/
+./plink
+
+STEP1.0: make .ped file
+see R script: 14_A_TABtoPED.R
+**ASSURE match with HEM.topSNPsSM in 14_B_SNP.FILE.R
+and import real phenotypes
+done
+
+STEP1.1: make .map file
+see R script: 14_A_TABtoPED.R
+
+STEP1.2: convert .ped file to .bed file
+plink-1.07-x86_64/plink --noweb --file GitRepos/BcSolGWAS/data/genome/chr2_analysis/PLINK/myCHR2_A --make-bed --out GitRepos/BcSolGWAS/data/genome/chr2_analysis/PLINK/myCHR2_A
+produces .bed, .bim, and .fam
+done
+
+STEP1.3: check / make .fam file
+If .bed has real phenos, so does .fam
+done
+
+STEP2.0: generate haplotypes from sliding window 
+plink --bfile mydata --hap-window 3 --hap-assoc
+or, calculate haplotype-specific association tests
+plink --file mydata --hap myfile.hlist --hap-assoc
+ERROR: plink 1.9 recommends BEAGLE
+USE PLINK 1.07
+plink-1.07-x86_64/plink --noweb --bfile GitRepos/BcSolGWAS/data/genome/chr2_analysis/PLINK/myCHR2_A --hap-window 3 --hap-assoc --out GitRepos/BcSolGWAS/data/genome/chr2_analysis/haps/chr2_A 
+output is plink.qassoc.hap
+done
+
+STEP3.0: input plink.qassoc.hap into HAP.FILE format
+see: 14_C_HAP.FILE.R
+edit in excel: remove HAP. from column names, replace all NA as " ", save .csv with " " separation and no character delimiters
+and for test.hap (HAPLOTYPE NNN split into 3 columns HAPLOTYPE.1 N, HAPLOTYPE.2 N, HAPLOTYPE.3 N):
+	in excel / libreoffice replace A with A., C with C., etc. then fix column names. then run in 14_C...R
+done
+
+STEP3.1: make GENOTYPE.FILE
+see: 14_A_TABtoPED.R
+done
+
+STEP3.2: make SNP.FILE
+see: 14_B_SNP.FILE.R
+done
+
+STEP4.0: make settings file for SNP.plotter
+from config.txt on snp.plotter website
+saved as Chr2_config.txt
+done
+
+STEP4.1: run snp.plotter
+library(snp.plotter
