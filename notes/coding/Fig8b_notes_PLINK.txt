@@ -9,6 +9,7 @@ and import real phenotypes
 done
 
 STEP1.1: make .map file
+see R script: 14_A_TABtoPED.R
 
 STEP1.2: convert .ped file to .bed file
 plink-1.07-x86_64/plink --noweb --file GitRepos/BcSolGWAS/data/genome/chr16_analysis/plink/myCHR16_A --make-bed --out GitRepos/BcSolGWAS/data/genome/chr16_analysis/plink/myCHR16_A

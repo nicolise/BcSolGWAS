@@ -154,6 +154,9 @@ mylines <- merge(myblocks, block2snp, by="SNPnum")
 mylines <- mylines[,c(1,3)]
 mylines <- merge(mylines, getmyindex, by="Pos")
 
+names(HEM.topSNPs.P)
+HEM.topSNPs.P <- HEM.topSNPs.P[HEM.topSNPs.P$Segment=="0",]
+
 #jpeg("paper/plots/FigR8/Sl_LesionSize_trueMAF20_NA10_lowTR.gene01Chr16.ManhattanPlot.jpg", width=7, height=5, units='in', res=600)
 jpeg("paper/plots/FigR8/Sl_LesionSize_trueMAF20_NA10_lowTR.gene01Chr16.ManhattanPlot.jpg", width=7, height=5, units='in', res=600)
   ggplot(HEM.topSNPs.P, aes(x=newindex, y=100*Effect))+

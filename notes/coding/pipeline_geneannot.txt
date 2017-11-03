@@ -1,0 +1,94 @@
+1. a. get peaks (SNPs of interest) from 08_peaks...R 
+	12 files: data/GWAS_files/05_annotation/TrueMAF_NAs/
+		12Plants_Top1000SNPs_SegLong_trueMAF20_10NA.csv
+		and
+		.../12Plants_AllSNPsOver99_SegLong_trueMAF20_10NA.csv
+	DW files: data/GWAS_files/05_annotation/TrueMAF_NAs/
+		Domestication_TopSNPs_SegLong_trueMAF20_10NA.csv
+		and Domestication_Top1kSNPs_SegLong_trueMAF20_10NA.csv
+   b. and peaks from 09_12phenos_NA10_figR6b.R
+	12 files: data/GWAS_files/05_annotation/TrueMAF_NAs/
+		12Plants_HiOVerlapSNPs_trueMAF20_10NA.csv
+
+2. Reformat data for PERL:
+	09_SNPdat_annot.R
+	Save as data/SNPdat_Annotate/MyAnnots/..._FORPERL.txt with format:
+	chromosome_id	position	mutation
+	Chromosome1	12045	A
+	Chromosome1	51226	A
+
+3. run SNPdat in PERL:
+	perl Programs/SNPdat_package_ v1.0.5/SNPdat_v1.0.5.pl
+	a. for 12plants HO:
+		perl Programs/SNPdat_package_v1.0.5/SNPdat_v1.0.5.pl 
+		-i Projects/BcSolGWAS/data/SNPdat_Annotate/MyAnnots/plant12snp.HO.FORPERL.txt
+		-f Projects/BcSolGWAS/data/SNPdat_Annotate/suziT4.fasta 
+		-g Projects/BcSolGWAS/data/SNPdat_Annotate/genes_Chromosomev2.gtf
+perl Programs/SNPdat_package_v1.0.5/SNPdat_v1.0.5.pl -i Projects/BcSolGWAS/data/SNPdat_Annotate/MyAnnots/plant12snp.HO.FORPERL.txt -f Projects/BcSolGWAS/data/SNPdat_Annotate/suziT4.fasta -g Projects/BcSolGWAS/data/SNPdat_Annotate/genes_Chromosomev2.gtf
+
+	b. for domest:
+		perl Programs/SNPdat_package_v1.0.5/SNPdat_v1.0.5.pl 
+		-i Projects/BcSolGWAS/data/SNPdat_Annotate/MyAnnots/domestsnp.FORPERL.txt
+		-f Projects/BcSolGWAS/data/SNPdat_Annotate/suziT4.fasta 
+		-g Projects/BcSolGWAS/data/SNPdat_Annotate/genes_Chromosomev2.gtf
+perl Programs/SNPdat_package_v1.0.5/SNPdat_v1.0.5.pl -i Projects/BcSolGWAS/data/SNPdat_Annotate/MyAnnots/domestsnp.FORPERL.txt -f Projects/BcSolGWAS/data/SNPdat_Annotate/suziT4.fasta -g Projects/BcSolGWAS/data/SNPdat_Annotate/genes_Chromosomev2.gtf
+	
+	c. for 12plants top 1k
+		perl Programs/SNPdat_package_v1.0.5/SNPdat_v1.0.5.pl 
+		-i Projects/BcSolGWAS/data/SNPdat_Annotate/MyAnnots/plant12snp.top1k.FORPERL.txt
+		-f Projects/BcSolGWAS/data/SNPdat_Annotate/suziT4.fasta 
+		-g Projects/BcSolGWAS/data/SNPdat_Annotate/genes_Chromosomev2.gtf
+perl Programs/SNPdat_package_v1.0.5/SNPdat_v1.0.5.pl -i Projects/BcSolGWAS/data/SNPdat_Annotate/MyAnnots/plant12snp.top1k.FORPERL.txt -f Projects/BcSolGWAS/data/SNPdat_Annotate/suziT4.fasta -g Projects/BcSolGWAS/data/SNPdat_Annotate/genes_Chromosomev2.gtf
+4. subset to only 2kb windows
+	a. change file name extension to .txt
+	b. open excel, then open file in excel
+	c. import as tab delimited, save as .csv
+	d. edit in R: 10_GeneAnnot_10NA_venns_figR9figR7b.R
+	e. outputs are data/GWAS_files/05_annotation/window2kb
+
+5. plot Fig7b 
+	from 10_GeneAnnot...R
+
+
+6. venn diagram
+	from 10_GeneAnnot...R
+	> table(GenesforAnnot$TotTraits)
+
+	ALL   D  DS  DW   S   W  WS 
+	  8 814   5 500   3 104   3 
+
+	https://jolars.shinyapps.io/eulerr/
+	Order for figure: D, S, SW, W, DS, DW, DWS
+	Color order: #1C86EE, #050505, #EE7600
+	Solid borders. Opacity 0.6
+	Save as each file format.
+	Gimp
+	Editing: default font (Calibri), size 18
+	Compression level: 5 
+
+7. annotation outputs
+C:\Users\nesoltis\Documents\Projects\BcSolGWAS\data\GWAS_files\05_annotation\window2kb
+
+
+7. annotate functions
+	11_GeneAnnot_function.R
+	all outputs to 05_annotation/window2kb
+		- lists by gene
+		- lists by functional annotation
+
+8. summarize functions
+	outputs in excel: make a page for "sigonly", sort by each significance column and highlight
+		then cut rows with no highlighting
+
+9. check online functions
+	BotPortal http://botbioger.versailles.inra.fr/botportal/
+
+10. select focal gene for Fig R8
+	gene from C:\Users\nesoltis\Documents\Projects\BcSolGWAS\data\GWAS_files\05_annotation\window2kb\AllAnnots_byGene.xlsx
+	in C:\Users\nesoltis\Documents\Projects\BcSolGWAS\data\SNPdat_Annotate\genes_Chromosomev2.gtf find gene of interest
+	search for BcT4 gene name --> extract all features of gene name
+	then draw 8a with 12_singleGeneManhattan_fig8a.R
+	draw 8b according to Fig8b_notes_PLINK.txt
+
+SNPs in perfect linkage: real?? check variation
+could help with venn diagram resolution
