@@ -33,16 +33,16 @@ mySNPs_Chr2$Freq.G <- rowSums(mySNPs_Chr2[,c(4:100)] =="G", na.rm=T)
 mySNPs_Chr2$All <- (mySNPs_Chr2$Freq.A + mySNPs_Chr2$Freq.C + mySNPs_Chr2$Freq.G + mySNPs_Chr2$Freq.T)
 #97 isolates total
 #remove all loci (rows) with >10% missingness (mySNPs_Chr16$All <87.3)
-#mySNPs_Chr2 <- mySNPs_Chr2[mySNPs_Chr2$All>87,] 
+mySNPs_Chr2 <- mySNPs_Chr2[mySNPs_Chr2$All>87,] 
 
 #now remove all loci (rows) with MAF <20 (max > 77.6)
-#mySNPs_Chr2 <- transform(mySNPs_Chr2, max = pmax(Freq.A, Freq.C, Freq.G, Freq.T))
-#mySNPs_Chr2 <- mySNPs_Chr2[mySNPs_Chr2$max < 78,] #this is fine, keep all.
-#mySNPs_Chr2$missing <- apply(mySNPs_Chr2[,c(4:100)], 1, function(x) sum(is.na(x)))
+mySNPs_Chr2 <- transform(mySNPs_Chr2, max = pmax(Freq.A, Freq.C, Freq.G, Freq.T))
+mySNPs_Chr2 <- mySNPs_Chr2[mySNPs_Chr2$max < 78,] #this is fine, keep all.
+mySNPs_Chr2$missing <- apply(mySNPs_Chr2[,c(4:100)], 1, function(x) sum(is.na(x)))
 
 #MAF is too low if: max + missing > 78
 #removes a few more
-#mySNPs_Chr2 <- mySNPs_Chr2[(mySNPs_Chr2$max + mySNPs_Chr2$missing) < 78,]
+mySNPs_Chr2 <- mySNPs_Chr2[(mySNPs_Chr2$max + mySNPs_Chr2$missing) < 78,]
 
 #NOW filter to just region of interest on Chromosome 2
 #823306 to 828345
