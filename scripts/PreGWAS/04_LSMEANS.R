@@ -4,7 +4,7 @@
 rm(list=ls())
 setwd("~/Projects/BcSolGWAS")
 #read in file from SlBc_mixmods.csv
-ModDat <- read.csv("data/SlBc_ModelData.csv")
+ModDat <- read.csv("data/preGWAS/SlBc_ModelData.csv")
 
 #----------------------------------------------------------------------
 
@@ -14,6 +14,9 @@ library(lme4); library(car); library(lmerTest)
 ModDat <- ModDat[,c("ExpBlock", "Igeno", "AorB", "Leaf", "Plant", "AgFlat", "Species", "IsoColor", "PExpRep.x", "Scale.LS", "PlGenoNm")]
 names(ModDat)
 ModDat <- dplyr::select(ModDat, Exp = ExpBlock, Block = PExpRep.x, Pgeno = PlGenoNm, matches("."))
+#names(ModDat)[4]<-"Pgeno"
+#names(ModDat)[8]<-"Exp"
+#names(ModDat)[9]<-"Block"
 
 #remove the isolates missing from one experiment
 SlSumm <- as.data.frame(with(ModDat, table(Igeno,Exp)))
@@ -33,6 +36,16 @@ ModDat <- subset(ModDat, Igeno != "94.1")
 #so include no species terms or plant genotype terms
 attach(ModDat)
 out <- split( ModDat , f = ModDat$Pgeno)
+
+#try for one genotype alone, no loop
+# mydat = out[[1]]
+# print(unique(mydat$Pgeno))
+# Lesion.lm <- lmer(Scale.LS ~ Igeno + (1|Exp) + (1|IndPlant/Leaf/AorB) + (1|Exp:Igeno), data=mydat)
+# stats::anova(Lesion.lm)
+# car::Anova(Lesion.lm, type=3)
+# Lesion.lsm <- lsmeans(Lesion.lm, "Igeno")
+# df <- as.data.frame(print(Lesion.lsm))
+
 head(out[[1]]) #100 elements, max. 69 obs per isolate
 
 #Using a for loop, iterate over the list of data frames in out[[]]
