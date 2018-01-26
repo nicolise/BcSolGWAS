@@ -35,6 +35,14 @@ ModDat <- subset(ModDat, Igeno != "94.1")
 #run model per isolate WITHIN each plant genotype
 #so include no species terms or plant genotype terms
 attach(ModDat)
+table.S1 <- ModDat[,c("Igeno","Species","PlGenoNm","Scale.LS")]
+table.S1 <- ddply(table.S1, c("PlGenoNm","Species","Igeno"), summarise, mean.lesion=mean(Scale.LS))
+table.S1 <- reshape(table.S1, idvar = "Igeno", timevar = c("PlGenoNm"), direction = "wide")
+write.csv(table.S1, "paper/plots/Supplemental/TableS1_means.csv")
+
+library('plyr')
+table.S1.out <- ddply(table.S1, .(Igeno), summarise, mean=mean(Scale.LS))
+
 out <- split( ModDat , f = ModDat$Pgeno)
 
 #try for one genotype alone, no loop
