@@ -21,6 +21,7 @@ mySNPs[] <- lapply(mySNPs, as.character)
 mySNPs[mySNPs=="."]<-NA #this is a true NA
 allSNPs<- mySNPs
 mySNPs_Chr2 <- mySNPs[grep("Chromosome2.2", mySNPs$X.CHROM), ]
+mySNPs_Chr2 <- mySNPs_Chr2[order(mySNPs_Chr2$POS),]
 
 #remove low MAFs!
 names(mySNPs_Chr2)
@@ -32,29 +33,32 @@ mySNPs_Chr2$Freq.G <- rowSums(mySNPs_Chr2[,c(4:100)] =="G", na.rm=T)
 mySNPs_Chr2$All <- (mySNPs_Chr2$Freq.A + mySNPs_Chr2$Freq.C + mySNPs_Chr2$Freq.G + mySNPs_Chr2$Freq.T)
 #97 isolates total
 #remove all loci (rows) with >10% missingness (mySNPs_Chr16$All <87.3)
-mySNPs_Chr2 <- mySNPs_Chr2[mySNPs_Chr2$All>87,] 
+#mySNPs_Chr2 <- mySNPs_Chr2[mySNPs_Chr2$All>87,] 
 
 #now remove all loci (rows) with MAF <20 (max > 77.6)
-mySNPs_Chr2 <- transform(mySNPs_Chr2, max = pmax(Freq.A, Freq.C, Freq.G, Freq.T))
-mySNPs_Chr2 <- mySNPs_Chr2[mySNPs_Chr2$max < 78,] #this is fine, keep all.
-mySNPs_Chr2$missing <- apply(mySNPs_Chr2[,c(4:100)], 1, function(x) sum(is.na(x)))
+#mySNPs_Chr2 <- transform(mySNPs_Chr2, max = pmax(Freq.A, Freq.C, Freq.G, Freq.T))
+#mySNPs_Chr2 <- mySNPs_Chr2[mySNPs_Chr2$max < 78,] #this is fine, keep all.
+#mySNPs_Chr2$missing <- apply(mySNPs_Chr2[,c(4:100)], 1, function(x) sum(is.na(x)))
 
 #MAF is too low if: max + missing > 78
 #removes a few more
-mySNPs_Chr2 <- mySNPs_Chr2[(mySNPs_Chr2$max + mySNPs_Chr2$missing) < 78,]
+#mySNPs_Chr2 <- mySNPs_Chr2[(mySNPs_Chr2$max + mySNPs_Chr2$missing) < 78,]
 
 #NOW filter to just region of interest on Chromosome 2
 #823306 to 828345
+mySNPs_Chr2 <- mySNPs_Chr2[order(mySNPs_Chr2$POS),]
 mySNPs_Chr2 <- mySNPs_Chr2[which(mySNPs_Chr2$POS > 823305),]
 mySNPs_Chr2 <- mySNPs_Chr2[which(mySNPs_Chr2$POS < 828346),]
 
 #originally: 544 SNPs here. But need to re-filter to match figure 8a
 #filter to only keep SNPs from Fig8a: 12_singleGeneManhattan_figR8.R
 mySNPlist_8a <- read.csv("data/genome/chr2_analysis/SNPlistFig8a.csv")
-mySNPs_Chr2 <- mySNPs_Chr2[mySNPs_Chr2$POS %in% mySNPlist_8a$x, ]
+mySNPs_Chr2.x <- mySNPs_Chr2[mySNPs_Chr2$POS %in% mySNPlist_8a$x, ]
+
 
 #and remove any duplicated POS here
 mySNPs_Chr2 <- mySNPs_Chr2[!duplicated(mySNPs_Chr2$POS), ]
+mySNPs_Chr2 <- mySNPs_Chr2[order(mySNPs_Chr2$POS),]
 #excellent, now this matches the SNPs file
 
 #save a list of SNPs to match with 14_B_SNP.FILE.R where I'm writing SNP.FILE
@@ -75,7 +79,7 @@ mySNPs_Chr2_2 <- mySNPs_Chr2[,-c(1:2, 101:107)]
 mydf <- as.data.frame(mySNPs_Chr2$POS)
 names(mydf)[1] <- "Pos"
 mydf$SNPnum <- c(1:32)
-write.csv(mydf, "data/genome/chr2_analysis/plink/fig8aMatch/MatchDrawLines.csv")
+write.csv(mydf, "data/genome/chr2_analysis/PLINK/MatchDrawLines.csv")
 
 #duplicate all the rows, to fake a diploid genome
 #this is slow (but only takes ~4 seconds if 600 SNPs)
@@ -137,6 +141,7 @@ myPED.bin <- myPED.2
 myPED.bin$LA1547 <- ifelse( myPED.bin$LA1547 < mean(myPED.2$LA1547), 0, 1)
 myPED.null <- myPED.2
 myPED.null$LA1547 <- 1
+#myPED.null <- myPED.null[,c(1:5,71,6:70)]
 
 #finally, make the GENOTYPE.FILE for SNPplotter
 #transposed and formatted for modified PED
@@ -171,7 +176,7 @@ myMAP <- as.data.frame(lapply(myMAP, function(x) {
 myMAP$SNPid <- paste("snp",c(1:nrow(myMAP)), sep="")
 myMAP$cm <- 0
 myMAP <- myMAP[,c(1,3,4,2)]
-myMAP$X.CHROM <- 2.2
+myMAP$X.CHROM <- 2 #can't use 2.2 for HaploView
 
 #----------------------------------------------------------------------
 #save all of the files

@@ -51,4 +51,4 @@ saved as Chr2_config.txt
 done
 
 STEP4.1: run snp.plotter
-library(snp.plotter
+library(snp.plotter)

@@ -146,6 +146,15 @@ names(HEM.topSNPs.P)
 SNPlist <- HEM.plotdataSM$Pos
 write.csv(SNPlist, "data/genome/chr2_analysis/SNPlistFig8a.csv")
 
+#how many genotypes per SNP?
+HEM.SNP.list <- HEM.topSNPs[,c("Pos","Trait")]
+HEM.SNP.w <-  as.data.frame(table(HEM.SNP.list))
+
+#get SNPs for breaks to match with 8b haplotype plot
+unique(HEM.topSNPs.P$Pos)
+
+#SNP blocks from SNPlist32Fig8b.csv
+
 #jpeg("paper/plots/FigR8/Sl_LesionSize_trueMAF20_NA10_lowTR.gene01Chr16.ManhattanPlot.jpg", width=7, height=5, units='in', res=600)
 jpeg("paper/plots/FigR8/Sl_LesionSize_trueMAF20_NA10_lowTR.gene01Chr2.2.ManhattanPlot.jpg", width=7, height=5, units='in', res=600)
   ggplot(HEM.topSNPs.P, aes(x=Pos, y=100*Effect))+
@@ -169,7 +178,14 @@ jpeg("paper/plots/FigR8/Sl_LesionSize_trueMAF20_NA10_lowTR.gene01Chr2.2.Manhatta
     geom_rect(mapping=aes(ymin=-0.001, ymax=0.001, xmin=825306, xmax=826178), alpha=0.01, fill="darkturquoise")+
     #exon 2 826235	826345
     geom_rect(mapping=aes(ymin=-0.001, ymax=0.001, xmin=826235, xmax=826345), alpha=0.01, fill="darkturquoise")+
-    #geom_vline(xintercept=c(347518,344825,347519,347575,347613,347730,347517,347820,347918,348343,348571,348621,348944,349406,349407,349409,349441
-#),linetype="dotted")+
+    #block 1
+    geom_rect(mapping=aes(ymin=0.010, ymax=0.012, xmin=823323, xmax=823506), alpha=0.01, fill="red")+
+    #block 2
+    geom_rect(mapping=aes(ymin=0.010, ymax=0.012, xmin=823848, xmax=824176), alpha=0.01, fill="red")+
+    #block 3
+    geom_rect(mapping=aes(ymin=0.010, ymax=0.012, xmin=824908, xmax=827148), alpha=0.01, fill="red")+
+    #block 4
+    geom_rect(mapping=aes(ymin=0.010, ymax=0.012, xmin=827641, xmax=828305), alpha=0.01, fill="red")+
+    #geom_vline(xintercept=c(x),linetype="dotted")+
     expand_limits(y=0)
 dev.off()
