@@ -1,0 +1,42 @@
+pipeline note:
+#1. run B01_TABtoPEDnMAP.R
+#2. copy plink to GEMMA_files
+#3. in command prompt: cd to GEMMA_files
+#4. RUN ./plink --noweb --file B_01_PLINK/dpbinMAF20NA10 --maf 0.2 --make-bed --out binMAF20NA10
+#5. run B01_FAMaddPhenos.R to add actual DWS phenotypes
+#6. cd to GEMMA_files
+#7. bash DWS_GEMMA_run.sh to run GEMMA linear model without relatedness matrix
+#8. calculate relatedness matrix:
+cd to GEMMA_files
+./gemma -bfile [prefix] -gk [num] -o [prefix]
+~/gemma/bin/gemma -bfile B_01_PLINK/binMAF20NA10 -gk 1 -o binMAF20NA10_kmatrix1
+~/gemma/bin/gemma -bfile B_01_PLINK/binMAF20NA10 -gk 2 -o binMAF20NA10_kmatrix2
+
+gk 1 centered "better for lower organisms"
+gk 2 standardized "better if low MAF SNPs have larger effects"
+
+“-gk 1” calculates
+the centered relatedness matrix while “-gk 2” calculates the standardized relatedness matrix;
+Which of the two relatedness matrix to choose will largely depend on the underlying genetic
+architecture of the given trait. Specifically, if SNPs with lower minor allele frequency tend to
+have larger effects (which is inversely proportional to its genotype variance), then the standardized
+genotype matrix is preferred. If the SNP effect size does not depend on its minor allele frequency,
+then the centered genotype matrix is preferred. In our previous experience based on a limited
+examples, we typically find the centered genotype matrix provides better control for population
+structure in lower organisms, and the two matrices seem to perform similarly in humans.
+ going to try BOTH??
+prefix.sXX.txt contains a n × n matrix of estimated relatedness
+matrix.
+
+#9. eigen decomposition of the relatedness matrix, cause why not?
+./gemma -bfile [prefix] -k [filename] -eigen -o [prefix]
+~/gemma/bin/gemma -bfile B_01_PLINK/binMAF20NA10 -k output/binMAF20NA10_kmatrix1.cXX.txt -eigen -o binMAF20NA10_kmat1Eigen
+~/gemma/bin/gemma -bfile B_01_PLINK/binMAF20NA10 -k output/binMAF20NA10_kmatrix2.sXX.txt -eigen -o binMAF20NA10_kmat2Eigen
+
+“-k [filename]”
+specifies the relatedness matrix file name
+
+#10. run GEMMA linear mixed model with relatedness matrix
+./gemma -bfile [prefix] -k [filename] -lmm [num] -o [prefix]
+run script: bash DWS_GEMMA_kmatrix_run.sh
+#11. bring back into R
