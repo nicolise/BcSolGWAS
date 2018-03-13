@@ -3,18 +3,19 @@
 #02_FAMaddPhenos
 
 #----------------------------------------------------------------------------
+rm(list=ls())
 #pipeline note:
 #1. run B01_TABtoPEDnMAP.R
 #2. copy plink to GEMMA_files
 #3. in command prompt: cd to GEMMA_files
-#4. RUN ./plink --noweb --file B_01_PLINK/dpbinMAF20NA10 --maf 0.2 --make-bed --out binMAF20NA10
-#5. run this script (B01_FAMaddPhenos.R)
+#4. RUN ./plink --noweb --file B_01_PLINK/dpbinMAF20NA10 --maf 0.2 --make-bed --out binMAF20NA10 } did this ONCE for all BcSolGWAS. NEXT STEP is customized by DWS/ 12phenos
+#5. run this script (B01_12p_FAMaddPhenos.R)
 #6. cd to GEMMA_files
-#7. calculate k-matrix with: bash DWS_GEMMA_kmatrix.sh
-#8. run GEMMA: bash DWS_GEMMA_kmatrix_run.sh
+#7. calculate k-matrix with: bash ind12plants_GEMMA_kmatrix.sh
+#8. run GEMMA: bash ind12plants_GEMMA_kmatrix_run.sh
 
 setwd("~/Documents/GitRepos/BcSolGWAS/data/")
-Phenos <- read.csv("GWAS_files/02_csvPrep/phenos/Domestication/BcSl_lsmeans_domest_forbigRR.csv")
+Phenos <- read.csv("GWAS_files/02_csvPrep/phenos/NewModel0711/BcSl_lsmeans_forbigRR.csv")
 
 #myFAM is the PLINK output of converting *.ped and *.map (01_TABtoPEDnMAP.R) to *.bed and *.bim and *.fam
 myFAM <- read.table("GEMMA_files/B_01_PLINK/binMAF20NA10.fam")
@@ -53,16 +54,15 @@ Phenos_match$V2
 Phenos_match <- Phenos_match[c(1:5,94,6:15,95,16:44,93,45:91,96,92),]
 
 #double check now and match orders
-myFAM_match$delete <- c(1:96)
+myFAM_match$delete <- c(1:97)
 myFAM_match <- myFAM_match[ order(myFAM_match$V2), ]
 setdiff(myFAM_match$V2,Phenos_match$V2)
 setdiff(Phenos_match$V2,myFAM_match$V2)
 intersect(myFAM_match$V2,Phenos_match$V2)
 #now add Phenos_match onto myFAM_match
+myFAM_match <- myFAM_match[1:96,]
 myFAM_match2 <- cbind(myFAM_match, Phenos_match)
 myFAM_match2 <- myFAM_match2[order(myFAM_match$delete),]
 myFAM_match2 <- myFAM_match2[,c(1:5,9:length(myFAM_match2))]
 
-Sys.time()
-write.table(myFAM_match2, "GEMMA_files/B_01_PLINK/binMAF20NA10.fam", row.names=FALSE, col.names=TRUE)
-Sys.time()
+write.table(myFAM_match2, "GEMMA_files/B_01_PLINK/ind12plants/binMAF20NA10.fam", row.names=FALSE, col.names=TRUE)
