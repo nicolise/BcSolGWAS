@@ -9,7 +9,8 @@ setwd("~/Projects/BcSolGWAS/")
 
 #original file, no accounting for pop str
 #myGEMMA <- read.csv("data/GEMMA_files/04_analysis/GEMMA_allDWS.csv")
-myGEMMA <- read.csv("data/GEMMA_files/04_analysis/")
+#only doing this with kmat1 because the results are identical
+myGEMMA <- read.csv("data/GEMMA_files/04_analysis/GEMMA_allDWS_kmat1.csv")
 mybigRR <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF_10NA/SlBc_domest_trueMAF20_10NA.HEM.PlotFormat.csv")
 mybigRR <- mybigRR[,-c(1)]
 bigRR.thresh <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF_10NA/SlBc_domest_trueMAF20_10NA.HEM.Thresh.csv")
@@ -37,6 +38,7 @@ mybigRR$TotTraits <- ifelse(abs(mybigRR$Domesticated) > TH99pos$Domesticated & a
                                                                     ifelse(abs(mybigRR$DmWoD) > TH99pos$DmWoD, "S", "none")))))))
 
 table(mybigRR$TotTraits)
+table(myGEMMA$TotTraits)
 
 #for comparisons: T4 and B05.10 have different alignments & different chromosome numbers
 #CAN rank all SNPs by absolute value of effect size and plot them side by side.
@@ -54,7 +56,7 @@ table(mybigRR$TotTraits)
 #combine back together
 mybigRR.ss <- mybigRR[mybigRR$TotTraits!="none",]
 mybigRR.na <- mybigRR[mybigRR$TotTraits=="none",]
-mybigRR.na <- mybigRR.na[-sample(1:nrow(mybigRR.na), 35577),]
+mybigRR.na <- mybigRR.na[-sample(1:nrow(mybigRR.na), (nrow(mybigRR)-nrow(myGEMMA))),]
 mybigRR.mt <- rbind(mybigRR.ss, mybigRR.na)
 
 #2. rank SNPs positionally by index = posrank.G posrank.B

@@ -13,7 +13,7 @@ setwd("~/Projects/BcSolGWAS/")
 #myGEMMA.D <- read.table("data/GEMMA_files/03_GEMMAouts/binMAF20NA10_PLINK_1.assoc.txt", header=TRUE)
 #myGEMMA.W <- read.table("data/GEMMA_files/03_GEMMAouts/binMAF20NA10_PLINK_2.assoc.txt", header=TRUE)
 #myGEMMA.S <- read.table("data/GEMMA_files/03_GEMMAouts/binMAF20NA10_PLINK_3.assoc.txt", header=TRUE)
-
+#based on Manhattan plots, kmat1 and kmat2 are identical
 myGEMMA.2.D <- read.table("data/GEMMA_files/03_GEMMAouts/binMAF20NA10_PLINK_kmat2_1.assoc.txt", header=TRUE)
 myGEMMA.2.W <- read.table("data/GEMMA_files/03_GEMMAouts/binMAF20NA10_PLINK_kmat2_2.assoc.txt", header=TRUE)
 myGEMMA.2.S <- read.table("data/GEMMA_files/03_GEMMAouts/binMAF20NA10_PLINK_kmat2_3.assoc.txt", header=TRUE)
@@ -23,14 +23,14 @@ myGEMMA.1.W <- read.table("data/GEMMA_files/03_GEMMAouts/binMAF20NA10_PLINK_kmat
 myGEMMA.1.S <- read.table("data/GEMMA_files/03_GEMMAouts/binMAF20NA10_PLINK_kmat1_3.assoc.txt", header=TRUE)
 
 #run through this once for myGEMMA.2, once for myGEMMA.1
-names(myGEMMA.2.D)
-myGEMMA <- myGEMMA.2.D[,c(1,3,9,13)]
+names(myGEMMA.1.D)
+myGEMMA <- myGEMMA.1.D[,c(1,3,9,13)]
 names(myGEMMA)[3] <- "beta.D"
 names(myGEMMA)[4] <- "pscore.D"
-myGEMMA <- cbind(myGEMMA,myGEMMA.2.W[,c(9,13)])
+myGEMMA <- cbind(myGEMMA,myGEMMA.1.W[,c(9,13)])
 names(myGEMMA)[5] <- "beta.W"
 names(myGEMMA)[6] <- "pscore.W"
-myGEMMA <- cbind(myGEMMA,myGEMMA.2.S[,c(9,13)])
+myGEMMA <- cbind(myGEMMA,myGEMMA.1.S[,c(9,13)])
 names(myGEMMA)[7] <- "beta.S"
 names(myGEMMA)[8] <- "pscore.S"
 #Make plotting variables
@@ -53,8 +53,19 @@ for (i in unique(myGEMMA$chr)) {
   }
 }
 
+#add a tottraits variable
+myGEMMA$TotTraits <- ifelse(myGEMMA$pscore.D < 0.01 & myGEMMA$pscore.W < 0.01 & myGEMMA$pscore.S <0.01, "ALL",
+                              ifelse(myGEMMA$pscore.D < 0.01 & myGEMMA$pscore.W < 0.01, "DW",
+                                     ifelse(myGEMMA$pscore.W < 0.01 & myGEMMA$pscore.S <0.01, "WS",
+                                            ifelse(myGEMMA$pscore.D < 0.01 & myGEMMA$pscore.S <0.01, "DS",
+                                                   ifelse(myGEMMA$pscore.W < 0.01, "W", 
+                                                          ifelse(myGEMMA$pscore.S < 0.01,"S", 
+                                                                 ifelse(myGEMMA$pscore.D < 0.01, "D", "none")))))))
+
+table(myGEMMA$TotTraits)
+
 myGEMMA.fulldat <- myGEMMA
-write.csv(myGEMMA.fulldat, "data/GEMMA_files/04_analysis/GEMMA_allDWS.csv")
+write.csv(myGEMMA.fulldat, "data/GEMMA_files/04_analysis/GEMMA_allDWS_kmat1.csv")
 #select just top SNPs for comparison to bigRR T4
 #conditionally replace nonsig values with zero
 hist(myGEMMA$beta.D)
@@ -73,34 +84,4 @@ myGEMMA_2$TotTraits <- ifelse(myGEMMA_2$beta.D != 0 & myGEMMA_2$beta.W != 0 & my
 
 table(myGEMMA_2$TotTraits)
 
-
-
-jpeg(paste("paper/plots/addGEMMA/SlBc_MAF20_10NA_GEMMA_kmat2_Domest.jpg", sep=""), width=8, height=5, units='in', res=600)
-  print(ggplot(myGEMMA, aes(x=Index, y=beta))+
-          theme_bw()+
-          #colScale+
-          geom_point(aes(color = factor(chr),alpha=0.001))+
-          labs(list(y="SNP Effect Estimate", title="Domesticated"))+
-          guides(col = guide_legend(nrow = 8, title="Chromosome"))+
-          geom_hline(yintercept=myp05, colour = "black", lty=2) +
-          geom_hline(yintercept=-myp05, colour = "black", lty=2) +
-          geom_text(aes(0,myp05, label = "p < 0.05", vjust = 1.2, hjust = -0.1), col = "white")+
-          #0.0412 for Sens (3), 0.0673 for Dom (1)
-          geom_hline(yintercept=myp01, lty=2) +
-          geom_hline(yintercept=-myp01, lty=2) +
-          geom_text(aes(0,myp01, label = "p < 0.01", vjust = 1, hjust = -0.1), col = "white")+
-          theme(legend.position="none")+
-  #same for all 3 phenos
-          scale_x_continuous(name="Chromosome", breaks = c(2045143, 5763240, 9045566, 11884449, 14590093, 17417481, 20093765, 22716437, 25291433, 27764370, 30138572, 32480630, 34788869, 36988057, 39090468, 40253384), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
-          expand_limits(y=0))
-  dev.off()
-
-
-#get chromosome midpoints
-  my.chroms <- as.data.frame(myGEMMA[!duplicated(myGEMMA$chr, fromLast=FALSE), "Index"]) #Lower Bounds
-  names(my.chroms)[1] <- "Chr.Start"
-  my.chroms$Chr.End <- myGEMMA[!duplicated(myGEMMA$chr, fromLast=TRUE), "Index"] # Upper Bounds
-  my.chroms$Chr.Mid <- (my.chroms$Chr.Start + my.chroms$Chr.End)/2
-  
-  
-#now read in all 3, make combination file for meta-analysis
+write.csv(myGEMMA_2, "data/GEMMA_files/04_analysis/GEMMA_peaksDWS_kmat1.csv")
