@@ -9,7 +9,12 @@ setwd("~/Documents/GitRepos/BcSolGWAS/")
 setwd("~/Projects/BcSolGWAS/")
 #first round: just one file at a time. Then convert to loops
 #1 is Domest, 2 is Wild, 3 is Sensitivity
+<<<<<<< HEAD
 myGEMMA <- read.table("data/GEMMA_files/03_GEMMAouts/binMAF20NA10_PLINK_kmat2_2.assoc.txt", header=TRUE)
+=======
+#myGEMMA <- read.table("data/GEMMA_files/03_GEMMAouts/
+myGEMMA <- read.table("GEMMA_lmm_v2/binMAF20NA10_PLINK_kmat1_pheno1.assoc.txt", header=TRUE)
+>>>>>>> 4fb0550a39cf5dbefd32b7db002779179c7257ff
 
 library(ggplot2); 
 
@@ -67,6 +72,7 @@ myp01 <- mean(abs(myGEMMA[myGEMMA$p_score > 0.0099 & myGEMMA$p_score < 0.0101,]$
 #for 1, beta = 0.0673
 
 
+<<<<<<< HEAD
 jpeg(paste("paper/plots/addGEMMA/SlBc_MAF20_10NA_GEMMA_Wild_kmat2_beta.jpg", sep=""), width=8, height=5, units='in', res=600)
   print(ggplot(myGEMMA, aes(x=Index, y=beta))+
 #print(ggplot(myGEMMA, aes(x=Index, y=(-log(p_score))))+
@@ -81,6 +87,22 @@ jpeg(paste("paper/plots/addGEMMA/SlBc_MAF20_10NA_GEMMA_Wild_kmat2_beta.jpg", sep
           geom_hline(yintercept=myp01, lty=2) +
           geom_hline(yintercept=-myp01, lty=2) +
           geom_text(aes(0,myp01, label = "p < 0.01", vjust = 1, hjust = -0.1), col = "black")+
+=======
+jpeg(paste("paper/plots/addGEMMA/SlBc_MAF20_10NA_GEMMA_Domest_kmat_p.jpg", sep=""), width=8, height=5, units='in', res=600)
+  #print(ggplot(myGEMMA, aes(x=Index, y=beta))+
+print(ggplot(myGEMMA, aes(x=Index, y=(-log(p_score))))+
+          theme_bw()+
+          colScale+
+          geom_point(aes(color = factor(chr),alpha=0.001))+
+          labs(list(y="-log(p value)", title="Domesticated"))+
+          guides(col = guide_legend(nrow = 8, title="Chromosome"))+
+          #geom_hline(yintercept=myp001, colour = "black", lty=2) +
+          #geom_hline(yintercept=-myp001, colour = "black", lty=2) +
+          #geom_text(aes(0,myp001, label = "p < 0.001", vjust = 1.2, hjust = -0.1), col = "black")+
+          #geom_hline(yintercept=myp01, lty=2) +
+          #geom_hline(yintercept=-myp01, lty=2) +
+          #geom_text(aes(0,myp01, label = "p < 0.01", vjust = 1, hjust = -0.1), col = "white")+
+>>>>>>> 4fb0550a39cf5dbefd32b7db002779179c7257ff
           theme(legend.position="none")+
   #same for all 3 phenos
           scale_x_continuous(name="Chromosome", breaks = c(2045143, 5763240, 9045566, 11884449, 14590093, 17417481, 20093765, 22716437, 25291433, 27764370, 30138572, 32480630, 34788869, 36988057, 39090468, 40253384), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
