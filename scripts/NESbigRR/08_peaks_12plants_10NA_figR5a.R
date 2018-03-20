@@ -109,7 +109,7 @@ TopSNP.wide.DM$TotTraits <- TopSNP.wide.DM$TotNeg + TopSNP.wide.DM$TotPos
 hist(TopSNP.wide.DM$TotTraits)
 table(TopSNP.wide.DM$TotTraits)
 
-jpeg("paper/plots/FigR7/R7a_topSNPssOverlap_12Plants.jpg", width=8, height=5, units='in', res=600)
+jpeg("paper/plots/FigR5/R5a_topSNPssOverlap_12Plants.jpg", width=8, height=5, units='in', res=600)
 ggplot(TopSNP.wide.DM, aes(TopSNP.wide.DM$TotTraits)) + 
   geom_bar()+
   theme_bw()+
@@ -124,7 +124,7 @@ library(ggplot2)
 
 #x=myprobs$NumberofGenos, y=myprobs$ObsOverlap
 #aes(x=myprobs$NumberofGenos, y=myprobs$ObsOverlap)+
-jpeg("paper/plots/FigR7/R7a_topSNPssOverlap_12Plants_prob.jpg", width=7.5, height=5, units='in', res=600)
+jpeg("paper/plots/FigR5/R5a_topSNPssOverlap_12Plants_prob.jpg", width=7.5, height=5, units='in', res=600)
 ggplot(myprobs)+
   geom_col(aes(x=myprobs$NumberOfGenos, y=ObsOverlap))+
   geom_line(aes(x=myprobs$NumberOfGenos, y=ExpectV2))+
