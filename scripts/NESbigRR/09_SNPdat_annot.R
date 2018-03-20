@@ -1,6 +1,8 @@
 #Nicole E Soltis
-#format SNP peaks for SNPdat annotation
+#format SNP peaks for SNPdat annotation - functions and genes
 #100217
+
+#from bigRR 09_SNPdat_annot.R
 #-----------------------------------------------------------
 rm(list=ls())
 #setwd("~/Documents/GitRepos/BcSolGWAS/")
@@ -8,7 +10,7 @@ setwd("~/Projects/BcSolGWAS/")
 
 #load files
 plant12snp <- read.csv("data/GWAS_files/05_annotation/TrueMAF_NAs/12Plants_Top1000SNPs_SegLong_trueMAF20_10NA.csv")
-plant12snp.b <- read.csv("data/GWAS_files/05_annotation/TrueMAF_NAs/12Plants_AllSNPsOver99_SegLong_trueMAF20_10NA.csv")
+#do need wide top 1000 for gene annotation and figure S3b
 plant12snp.w <- read.csv("data/GWAS_files/05_annotation/12Plants_Top1000SNPs_SegWide_trueMAF20_10NA.csv")
 plant12snp.HO <- read.csv("data/GWAS_files/05_annotation/TrueMAF_NAs/12Plants_HiOverlapSNPs_trueMAF20_10NA.csv")
 
