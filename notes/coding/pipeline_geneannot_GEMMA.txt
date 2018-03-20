@@ -1,0 +1,94 @@
+1. get peaks (SNPs of interest) from B04_peaksGEMMA_DWS_kmat.R and B03B_manhattanGEMMA...R
+	12 files: paper/plots/addGEMMA/12Plants_top1kSNPs_MAF20_10NA_GEMMA_kmat1.csv and paper/plots/addGEMMA/12Plants_HiOverlapSNPs_trueMAF20_10NA_GEMMA_kmat1.csv
+	DW files: data/GEMMA_files/04_analysis/GEMMA_peaksDWS_kmat1.csv
+
+2. Reformat data for PERL:
+	B06_GEMMA_SNPdat_annot.R
+	Save as paper/plots/addGEMMA/SNPdat_toAnnot/..._FORPERL.txt with format:
+	chromosome_id	position	mutation
+	Chromosome1	12045	A
+	Chromosome1	51226	A
+
+3. get .gtf and .fasta for B05.10
+	a. have .gff3 at: GitRepos/BcGenome/data/ensembl/BO5.10/extracted/Botrytis_cinerea.ASM83294v1.38.gff3
+	b. getting .fasta from ensembl:
+		http://fungi.ensembl.org/Botrytis_cinerea/Info/Index
+		FTP site seems to be down? 03/20/18
+		https://uswest.ensembl.org/info/data/ftp/rsync.html
+		https://www.uptrends.com/tools/uptime
+		ftp://ftp.ensemblgenomes.org/pub/
+		rsync -av rsync://ftp.ensemblgenomes.org/pub/fungi/release-38/fasta/botrytis_cinerea/dna/
+	
+3. run SNPdat in PERL:
+	perl Programs/SNPdat_package_ v1.0.5/SNPdat_v1.0.5.pl
+	a. for 12plants HO:
+		perl Programs/SNPdat_package_v1.0.5/SNPdat_v1.0.5.pl 
+		-i Projects/BcSolGWAS/data/SNPdat_Annotate/MyAnnots/plant12snp.HO.FORPERL.txt
+		-f Projects/BcSolGWAS/data/SNPdat_Annotate/suziT4.fasta 
+		-g Projects/BcSolGWAS/data/SNPdat_Annotate/genes_Chromosomev2.gtf
+
+	b. for domest:
+		perl Programs/SNPdat_package_v1.0.5/SNPdat_v1.0.5.pl 
+		-i Projects/BcSolGWAS/data/SNPdat_Annotate/MyAnnots/domestsnp.FORPERL.txt
+		-f Projects/BcSolGWAS/data/SNPdat_Annotate/suziT4.fasta 
+		-g Projects/BcSolGWAS/data/SNPdat_Annotate/genes_Chromosomev2.gtf
+	
+	c. for 12plants top 1k
+		perl Programs/SNPdat_package_v1.0.5/SNPdat_v1.0.5.pl 
+		-i Projects/BcSolGWAS/data/SNPdat_Annotate/MyAnnots/plant12snp.top1k.FORPERL.txt
+		-f Projects/BcSolGWAS/data/SNPdat_Annotate/suziT4.fasta 
+		-g Projects/BcSolGWAS/data/SNPdat_Annotate/genes_Chromosomev2.gtf
+
+4. subset to only 2kb windows
+	a. change file name extension to .txt
+	b. open excel, then open file in excel
+	c. import as tab delimited, save as .csv
+	d. edit in R: 10_GeneAnnot_10NA_venns_figR9figR7b.R
+	e. outputs are data/GWAS_files/05_annotation/window2kb
+
+5. plot Fig7b 
+	from 10_GeneAnnot...R
+
+
+6. venn diagram
+	from 10_GeneAnnot...R
+	> table(GenesforAnnot$TotTraits)
+
+	ALL   D  DS  DW   S   W  WS 
+	  8 814   5 500   3 104   3 
+
+	https://jolars.shinyapps.io/eulerr/
+	Order for figure: D, S, SW, W, DS, DW, DWS
+	Color order: #1C86EE, #050505, #EE7600
+	Solid borders. Opacity 0.6
+	Save as each file format.
+	Gimp
+	Editing: default font (Calibri), size 18
+	Compression level: 5 
+
+7. annotation outputs
+C:\Users\nesoltis\Documents\Projects\BcSolGWAS\data\GWAS_files\05_annotation\window2kb
+
+
+7. annotate functions
+	11_GeneAnnot_function.R
+	all outputs to 05_annotation/window2kb
+		- lists by gene
+		- lists by functional annotation
+
+8. summarize functions
+	outputs in excel: make a page for "sigonly", sort by each significance column and highlight
+		then cut rows with no highlighting
+
+9. check online functions
+	BotPortal http://botbioger.versailles.inra.fr/botportal/
+
+10. select focal gene for Fig R8
+	gene from C:\Users\nesoltis\Documents\Projects\BcSolGWAS\data\GWAS_files\05_annotation\window2kb\AllAnnots_byGene.xlsx
+	in C:\Users\nesoltis\Documents\Projects\BcSolGWAS\data\SNPdat_Annotate\genes_Chromosomev2.gtf find gene of interest
+	search for BcT4 gene name --> extract all features of gene name
+	then draw 8a with 12_singleGeneManhattan_fig8a.R
+	draw 8b according to Fig8b_notes_PLINK.txt
+
+SNPs in perfect linkage: real?? check variation
+could help with venn diagram resolution
