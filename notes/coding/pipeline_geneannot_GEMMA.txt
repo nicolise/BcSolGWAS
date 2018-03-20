@@ -18,6 +18,7 @@
 		https://www.uptrends.com/tools/uptime
 		ftp://ftp.ensemblgenomes.org/pub/
 		rsync -av rsync://ftp.ensemblgenomes.org/pub/fungi/release-38/fasta/botrytis_cinerea/dna/
+		GTF_FASTA_finder.pl in SNPdat package?
 	
 3. run SNPdat in PERL:
 	perl Programs/SNPdat_package_ v1.0.5/SNPdat_v1.0.5.pl
