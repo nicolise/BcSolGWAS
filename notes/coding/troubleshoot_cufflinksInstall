@@ -1,0 +1,10 @@
+checking for bamlib... configure: error: We could not detect the bam libraries (version  or higher). If you have a staged bam library (still not installed) please specify $BAM_ROOT in your environment and do not give a PATH to --with-bam option.  If you are sure you have bam installed, then check your version number looking in <bam/version.hpp>. See http://randspringer.de/bam for more documentation.
+
+bam: error opening 'bam.lua'
+
+/home/nesoltis/Documents/cufflinks-2.2.1.Linux_x86_6
+
+
+cufflinks,cuffdiff and cuffcompare
+
+/home/nesoltis/Documents/cufflinks-2.2.1.Linux_x86_64/cufflinks:/home/nesoltis/Documents/cufflinks-2.2.1.Linux_x86_64/cuffdiff:/home/nesoltis/Documents/cufflinks-2.2.1.Linux_x86_64/cuffcompare 

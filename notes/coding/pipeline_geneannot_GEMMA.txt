@@ -14,11 +14,15 @@
 		and on laptop at: Projects/BcGenome/data/ensembl/B05.10/extractedgff/Botrytis_cinerea.ASM83294v1.38.gff3
 	b. .gff3 gives error in SNPdat. convert .gff3 to .gtf using cufflinks gffread on linux
 		gffread my.gff3 -T -o my.gtf
+		cd Documents
+		cufflinks-2.2.1.Linux_x86_64/gffread GitRepos/BcGenome/data/ensembl/BO5.10/extracted/Botrytis_cinerea.ASM83294v1.38.gff3 -T -o GitRepos/BcGenome/data/ensembl/BO5.10/extracted/Botrytis_cinerea.ASM83294v1.38.gtf
+		done with cufflinks gffread (installed Linux pre-compiled binary)
 	c. getting .fasta from ensembl:
 		http://fungi.ensembl.org/Botrytis_cinerea/Info/Index
 		now saved on laptop at: 
 		(rm masks repeat heavy regions. sm soft masks)
 		Projects/BcGenome/data/ensembl/B05.10/fasta/Botrytis_cinerea.ASM83294v1.dna_rm.toplevel.fa/Botrytis_cinerea.ASM83294v1.dna_rm.toplevel.fa 
+	d. .gtf is now on Linux and laptop as well
 	
 3. run SNPdat in PERL on laptop:
 	open strawberry perl
