@@ -29,7 +29,7 @@ write.table(plant12snp.HO.snpdat, file="paper/plots/addGEMMA/SNPdat_toAnnot/plan
 
 #need to generate this file next
 names(domestsnp)
-domestsnp$chromosome.id <- paste("Chromosome",domestsnp$chromosome.id, sep="")
+domestsnp$chromosome.id <- paste("Chromosome",domestsnp$chr, sep="")
 domestsnp$position <- domestsnp$ps
 domestsnp$mutation <- "A"
 domestsnp.snpdat <- domestsnp[,c("chromosome.id", "position", "mutation")]
