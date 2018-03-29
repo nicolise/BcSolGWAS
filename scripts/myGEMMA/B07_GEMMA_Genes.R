@@ -9,253 +9,155 @@
 rm(list=ls())
 library(dplyr); library(ggplot2)
 setwd("~/Projects/BcSolGWAS")
-#read in annotation file: see B06_GEMMA_SNPdat_annot.R for whic
+#read in annotation file: see B06_GEMMA_SNPdat_annot.R for which
+#could not get SNPdat working so modified file to annotate with nearest genes < 1kb myself
 #this includes all SNP with p < 0.01 in the top 1000 (small p values) for at least 1/11 genotypes (1/12 failed)
-plant12snp <- read.csv("paper/plots/addGEMMA/12Plants_top1kSNPs_MAF20_10NA_GEMMA_kmat1.csv")
-plant12gen <- read.csv("paper/plots/addGEMMA/SNPdat_toAnnot/plant12snp.top1k.FORPERL.output.csv")
+#consistent with bigRR: distance cutoff is 2kb window around the gene body
+plant12gen <- read.csv("paper/plots/addGEMMA/SNPdat_toAnnot/plant12topgenes.csv")
+plant12gen <- plant12gen[,-c(1,17,18,22:25,27,29:34)]
 
 #this includes all SNP with p < 0.01 across > 6/11 genotypes (1/12 failed)
-plant12snp.HO <- read.csv("paper/plots/addGEMMA/12Plants_HiOverlapSNPs_trueMAF20_10NA_GEMMA_kmat1.csv")
-plant12gen.HO <- read.csv("paper/plots/addGEMMA/SNPdat_toAnnot/plant12snp.HO.FORPERL.output.csv")
+plant12gen.HO <- read.csv("paper/plots/addGEMMA/SNPdat_toAnnot/plant12HOgenes.csv")
+plant12gen.HO <- plant12gen.HO[,-c(1,10,18,19,23:26,28,30:35)]
 
 #this includes all SNP with p < 0.01 for D, W, or S
-domestsnp <- read.csv("data/GEMMA_files/04_analysis/GEMMA_peaksDWS_kmat1.csv")
-domestgen <- read.csv("paper/plots/addGEMMA/SNPdat_toAnnot/domestsnp.FORPERL.output.csv")
-#go long to wide
+domestgen <- read.csv("paper/plots/addGEMMA/SNPdat_toAnnot/domestgenes.csv")
+domestgen <- domestgen[,-c(1,9,10,14:17,19,21:26)]
 
-#### below here: still need to modify for GEMMA
-
-#for IndPlant: merge with genes
-IpSNP$Chrom2 <- paste("CHROMOSOME",IpSNP$Chrom, sep='')
-IpSNP$Chrom.Pos <- paste(IpSNP$Chrom2, IpSNP$Pos, sep='.')
-IpGenes$Chrom.Pos <- paste(IpGenes$Chromosome.Number, IpGenes$SNP.Position, sep='.')
-#now, need to narrow down IPGenes list to only include genes WITHIN WINDOW of SNP
-#window options to try:
-#1kb (500 bp each side), 2kb (1kb each side), 4kb (2kb each side)
-IpGenes$Distance.to.nearest.feature <- as.numeric(IpGenes$Distance.to.nearest.feature)
-IpGenes$Distance.to.nearest.feature[is.na(IpGenes$Distance.to.nearest.feature)] <-0
-#IPgenp5 <- IPGenes[IPGenes$Distance.to.nearest.feature<250,]
-#IPgen1 <- IPGenes[IPGenes$Distance.to.nearest.feature<500,]
-IPgen2 <- IpGenes[IpGenes$Distance.to.nearest.feature<1000,]
-#IPgen4 <- IPGenes[IPGenes$Distance.to.nearest.feature<2000,]
-
-#sub in IPgen1, IPgen2, IPgen4
-IPgen <- IPgen2[,c("Chrom.Pos","gene.ID.containing.the.current.feature")]
 #this includes multiple SNPs per gene
-IPgen <- unique(IPgen)
-#remove X and Chrom2
-IpSNP <- IpSNP[,-c(1,21)]
-IPlant <- merge(IpSNP, IPgen, by="Chrom.Pos")
+
 
 #then count number of phenotypes 
-names(IPlant)
-colnames(IPlant)[21] <- "geneID"
+names(plant12gen)[20] <- "geneID"
 
 #if any SNP is > 0 for a given gene, will get sum > 0
 #else, sum = 0
-IPlant2 <- IPlant %>%
+IPlant2 <- plant12gen %>%
   group_by(geneID) %>%
-  summarize(tot_LA0410 = sum(abs(Effect.LA410), na.rm = TRUE),
-            tot_LA0480 = sum(abs(Effect.LA0480), na.rm = TRUE),
-            tot_LA1547 = sum(abs(Effect.LA1547), na.rm = TRUE),
-            tot_LA1589 = sum(abs(Effect.LA1589), na.rm = TRUE),
-            tot_LA1684 = sum(abs(Effect.LA1684), na.rm = TRUE),
-            tot_LA2093 = sum(abs(Effect.LA2093), na.rm = TRUE),
-            tot_LA2176 = sum(abs(Effect.LA2176), na.rm = TRUE),
-            tot_LA2706 = sum(abs(Effect.LA2706), na.rm = TRUE),
-            tot_LA3008 = sum(abs(Effect.LA3008), na.rm = TRUE),
-            tot_LA3475 = sum(abs(Effect.LA3475), na.rm = TRUE),
-            tot_LA4345 = sum(abs(Effect.LA4345), na.rm = TRUE),
-            tot_LA4355 = sum(abs(Effect.LA4355), na.rm = TRUE))
+  summarize(tot_LA0410 = sum(X9_LA0410_pscore < 0.01, na.rm = TRUE),
+            tot_LA0480 = sum(X12_LA0480_pscore < 0.01, na.rm = TRUE),
+            tot_LA1547 = sum(X1_LA1547_pscore < 0.01, na.rm = TRUE),
+            #tot_LA1589 = sum(abs(Effect.LA1589), na.rm = TRUE),
+            tot_LA1684 = sum(X3_LA1684_pscore < 0.01, na.rm = TRUE),
+            tot_LA2093 = sum(X4_LA2093_pscore < 0.01, na.rm = TRUE),
+            tot_LA2176 = sum(X5_LA2176_pscore < 0.01, na.rm = TRUE),
+            tot_LA2706 = sum(X6_LA2706_pscore < 0.01, na.rm = TRUE),
+            tot_LA3008 = sum(X7_LA3008_pscore < 0.01, na.rm = TRUE),
+            tot_LA3475 = sum(X8_LA3475_pscore < 0.01, na.rm = TRUE),
+            tot_LA4345 = sum(X10_LA4345_pscore < 0.01, na.rm = TRUE),
+            tot_LA4355 = sum(X11_LA4355_pscore < 0.01, na.rm = TRUE))
 
-for (i in 2:13){
-  fxcol = IPlant2[,paste(colnames(IPlant2[i]),sep='')]
-  IPlant2[,paste(colnames(IPlant2[i]))] <- ifelse(fxcol > 0, 1, 0)
-  #assign(IPant2[i], fxcol)
+IPlant3 <- IPlant2
+#for tot phenos just make this 0 SNPs or 1 (any SNPs) sig per pheno
+for (i in 2:12){
+  fxcol = IPlant3[,paste(colnames(IPlant3[i]),sep='')]
+  IPlant3[,paste(colnames(IPlant3[i]))] <- ifelse(fxcol > 0, 1, 0)
 }
 
-IPlant2$TotPhenos <- (IPlant2$tot_LA0410 + IPlant2$tot_LA0480 + IPlant2$tot_LA1547 + IPlant2$tot_LA1589 + IPlant2$tot_LA1684 + IPlant2$tot_LA2093 + IPlant2$tot_LA2176 + IPlant2$tot_LA2706 + IPlant2$tot_LA3008 + IPlant2$tot_LA3475 + IPlant2$tot_LA4345 + IPlant2$tot_LA4355)
-hist(IPlant2$TotPhenos)
-table(IPlant2$TotPhenos)
+IPlant3$TotPhenos <- (IPlant3$tot_LA0410 + IPlant3$tot_LA0480 + IPlant3$tot_LA1547 + IPlant3$tot_LA1684 + IPlant3$tot_LA2093 + IPlant3$tot_LA2176 + IPlant3$tot_LA2706 + IPlant3$tot_LA3008 + IPlant3$tot_LA3475 + IPlant3$tot_LA4345 + IPlant3$tot_LA4355)
+hist(IPlant3$TotPhenos)
+table(IPlant3$TotPhenos)
 
-IPlant3 <- IPlant2 %>%
+IPlant4 <- IPlant3 %>%
   group_by(TotPhenos) %>%
   summarise(n = n())
 
-write.csv(IPlant2, "data/GWAS_files/05_annotation/window2kb/hi12plants_genesTOANNOT.csv")
+write.csv(IPlant3, "paper/plots/addGEMMA/SNPdat_toAnnot/hi12plants_Genes4Func.csv")
 #-------------------------------------------------------------------
 
-#just for Domestication SNPs
-DomestAnt$TotTraits <- ifelse(abs(DomestAnt$Domesticated) > 0 & abs(DomestAnt$Wild) >0 & abs(DomestAnt$DmWoD) >0, "ALL", 
-                           ifelse(abs(DomestAnt$Domesticated) >0 & abs(DomestAnt$Wild) >0, "DW",
-                                  ifelse(abs(DomestAnt$DmWoD) >0 & abs(DomestAnt$Wild) >0, "WS",
-                                         ifelse(abs(DomestAnt$Domesticated) >0 & abs(DomestAnt$DmWoD) >0, "DS",
-                                                ifelse(abs(DomestAnt$Domesticated) >0, "D",
-                                                       ifelse(abs(DomestAnt$Wild) >0, "W", "S"))))))
-#yay! now get table for venn diagram
-#remove duplicate SNPs by Index
-DomestAnt <- DomestAnt[!duplicated(DomestAnt$Index),]
-#SNP level venn! Consistent with the figure
+#remove duplicate SNPs by Index: this just keeps (arbitrarily) the first Gene annotation per SNP
+DomestAnt <- domestgen[!duplicated(domestgen$Index),]
+#here's the data for SNP level Venn
 table(DomestAnt$TotTraits)
 
-#now add genes in
-#first, subset by distance
-DoGenes$Distance.to.nearest.feature <- as.numeric(DoGenes$Distance.to.nearest.feature)
-#multiple listings per gene, with different positional information
-#so: cut off list to remove distant genes (>1kb from SNP, 2kb windows) THEN remove duplicate genes
-#up to 10kb, crazy
-DoGenes$Distance.to.nearest.feature[is.na(DoGenes$Distance.to.nearest.feature)] <-0
-hist(DoGenes$Distance.to.nearest.feature)
-#DoGenp5 <- DoGenes[DoGenes$Distance_to_nearest_feature<250,]
-#DoGen1 <- DoGenes[DoGenes$Distance_to_nearest_feature<500,]
-DoGen2 <- DoGenes[DoGenes$Distance.to.nearest.feature<1000,]
-#DoGen4 <- DoGenes[DoGenes$Distance_to_nearest_feature<2000,]
-
-#changes this out: DoGen1, DoGen2, DoGen4
-stop("replace the correct DoGen list and delete this stop")
-DoGenes <- DoGen2
-
-#keep only chrom, snp, and gene id
-DoGenes <- DoGenes[,c("Chromosome.Number","SNP.Position","gene.ID.containing.the.current.feature")]
-DoGenes$geneID <- DoGenes$gene.ID.containing.the.current.feature
-DoGenes$Chrom <- DoGenes$Chromosome.Number
-DoGenes$Pos <- DoGenes$SNP.Position
-DoGenes$Chrom.Pos <- paste(DoGenes$Chrom, DoGenes$Pos, sep='.')
-#now only Chrom, Pos, Chrom.Pos and geneID
-DoGenes <- DoGenes[,c("Chrom", "Pos", "Chrom.Pos", "geneID")]
-#only Chrom.Pos and geneID
-GeneList <- DoGenes[,c("Chrom.Pos","geneID")]
-#make sure those are unique: choosing only one Gene per SNP
-GeneList <- GeneList[!duplicated(GeneList$Chrom.Pos),]
-
-DomestAnt$Chrom2<- paste("CHROMOSOME",DomestAnt$Chrom, sep='')
-DomestAnt$Chrom.Pos<- paste(DomestAnt$Chrom2,DomestAnt$Pos, sep='.')
-DomestAnt2 <- DomestAnt[,c(2,3,4,5,6,7,11,14)]
-
-#here is where I actually attach Gene ID
-#this gives one D, W, S value for each 
-DoGenAnt <- merge(DomestAnt2, GeneList, by="Chrom.Pos")
-
-#and for annotation list:
-DomestAnt <- DomestAnt[,-c(1)]
-DomestAnt <- DomestAnt[,c(1,2,3,4,5,6,10,11,13)]
-GenesforAnnot <- merge(DomestAnt, GeneList, by="Chrom.Pos")
-
-#check values. some genes listed multiply (do not use for venn!)
-table(GenesforAnnot$TotTraits)
-
-write.csv(GenesforAnnot, "data/GWAS_files/05_annotation/window2kb/Domest_genestoANNOT.csv")
-
+#check values. some genes listed multiply (do not use for gene-level venn!)
 #how to summarize per gene for Venn?
 #can take average within genes. will still be 0 if no sig fx snps, nonzero if 1 or more sig fx snps
+names(domestgen)[12] <- "geneID"
 
+#only keep first gene listing per SNP
+DoGenAnt <- domestgen[!duplicated(domestgen$Index),]
+
+#this only keeps 1 value per gene
 DoGenAnt <- DoGenAnt %>%
   group_by(geneID) %>%
-  summarize(mean_Domest = mean(Domesticated, na.rm = TRUE),
-            mean_Wild = mean(Wild, na.rm = TRUE),
-            mean_DmWoD = mean(DmWoD, na.rm = TRUE))
+  summarize(min_Domest = min(pscore.D, na.rm = TRUE),
+            min_Wild = min(pscore.W, na.rm = TRUE),
+            min_DmWoD = min(pscore.S, na.rm = TRUE))
 
 #just for Domestication SNPs
-DoGenAnt$TotTraits <- ifelse(abs(DoGenAnt$mean_Domest) > 0 & abs(DoGenAnt$mean_Wild) >0 & abs(DoGenAnt$mean_DmWoD) >0, "ALL", 
-                              ifelse(abs(DoGenAnt$mean_Domest) >0 & abs(DoGenAnt$mean_Wild) >0, "DW",
-                                     ifelse(abs(DoGenAnt$mean_DmWoD) >0 & abs(DoGenAnt$mean_Wild) >0, "WS",
-                                            ifelse(abs(DoGenAnt$mean_Domest) >0 & abs(DoGenAnt$mean_DmWoD) >0, "DS",
-                                                   ifelse(abs(DoGenAnt$mean_Domest) >0, "D",
-                                                          ifelse(abs(DoGenAnt$mean_Wild) >0, "W", "S"))))))
+DoGenAnt$TotTraits <- ifelse(DoGenAnt$min_Domest < 0.01 & DoGenAnt$min_Wild < 0.01 & DoGenAnt$min_DmWoD < 0.01, "ALL", 
+                              ifelse(DoGenAnt$min_Domest < 0.01 & DoGenAnt$min_Wild < 0.01, "DW",
+                                     ifelse(DoGenAnt$min_Wild < 0.01 & DoGenAnt$min_DmWoD < 0.01, "WS",
+                                            ifelse(DoGenAnt$min_Domest < 0.01 &  DoGenAnt$min_DmWoD < 0.01, "DS",
+                                                   ifelse(DoGenAnt$min_Domest < 0.01, "D",
+                                                          ifelse(DoGenAnt$min_Wild < 0.01, "W", "S"))))))
 
 table(DoGenAnt$TotTraits)
 
-write.csv(DoGenAnt, "data/GWAS_files/05_annotation/Domest_TopSNPs_10NA_intoAnt.csv")
+
+write.csv(DoGenAnt, "paper/plots/addGEMMA/SNPdat_toAnnot/domestplants_Genes4Func.csv")
 
 #------------------------------------------------------------------------------------
-#for HiOverlapGenes: merge with genes
-#need to match on chromosome.pos for both dataframes
-head(HOSNP)
-head(HOGenes)
-HOSNP$Chrom2 <- paste("CHROMOSOME",HOSNP$Chrom, sep='')
-HOSNP$Chrom.Pos <- paste(HOSNP$Chrom2, HOSNP$Segment, HOSNP$Pos, sep='.')
-#NEED TO FIX HOGENES
-HOGenes$Chrom.Pos <- paste(HOGenes$Chromosome.Number, HOGenes$SNP.Position, sep='.')
-#now, need to narrow down IPGenes list to only include genes WITHIN WINDOW of SNP
-#window options to try:
-#1kb (500 bp each side), 2kb (1kb each side), 4kb (2kb each side)
-#sticking with 2kb (1kb each side)
-HOGenes$Distance.to.nearest.feature <- as.numeric(HOGenes$Distance.to.nearest.feature)
-HOGenes$Distance.to.nearest.feature[is.na(HOGenes$Distance.to.nearest.feature)] <-0
-HOgen2 <- HOGenes[HOGenes$Distance.to.nearest.feature<1000,]
+#now high overlap list
 
+names(plant12gen.HO)[20] <- "geneID"
 
-#sub in IPgen1, IPgen2, IPgen4
-HOgen <- HOgen2[,c("Chrom.Pos","gene.ID.containing.the.current.feature")] 
-#this includes multiple SNPs per gene
-HOgen <- unique(HOgen) #this way each gene will only get annotated to this SNP set once. Should not lose any genes this way.
-HOSNP <- HOSNP[,-c(1)]
-HOplant <- merge(HOSNP, HOgen, by="Chrom.Pos") #this includes multiple SNPs per gene again
-#also count number of phenotypes PER GENE
-names(HOplant)
-colnames(HOplant)[47] <- "geneID"
-#for SNP info per gene, only keep first mention of each gene
-
-#now summarize by gene (just counting phenotypes per gene)
-HOplant2 <- HOplant %>%
+#if any SNP is > 0 for a given gene, will get sum > 0
+#else, sum = 0
+library(dplyr)
+IPlant2.HO <- plant12gen.HO %>%
   group_by(geneID) %>%
-  summarize(tot_LA0410 = sum(LA410pos, LA410neg, na.rm = TRUE),
-            tot_LA0480 = sum(LA0480pos, LA0480neg, na.rm = TRUE),
-            tot_LA1547 = sum(LA1547pos, LA1547neg, na.rm = TRUE),
-            tot_LA1589 = sum(LA1589pos, LA1589neg, na.rm = TRUE),
-            tot_LA1684 = sum(LA1684pos, LA1684neg, na.rm = TRUE),
-            tot_LA2093 = sum(LA2093pos, LA2093neg, na.rm = TRUE),
-            tot_LA2176 = sum(LA2176pos, LA2176neg, na.rm = TRUE),
-            tot_LA2706 = sum(LA2706pos, LA2706neg, na.rm = TRUE),
-            tot_LA3008 = sum(LA3008pos, LA3008neg, na.rm = TRUE),
-            tot_LA3475 = sum(LA3475pos, LA3475neg, na.rm = TRUE),
-            tot_LA4345 = sum(LA4345pos, LA4345neg, na.rm = TRUE),
-            tot_LA4355 = sum(LA4355pos, LA4345neg, na.rm = TRUE))
-names(HOplant2)
+  summarize(tot_LA0410 = sum(X9_LA0410_pscore < 0.01, na.rm = TRUE),
+            tot_LA0480 = sum(X12_LA0480_pscore < 0.01, na.rm = TRUE),
+            tot_LA1547 = sum(X1_LA1547_pscore < 0.01, na.rm = TRUE),
+            #tot_LA1589 = sum(abs(Effect.LA1589), na.rm = TRUE),
+            tot_LA1684 = sum(X3_LA1684_pscore < 0.01, na.rm = TRUE),
+            tot_LA2093 = sum(X4_LA2093_pscore < 0.01, na.rm = TRUE),
+            tot_LA2176 = sum(X5_LA2176_pscore < 0.01, na.rm = TRUE),
+            tot_LA2706 = sum(X6_LA2706_pscore < 0.01, na.rm = TRUE),
+            tot_LA3008 = sum(X7_LA3008_pscore < 0.01, na.rm = TRUE),
+            tot_LA3475 = sum(X8_LA3475_pscore < 0.01, na.rm = TRUE),
+            tot_LA4345 = sum(X10_LA4345_pscore < 0.01, na.rm = TRUE),
+            tot_LA4355 = sum(X11_LA4355_pscore < 0.01, na.rm = TRUE))
 
-for (i in 2:13){
-  fxcol = HOplant2[,paste(colnames(HOplant2[i]),sep='')]
-  HOplant2[,paste(colnames(HOplant2[i]))] <- ifelse(fxcol > 0, 1, 0)
-  #assign(IPant2[i], fxcol)
+IPlant3.HO <- IPlant2.HO
+#for tot phenos just make this 0 SNPs or 1 (any SNPs) sig per pheno
+for (i in 2:12){
+  fxcol = IPlant3.HO[,paste(colnames(IPlant3.HO[i]),sep='')]
+  IPlant3.HO[,paste(colnames(IPlant3.HO[i]))] <- ifelse(fxcol > 0, 1, 0)
 }
 
-HOplant2$TotPhenos <- (HOplant2$tot_LA0410 + HOplant2$tot_LA0480 + HOplant2$tot_LA1547 + HOplant2$tot_LA1589 + HOplant2$tot_LA1684 + HOplant2$tot_LA2093 + HOplant2$tot_LA2176 + HOplant2$tot_LA2706 + HOplant2$tot_LA3008 + HOplant2$tot_LA3475 + HOplant2$tot_LA4345 + HOplant2$tot_LA4355)
-hist(HOplant2$TotPhenos)
-table(HOplant2$TotPhenos)
+IPlant3.HO$TotPhenos <- (IPlant3.HO$tot_LA0410 + IPlant3.HO$tot_LA0480 + IPlant3.HO$tot_LA1547 + IPlant3.HO$tot_LA1684 + IPlant3.HO$tot_LA2093 + IPlant3.HO$tot_LA2176 + IPlant3.HO$tot_LA2706 + IPlant3.HO$tot_LA3008 + IPlant3.HO$tot_LA3475 + IPlant3.HO$tot_LA4345 + IPlant3.HO$tot_LA4355)
+hist(IPlant3.HO$TotPhenos)
+table(IPlant3.HO$TotPhenos)
 
-#now, merge on gene annotations for SNP info:
-names(HOGenes)
-colnames(HOGenes)[11] <- "geneID"
-finalGen <- HOGenes[!duplicated(HOGenes$geneID),]
-FullGeneInfo <- merge(HOplant2, finalGen, by="geneID")
-
-#gene level phenotype overlap for top overlapping SNPs!
-HOplant3 <- HOplant2 %>%
+IPlant4.HO <- IPlant3.HO %>%
   group_by(TotPhenos) %>%
   summarise(n = n())
 
-write.csv(HOplant2, "data/GWAS_files/05_annotation/window2kb/12plants_HO_genesTOANNOT.csv")
-write.csv(FullGeneInfo, "data/GWAS_files/05_annotation/window2kb/12plants_HO_geneINFO.csv")
-
-jpeg("paper/plots/FigR7/R7b_topGenesOverlap_IndPlants_2kbWin.jpg", width=7.5, height=5, units='in', res=600)
-ggplot(IPlant2, aes(IPlant2$TotPhenos)) + 
+write.csv(IPlant3.HO, "paper/plots/addGEMMA/SNPdat_toAnnot/hi12HOplants_Genes4Func.csv")
+#------------------------------------------------------------------------------------
+library(ggplot2)
+IPlant3 <- read.csv("paper/plots/addGEMMA/SNPdat_toAnnot/hi12plants_Genes4Func.csv")
+jpeg("paper/plots/addGEMMA/S3B_topgeneOverlap_12Plants_GEMMA.jpg", width=7.5, height=5, units='in', res=600)
+ggplot(IPlant3, aes(IPlant3$TotPhenos)) + 
   geom_bar()+
   theme_bw()+
-  scale_y_continuous(name= "Number of Genes")+
+  scale_y_continuous(name= "Number of Genes", limits=c(0,1200))+
   theme(panel.border = element_blank(), panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
   theme(text = element_text(size=14), axis.text.x = element_text(size=14), axis.text.y = element_text(size=14))+
-  scale_x_continuous(name= "Plant Genotypes per Candidate Gene", breaks=c(1,2,3,4,5,6,7,8,9,10,11,12),labels=c(1,2,3,4,5,6,7,8,9,10,11,12))
+  scale_x_continuous(name= "Plant Genotypes per Candidate Gene", breaks=c(1,2,3,4,5,6,7,8,9,10,11,12),labels=c(1,2,3,4,5,6,7,8,9,10,11,12), limits=c(0,12))
 dev.off()
 
-jpeg("paper/plots/FigR7/R7b_topGenesOverlap_IndPlants_2kbWin_Small.jpg", width=4, height=3, units='in', res=600)
-ggplot(HOplant2, aes(HOplant2$TotPhenos)) + 
+jpeg("paper/plots/addGEMMA/S3B_topgeneOverlap_12Plants_GEMMA_inset.jpg", width=4, height=3, units='in', res=600)
+ggplot(IPlant3, aes(IPlant3$TotPhenos)) + 
   geom_bar()+
   theme_bw()+
-  scale_y_continuous(name= "Number of Genes")+
+  scale_y_continuous(name= "", limits = c(0,170))+
   theme(panel.border = element_blank(), panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
   theme(text = element_text(size=14), axis.text.x = element_text(size=14), axis.text.y = element_text(size=14))+
-  scale_x_continuous(name= "Plant Genotypes per Candidate Gene", breaks=c(7,8,9,10,11,12),labels=c(7,8,9,10,11,12), limits=c(6,13))
+  scale_x_continuous(name= "", breaks=c(7,8,9,10,11,12),labels=c(7,8,9,10,11,12), limits=c(6,13))
 dev.off()
-#-----------------------------------

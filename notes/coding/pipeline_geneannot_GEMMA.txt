@@ -22,7 +22,10 @@
 		now saved on laptop at: 
 		(rm masks repeat heavy regions. sm soft masks)
 		Projects/BcGenome/data/ensembl/B05.10/fasta/Botrytis_cinerea.ASM83294v1.dna_rm.toplevel.fa/Botrytis_cinerea.ASM83294v1.dna_rm.toplevel.fa 
-	d. .gtf is now on Linux and laptop as well
+	d. reformat fasta
+		combine all chromosomes into 1 file
+		rename >1 to >Chromosome1 etc. on fasta
+	e. .gtf is now on Linux and laptop as well
 	
 3. run SNPdat in PERL on laptop:
 	open strawberry perl
@@ -30,20 +33,24 @@
 	a. for 12plants HO:
 		perl Programs/SNPdat_package_v1.0.5/SNPdat_v1.0.5.pl 
 		-i Projects/BcSolGWAS/paper/plots/addGEMMA/SNPdat_toAnnot/plant12snp.HO.FORPERL.txt
-		-f Projects/BcGenome/data/ensembl/B05.10/fasta/Botrytis_cinerea.ASM83294v1.dna_rm.toplevel.fa/Botrytis_cinerea.ASM83294v1.dna_rm.toplevel.fa 
-		-g Projects/BcGenome/data/ensembl/B05.10/extractedgff/Botrytis_cinerea.ASM83294v1.38.gff3
-perl Programs/SNPdat_package_v1.0.5/SNPdat_v1.0.5.pl -i Projects/BcSolGWAS/paper/plots/addGEMMA/SNPdat_toAnnot/plant12snp.HO.FORPERL.txt -f Projects/BcGenome/data/ensembl/B05.10/fasta/Botrytis_cinerea.ASM83294v1.dna_rm.toplevel.fa/Botrytis_cinerea.ASM83294v1.dna_rm.toplevel.fa -g Projects/BcGenome/data/ensembl/B05.10/extractedgff/Botrytis_cinerea.ASM83294v1.38.gff3
+		-f Projects/BcGenome/data/ensembl/B05.10/fasta/Bc_fullgenome_chr.fa
+		-g Projects/BcGenome/data/ensembl/B05.10/extractedgff/Botrytis_cinerea.ASM83294v1.38.gtf
+
+		perl Programs/SNPdat_package_v1.0.5/SNPdat_v1.0.5.pl -i Projects/BcSolGWAS/paper/plots/addGEMMA/SNPdat_toAnnot/plant12snp.HO.FORPERL.txt -f Projects/BcGenome/data/ensembl/B05.10/fasta/Bc_fullgenome_chr.fa -g Projects/BcGenome/data/ensembl/B05.10/extractedgff/Botrytis_cinerea.ASM83294v1.38.gtf
+
 	b. for domest:
 		perl Programs/SNPdat_package_v1.0.5/SNPdat_v1.0.5.pl 
 		-i Projects/BcSolGWAS/paper/plots/addGEMMA/SNPdat_toAnnot/domestsnp.FORPERL.txt
-		-f Projects/BcSolGWAS/data/SNPdat_Annotate/suziT4.fasta 
-		-g Projects/BcSolGWAS/data/SNPdat_Annotate/genes_Chromosomev2.gtf
+		-f Projects/BcGenome/data/ensembl/B05.10/fasta/Bc_fullgenome_chr.fa
+		-g Projects/BcGenome/data/ensembl/B05.10/extractedgff/Botrytis_cinerea.ASM83294v1.38.gtf
+
+		perl Programs/SNPdat_package_v1.0.5/SNPdat_v1.0.5.pl -i Projects/BcSolGWAS/paper/plots/addGEMMA/SNPdat_toAnnot/domestsnp.FORPERL.txt -f Projects/BcGenome/data/ensembl/B05.10/fasta/Bc_fullgenome_chr.fa -g Projects/BcGenome/data/ensembl/B05.10/extractedgff/Botrytis_cinerea.ASM83294v1.38.gtf
 	
 	c. for 12plants top 1k
 		perl Programs/SNPdat_package_v1.0.5/SNPdat_v1.0.5.pl 
 		-i Projects/BcSolGWAS/paper/plots/addGEMMA/SNPdat_toAnnot/plant12snp.top1k.FORPERL.txt
-		-f Projects/BcSolGWAS/data/SNPdat_Annotate/suziT4.fasta 
-		-g Projects/BcSolGWAS/data/SNPdat_Annotate/genes_Chromosomev2.gtf
+		-f Projects/BcGenome/data/ensembl/B05.10/fasta/Bc_fullgenome_chr.fa
+		-g Projects/BcGenome/data/ensembl/B05.10/extractedgff/Botrytis_cinerea.ASM83294v1.38.gtf
 
 4. subset to only 2kb windows
 	a. change file name extension to .txt

@@ -9,12 +9,11 @@ setwd("~/Documents/GitRepos/BcSolGWAS/")
 setwd("~/Projects/BcSolGWAS/")
 #first round: just one file at a time. Then convert to loops
 #1 is Domest, 2 is Wild, 3 is Sensitivity
-<<<<<<< HEAD
+
+#on laptop:
 myGEMMA <- read.table("data/GEMMA_files/03_GEMMAouts/binMAF20NA10_PLINK_kmat2_2.assoc.txt", header=TRUE)
-=======
-#myGEMMA <- read.table("data/GEMMA_files/03_GEMMAouts/
+#on linux:
 myGEMMA <- read.table("GEMMA_lmm_v2/binMAF20NA10_PLINK_kmat1_pheno1.assoc.txt", header=TRUE)
->>>>>>> 4fb0550a39cf5dbefd32b7db002779179c7257ff
 
 library(ggplot2); 
 
@@ -71,8 +70,6 @@ myp001 <- mean(abs(myGEMMA[myGEMMA$p_score > 0.00099 & myGEMMA$p_score < 0.00101
 myp01 <- mean(abs(myGEMMA[myGEMMA$p_score > 0.0099 & myGEMMA$p_score < 0.0101,]$beta), na.rm=TRUE) # for 3, beta = 0.0412
 #for 1, beta = 0.0673
 
-
-<<<<<<< HEAD
 jpeg(paste("paper/plots/addGEMMA/SlBc_MAF20_10NA_GEMMA_Wild_kmat2_beta.jpg", sep=""), width=8, height=5, units='in', res=600)
   print(ggplot(myGEMMA, aes(x=Index, y=beta))+
 #print(ggplot(myGEMMA, aes(x=Index, y=(-log(p_score))))+
