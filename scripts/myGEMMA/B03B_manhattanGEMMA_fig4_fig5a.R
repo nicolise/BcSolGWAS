@@ -153,6 +153,8 @@ pheno.bin <- full.file
 
 names(pheno.bin)
 pheno.bin$SUMM <- rowSums(pheno.bin[,c(44:55)], na.rm=T)
+
+write.csv(pheno.bin, "12Plants_allSNPs_MAF20NA10_GEMMA_kmat1.csv")
 table(pheno.bin$SUMM)
   
 #high overlap SNP list for annotation
