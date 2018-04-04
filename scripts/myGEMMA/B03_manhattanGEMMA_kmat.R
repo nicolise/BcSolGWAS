@@ -13,7 +13,7 @@ setwd("~/Projects/BcSolGWAS/")
 #on laptop:
 myGEMMA <- read.table("data/GEMMA_files/03_GEMMAouts/binMAF20NA10_PLINK_kmat2_2.assoc.txt", header=TRUE)
 #on linux:
-myGEMMA <- read.table("GEMMA_lmm_v2/binMAF20NA10_PLINK_kmat1_pheno1.assoc.txt", header=TRUE)
+myGEMMA <- read.table("data/GEMMA_files/04_GEMMAoutput/GEMMA_lmm_v2/binMAF20NA10_PLINK_kmat1_pheno1.assoc.txt", header=TRUE)
 
 library(ggplot2); 
 
