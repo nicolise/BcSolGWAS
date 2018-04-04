@@ -55,8 +55,8 @@ compare.Phenos <- compare.Phenos[,c("chr", "ps", "n_mis", "n_obs", "allele1", "a
 
 
 #no p-values for 4 (failed)
-#observed phenotypes are X1 etc. format -> column 1
-#randomized phenos are 1 etc. format -> column
+#observed phenotypes are X1 etc. format -> column 1 -> x on qq plot
+#randomized phenos are 1 etc. format -> column 2 -> y on qq plot
 setwd("~/Projects/BcSolGWAS/data/GEMMA_files/04_analysis")
 for (j in c(1:3,5:12)){
   mypheno <- 7 + 3*j
