@@ -13,6 +13,7 @@ setwd("~/Documents/GitRepos/BcSolGWAS/data")
 #now randomize each phenotype! Wheee
 Phenos_match <- read.csv("GEMMA_files/D_02_randGEMMA/binMAF20NA10_fam.csv")
 
+#need to save these on /media/ because there is not enough space on C://
 #test on a small run 
 Sys.time()
 for (i in 1:1000){
