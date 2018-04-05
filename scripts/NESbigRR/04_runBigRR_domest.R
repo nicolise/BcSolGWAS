@@ -76,7 +76,7 @@ for(i in 1:dim(dat)[2]) { #i will be each isolate
   
   #added try here
   #testing with impute=T
-  Pheno.BLUP.result <- try(bigRR(y = dat[,i], X = MyX, Z = SNPs, GPU = TRUE, impute=TRUE)) #why is this failing for Col0.AT3G26830 and Col0.AT2G30770
+  Pheno.BLUP.result <- try(bigRR(y = dat[,i], X = MyX, Z = SNPs, GPU = TRUE, impute=TRUE)) 
 #can add try here as well
 Pheno.HEM.result <- try(bigRR_update(Pheno.BLUP.result, SNPs))
 

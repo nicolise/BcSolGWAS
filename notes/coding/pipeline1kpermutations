@@ -1,0 +1,7 @@
+Command line for 1000 permutations run
+
+cd ../.. 
+sudo Rscript home/nesoltis/Documents/GitRepos/BcSolGWAS/scripts/myGEMMA/D03_permutePhenos.R 
+
+cd media/nesoltis/Data/Kliebenstein/Soltis/BcSolGWAS/data/GEMMA_files/
+

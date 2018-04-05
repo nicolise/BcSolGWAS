@@ -18,7 +18,7 @@ Phenos_match <- read.csv("GEMMA_files/D_02_randGEMMA/binMAF20NA10_fam.csv")
 #make directories on /media/ : BcSolGWAS/data/GEMMA_files/D_05_bigrand/
 #and GEMMA_files/D_02_randGEMMA
 #paste .bed and .bim into D_02_randGEMMA
-setwd("/media/.../") #fix this of course
+setwd("/media/nesoltis/Data/Kliebenstein/Soltis/BcSolGWAS/data")
 Sys.time()
 for (i in 1:1000){
   Phenos_rand <- transform(Phenos_match, LA0410 = sample(LA0410), LA0480 = sample(LA0480), LA1547 = sample(LA1547), LA1589 = sample(LA1589), LA1684 = sample(LA1684), LA2093 = sample(LA2093), LA2176 = sample(LA2176), LA2706 = sample(LA2706), LA3008 = sample(LA3008), LA3475 = sample(LA3475), LA4345 = sample(LA4345), LA4355 = sample(LA4355),  Domesticated = sample(Domesticated), Wild = sample(Wild), DmWoD = sample(DmWoD))
