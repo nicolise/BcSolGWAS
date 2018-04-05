@@ -1,5 +1,5 @@
 #!/bin/sh
-for i in {1..15}
+for i in {1..12}
 do
   echo "Looping ... phenotype $i"
   echo "k matrix 1"
