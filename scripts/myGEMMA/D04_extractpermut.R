@@ -2,6 +2,7 @@
 #04/05/18
 
 #-------------------------------------------------------------------------
+rm(list = ls())
 #list all files in /media/ outputs
 #loop through all 1000 files
 # for each of 12 phenotypes, create new dataframe that keeps only selected SNPs:
@@ -12,3 +13,9 @@
 #loop through all df2 to build a new df across all 1000 permutations using rbind
   #columns: chromosome, position, p-value on phenotype 1...12, which SNP (1 / 2 / 25 / 250 / 2500)
   #
+setwd("~/Projects/BcSolGWAS/data/GEMMA_files/D_05_bigrand")
+
+#read in files from each of 1000 rand folders
+for (i in 1:3){
+  read.csv(paste("rand1k_",i,"/filenameblahblah"))
+}
