@@ -4,4 +4,11 @@ cd ../..
 sudo Rscript home/nesoltis/Documents/GitRepos/BcSolGWAS/scripts/myGEMMA/D03_permutePhenos.R 
 
 cd media/nesoltis/Data/Kliebenstein/Soltis/BcSolGWAS/data/GEMMA_files/
+sudo bash fullrand_1kpermute_GEMMA_kmatrix_run.sh 
 
+04/05 02:30 - 04:10 first 121 GEMMA runs done.
+So approx 100 mins -> 121 runs
+Guess 826 mins / 1000 runs
+= 13.8 hours. Approx completion time = 4am
+
+done before 04/06 10am
