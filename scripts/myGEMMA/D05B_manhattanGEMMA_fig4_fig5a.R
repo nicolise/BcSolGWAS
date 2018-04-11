@@ -8,10 +8,9 @@ rm(list=ls())
 setwd("~/Documents/GitRepos/BcSolGWAS/")
 setwd("~/Projects/BcSolGWAS/")
 
-data/GEMMA_files/D_04_randphenos/
-
 #LA2093 is pheno 6 (see Phenos_match)
 Phenos_match <- read.csv("data/GEMMA_files/D_02_randGEMMA/binMAF20NA10_fam.csv")
+names(Phenos_match)
 
 myGEMMA <- read.table("data/GEMMA_files/03_GEMMAouts/GEMMA_lmm_ind12plants/binMAF20NA10_ind12plants_PLINK_kmat1_pheno4.assoc.txt", header=TRUE)
 
