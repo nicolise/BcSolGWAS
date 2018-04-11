@@ -8,10 +8,10 @@ rm(list=ls())
 setwd("~/Documents/GitRepos/BcSolGWAS/")
 setwd("~/Projects/BcSolGWAS/")
 #first round: just one file at a time. Then convert to loops
-#1 is Domest, 2 is Wild, 3 is Sensitivity
+#13 is Domest, 14 is Wild, 15 is Sensitivity
 
 #on laptop:
-myGEMMA <- read.table("data/GEMMA_files/D_04_randphenos/binMAF20NA10_fullrand_kmat1_pheno15.assoc.txt", header=TRUE)
+myGEMMA <- read.table("data/GEMMA_files/D_04_randphenos/binMAF20NA10_fullrand_kmat1_pheno13_Domest.assoc.txt", header=TRUE)
 
 library(ggplot2); 
 
@@ -66,13 +66,13 @@ hist(myGEMMA$Index)
 #need to add thresholds later? once I do permutation analysis
 #thresholds: p < 0.05 , p < 0.01, p < 0.001
 
-jpeg(paste("paper/plots/addGEMMA/SlBc_MAF20_10NA_GEMMArand_Sens.jpg", sep=""), width=8, height=5, units='in', res=600)
+jpeg(paste("paper/plots/addGEMMA/SlBc_MAF20_10NA_GEMMArand_Domest.jpg", sep=""), width=8, height=5, units='in', res=600)
 #print(ggplot(myGEMMA, aes(x=Index, y=beta))+
-print(ggplot(myGEMMA, aes(x=Index, y=(-log(p_score))))+
+print(ggplot(myGEMMA, aes(x=Index, y=(-log10(p_score))))+
         theme_bw()+
         colScale+
         geom_point(aes(color = factor(chr),alpha=0.001))+
-        labs(list(y="-log(p value)", title="Sensitivity"))+
+        labs(list(y=expression('-log'[10]*'p'), title="Domesticated"))+
         guides(col = guide_legend(nrow = 8, title="Chromosome"))+
         # geom_hline(yintercept=-log(0.01), colour = "black", lty=2)+
         # geom_hline(yintercept=-log(0.001), colour = "black", lty=2)+

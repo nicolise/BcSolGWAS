@@ -11,7 +11,7 @@ setwd("~/Projects/BcSolGWAS/")
 #LA2093 is pheno 6 (see Phenos_match)
 Phenos_match <- read.csv("data/GEMMA_files/D_02_randGEMMA/binMAF20NA10_fam.csv")
 
-myGEMMA <- read.table("data/GEMMA_files/D_04_randphenos/binMAF20NA10_fullrand_kmat1_pheno6.assoc.txt", header=TRUE)
+myGEMMA <- read.table("data/GEMMA_files/D_04_randphenos/binMAF20NA10_fullrand_kmat1_pheno6_LA2093.assoc.txt", header=TRUE)
 
 library(ggplot2); 
 
@@ -74,11 +74,11 @@ my.chroms$Chr.Mid <- (my.chroms$Chr.Start + my.chroms$Chr.End)/2
 
 jpeg(paste("paper/plots/addGEMMA/SlBc_MAF20_10NA_GEMMArand_LA2093_kmat1_pscore.jpg", sep=""), width=8, height=5, units='in', res=600)
   #print(ggplot(myGEMMA, aes(x=Index, y=beta))+
-print(ggplot(myGEMMA, aes(x=Index, y=(-log(p_score))))+
+print(ggplot(myGEMMA, aes(x=Index, y=(-log10(p_score))))+
           theme_bw()+
           colScale+
           geom_point(aes(color = factor(chr),alpha=0.001))+
-          labs(list(y="-log(p value)", title="LA2093"))+
+          labs(list(y=expression('-log'[10]*'p'), title="LA2093"))+
           guides(col = guide_legend(nrow = 8, title="Chromosome"))+
         # geom_hline(yintercept=-log(0.01), colour = "black", lty=2)+
         # geom_hline(yintercept=-log(0.001), colour = "black", lty=2)+

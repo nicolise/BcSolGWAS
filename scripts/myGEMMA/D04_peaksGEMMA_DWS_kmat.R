@@ -124,11 +124,11 @@ jpeg("paper/plots/addGEMMA/S4A_DWSmanhattan.jpg", width=7.5, height=5, units='in
 ggplot(myGEMMA_3, aes(x=Index))+
   theme_bw()+
   colScale+
-  labs(list(y="SNP Effect Estimate", x="Chromosome position", title=element_blank()))+
+  labs(list(y=expression('-log'[10]*'p'), x="Chromosome position", title=element_blank()))+
   guides(col = guide_legend(nrow = 8, title="Phenotype"))+
-  geom_point(aes(x=Index, y=-log(plot.D), color = "Domesticated"), alpha=1/4)+
-  geom_point(aes(x=Index, y=-log(plot.W), color = "Wild"), alpha=1/4)+
-  geom_point(aes(x=Index, y=-log(plot.S), color = "Sensitivity"), alpha=1/4)+
+  geom_point(aes(x=Index, y=-log10(plot.D), color = "Domesticated"), alpha=1/4)+
+  geom_point(aes(x=Index, y=-log10(plot.W), color = "Wild"), alpha=1/4)+
+  geom_point(aes(x=Index, y=-log10(plot.S), color = "Sensitivity"), alpha=1/4)+
   #geom_hline(yintercept=-log(0.01), colour = "black", lty=2)+
   #geom_hline(yintercept=-log(0.001), colour = "black", lty=2)+
   #geom_text(aes(0,-log(0.001), label="p = 0.001", vjust = 1, hjust = -0.1), col= "black")+
