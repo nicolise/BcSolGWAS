@@ -19,9 +19,10 @@ setwd("/media/nesoltis/Data/Kliebenstein/Soltis/BcSolGWAS/data/GEMMA_files/")
 #read in files from each of 1000 rand folders
 #each randomization
 #for (i in 1:1000){
-#done: i = 1:3
-#9am tomorrow is 16 hours = 480 phenos
-for (i in 4:500){
+#done: i = 1:500
+#60 phenos in 2 hours
+#started 561:1000 at 3:20pm 04/10/18 ... expect 15 hours to complete = 6:30am
+for (i in 561:1000){
   newdir <- paste0("D_06_randOUT/topouts/rand1k_",i)
   dir.create(newdir)
   #each phenotype
