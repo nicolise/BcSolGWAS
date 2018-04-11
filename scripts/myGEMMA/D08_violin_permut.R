@@ -14,6 +14,7 @@ setwd("~/Projects/BcSolGWAS/")
 #replace phenotype numbers with names
 Phenos_match <- read.csv("data/GEMMA_files/D_02_randGEMMA/binMAF20NA10_fam.csv")
 names(Phenos_match)
+
 phenos_list <- names(Phenos_match)[7:21]
 for (j in 1:15){
 mydat$pheno[mydat$pheno == j ] <- phenos_list[j]
@@ -35,3 +36,16 @@ for ( i in 1:15 ){
   print(p + geom_boxplot(width=0.1))
   dev.off()
 }
+
+#chosen Threshold: mean of 25th SNP
+mythrmeans <- NA
+for ( i in 1:15 ){
+  plotdat <- eachpheno[[i]]
+  plotdat$SNPset <- as.factor(plotdat$SNPnum)
+  mypval <- plotdat[,c("SNPnum","p_score")]
+mynewthr <- as.data.frame(aggregate(.~SNPnum, data=mypval, mean))
+mynewthr$pheno <- unique(plotdat$pheno)
+ifelse( i == 1, mythrmeans <- mynewthr, mythrmeans <- rbind(mythrmeans, mynewthr))
+}
+
+write.csv(mythrmeans, "data/GEMMA_files/D_07_randSUMM/GEMMA_1krand_thresholds.csv")

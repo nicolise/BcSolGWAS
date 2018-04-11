@@ -49,4 +49,38 @@ for (i in 561:1000){
 #now cp D_07_randSUMM to ~/Documents/GitRepos/BcSolGWAS/
 #and make sure nesoltis user account has rwx permission for the new files
 
-      
+#----------------------------------------------------------------
+#now extract percentiles for QQ plots in each phenotype!
+setwd("/media/nesoltis/Data/Kliebenstein/Soltis/BcSolGWAS/data/GEMMA_files/")
+
+for (i in 1:1000){
+  #each phenotype
+newdir <- paste0("D_06_randOUT/quantiles/rand1k_",i)
+dir.create(newdir)
+  for (j in 1:15){
+    Sys.time()
+    my_gemma <- read.table(paste("D_06_randOUT/output/rand1k_",i,"/pheno",j,".assoc.txt", sep=""), header=TRUE)
+    Sys.time()
+    #takes 8 seconds to read 1 phenotype
+    #times 15 times 1000 = 33 hours
+    
+    #need to extract
+    myquantsdf <- as.data.frame(NULL)
+    for (myquant in seq(0.01,1,0.01)){
+      quantout <- quantile(my_gemma$p_score, myquant)
+      #print(quantout)
+      myrow <- myquant*100
+      myquantsdf[myrow,1] <- myrow
+      names(myquantsdf)[1] <- "Quantile"
+      myquantsdf[myrow,2] <- quantout
+      names(myquantsdf)[2] <- "p_score"
+      myquantsdf[myrow,3] <- i
+      names(myquantsdf)[3] <- "permutrun"
+      myquantsdf[myrow,4] <- j
+      names(myquantsdf)[4] <- "pheno"
+    }
+    try(ifelse( i == 1 & j ==1, write.table(myquantsdf, "D_07_randSUMM/GEMMA_1krand_SNPquants.csv", sep = ",", col.names = T), write.table(myquantsdf, "D_07_randSUMM/GEMMA_1krand_SNPquants.csv", sep = ",", col.names = F, append = T)))
+     write.csv(myquantsdf, paste("D_06_randOUT/quantiles/rand1k_",i,"/pheno",j,".csv", sep=""))
+    Sys.time()
+  }
+}
