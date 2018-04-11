@@ -1,9 +1,11 @@
 .Rproj.user
 .Rhistory
 .RData
-<<<<<<< HEAD
-=======
+
 data/
 plots/
->>>>>>> origin/master
+images/
+results/
+photos/
+
 packrat/lib*/

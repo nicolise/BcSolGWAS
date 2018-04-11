@@ -8,14 +8,10 @@ rm(list=ls())
 setwd("~/Documents/GitRepos/BcSolGWAS/")
 setwd("~/Projects/BcSolGWAS/")
 #first round: just one file at a time. Then convert to loops
-#1 is Domest, 2 is Wild, 3 is Sensitivity
-
-#still need to correct
+#13 is Domest, 14 is Wild, 15 is Sensitivity
 
 #on laptop:
-myGEMMA <- read.table("data/GEMMA_files/D_04_randphenos/binMAF20NA10_PLINK_kmat2_2.assoc.txt", header=TRUE)
-#on linux:
-myGEMMA <- read.table("data/GEMMA_files/04_GEMMAoutput/GEMMA_lmm_v2/binMAF20NA10_PLINK_kmat1_pheno1.assoc.txt", header=TRUE)
+myGEMMA <- read.table("data/GEMMA_files/D_04_randphenos/binMAF20NA10_fullrand_kmat1_pheno13_Domest.assoc.txt", header=TRUE)
 
 library(ggplot2); 
 
@@ -33,8 +29,8 @@ colScale <- scale_colour_manual(name = "Chrom",values = myColors)
 
 #sort dataframe rows in order of Chrom, then Pos
 str(myGEMMA)
-myGEMMA$ps <- as.numeric(myGEMMA$ps)
-myGEMMA$chr <- as.numeric(myGEMMA$chr)
+#myGEMMA$ps <- as.numeric(myGEMMA$ps)
+#myGEMMA$chr <- as.numeric(myGEMMA$chr)
 myGEMMA <- myGEMMA[with(myGEMMA, order(chr, ps)), ]
 
 #Make plotting variables
@@ -67,53 +63,35 @@ hist(myGEMMA$ps)
 hist(myGEMMA$Index)
 #positions look fine...
 
+#need to add thresholds later? once I do permutation analysis
 #thresholds: p < 0.05 , p < 0.01, p < 0.001
-myp001 <- mean(abs(myGEMMA[myGEMMA$p_score > 0.00099 & myGEMMA$p_score < 0.00101,]$beta), na.rm=TRUE) 
-myp01 <- mean(abs(myGEMMA[myGEMMA$p_score > 0.0099 & myGEMMA$p_score < 0.0101,]$beta), na.rm=TRUE) # for 3, beta = 0.0412
-#for 1, beta = 0.0673
 
-jpeg(paste("paper/plots/addGEMMA/SlBc_MAF20_10NA_GEMMA_Wild_kmat2_beta.jpg", sep=""), width=8, height=5, units='in', res=600)
-  print(ggplot(myGEMMA, aes(x=Index, y=beta))+
-#print(ggplot(myGEMMA, aes(x=Index, y=(-log(p_score))))+
-          theme_bw()+
-          #colScale+
-          geom_point(aes(color = factor(chr),alpha=0.001))+
-          labs(list(y="-log(p value)", title="Wild"))+
-          guides(col = guide_legend(nrow = 8, title="Chromosome"))+
-          geom_hline(yintercept=myp001, colour = "black", lty=2) +
-          geom_hline(yintercept=-myp001, colour = "black", lty=2) +
-          geom_text(aes(0,myp001, label = "p < 0.001", vjust = 1.2, hjust = -0.1), col = "black")+
-          geom_hline(yintercept=myp01, lty=2) +
-          geom_hline(yintercept=-myp01, lty=2) +
-          geom_text(aes(0,myp01, label = "p < 0.01", vjust = 1, hjust = -0.1), col = "black")+
-
-  
-jpeg(paste("paper/plots/addGEMMA/SlBc_MAF20_10NA_GEMMA_Domest_kmat_p.jpg", sep=""), width=8, height=5, units='in', res=600)
-  #print(ggplot(myGEMMA, aes(x=Index, y=beta))+
-print(ggplot(myGEMMA, aes(x=Index, y=(-log(p_score))))+
-          theme_bw()+
-          colScale+
-          geom_point(aes(color = factor(chr),alpha=0.001))+
-          labs(list(y="-log(p value)", title="Domesticated"))+
-          guides(col = guide_legend(nrow = 8, title="Chromosome"))+
-          #geom_hline(yintercept=myp001, colour = "black", lty=2) +
-          #geom_hline(yintercept=-myp001, colour = "black", lty=2) +
-          #geom_text(aes(0,myp001, label = "p < 0.001", vjust = 1.2, hjust = -0.1), col = "black")+
-          #geom_hline(yintercept=myp01, lty=2) +
-          #geom_hline(yintercept=-myp01, lty=2) +
-          #geom_text(aes(0,myp01, label = "p < 0.01", vjust = 1, hjust = -0.1), col = "white")+
-          theme(legend.position="none")+
-  #same for all 3 phenos
-          scale_x_continuous(name="Chromosome", breaks = c(2045143, 5763240, 9045566, 11884449, 14590093, 17417481, 20093765, 22716437, 25291433, 27764370, 30138572, 32480630, 34788869, 36988057, 39090468, 40253384), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
-          expand_limits(y=0))
-  dev.off()
+jpeg(paste("paper/plots/addGEMMA/SlBc_MAF20_10NA_GEMMArand_Domest.jpg", sep=""), width=8, height=5, units='in', res=600)
+#print(ggplot(myGEMMA, aes(x=Index, y=beta))+
+print(ggplot(myGEMMA, aes(x=Index, y=(-log10(p_score))))+
+        theme_bw()+
+        colScale+
+        geom_point(aes(color = factor(chr),alpha=0.001))+
+        labs(list(y=expression('-log'[10]*'p'), title="Domesticated"))+
+        guides(col = guide_legend(nrow = 8, title="Chromosome"))+
+        # geom_hline(yintercept=-log(0.01), colour = "black", lty=2)+
+        # geom_hline(yintercept=-log(0.001), colour = "black", lty=2)+
+        # geom_text(aes(0,-log(0.001), label="p = 0.001", vjust = 1, hjust = -0.1), col= "black")+
+        theme(legend.position="none")+
+        theme(text = element_text(size=14), axis.text.x = element_text(size=14), axis.text.y = element_text(size=14))+
+        theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+              panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
+        #same for all 3 phenos
+        scale_x_continuous(name="Chromosome", breaks = c(2045143, 5763240, 9045566, 11884449, 14590093, 17417481, 20093765, 22716437, 25291433, 27764370, 30138572, 32480630, 34788869, 36988057, 39090468, 40253384), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
+        expand_limits(y=0)
+)
+dev.off()
 
 
 #get chromosome midpoints
-  my.chroms <- as.data.frame(myGEMMA[!duplicated(myGEMMA$chr, fromLast=FALSE), "Index"]) #Lower Bounds
-  names(my.chroms)[1] <- "Chr.Start"
-  my.chroms$Chr.End <- myGEMMA[!duplicated(myGEMMA$chr, fromLast=TRUE), "Index"] # Upper Bounds
-  my.chroms$Chr.Mid <- (my.chroms$Chr.Start + my.chroms$Chr.End)/2
-  
-  
+my.chroms <- as.data.frame(myGEMMA[!duplicated(myGEMMA$chr, fromLast=FALSE), "Index"]) #Lower Bounds
+names(my.chroms)[1] <- "Chr.Start"
+my.chroms$Chr.End <- myGEMMA[!duplicated(myGEMMA$chr, fromLast=TRUE), "Index"] # Upper Bounds
+my.chroms$Chr.Mid <- (my.chroms$Chr.Start + my.chroms$Chr.End)/2
+
 #now read in all 3, make combination file for meta-analysis

@@ -8,31 +8,30 @@ rm(list=ls())
 setwd("~/Documents/GitRepos/BcSolGWAS/")
 setwd("~/Projects/BcSolGWAS/")
 #first round: just one file at a time. Then convert to loops
-#1 is Domest, 2 is Wild, 3 is Sensitivity
+
+#check phenotype order here
+Phenos_match <- read.csv("data/GEMMA_files/D_02_randGEMMA/binMAF20NA10_fam.csv")
+names(Phenos_match)
+#also phenos have been renamed in script D05B_manhattanGEMMA_fig4_fig5a.R
+
+#13 is Domest, 14 is Wild, 15 is Sensitivity
 #original files, no accounting for pop str
-#myGEMMA.D <- read.table("data/GEMMA_files/03_GEMMAouts/binMAF20NA10_PLINK_1.assoc.txt", header=TRUE)
-#myGEMMA.W <- read.table("data/GEMMA_files/03_GEMMAouts/binMAF20NA10_PLINK_2.assoc.txt", header=TRUE)
-#myGEMMA.S <- read.table("data/GEMMA_files/03_GEMMAouts/binMAF20NA10_PLINK_3.assoc.txt", header=TRUE)
+myGEMMA.D <- read.table("data/GEMMA_files/D_04_randphenos/binMAF20NA10_fullrand_kmat1_pheno13_Domest.assoc.txt", header=TRUE)
+myGEMMA.W <- read.table("data/GEMMA_files/D_04_randphenos/binMAF20NA10_fullrand_kmat1_pheno14_Wild.assoc.txt", header=TRUE)
+myGEMMA.S <- read.table("data/GEMMA_files/D_04_randphenos/binMAF20NA10_fullrand_kmat1_pheno15_Sens.assoc.txt", header=TRUE)
 #based on Manhattan plots, kmat1 and kmat2 are identical
-myGEMMA.2.D <- read.table("data/GEMMA_files/03_GEMMAouts/binMAF20NA10_PLINK_kmat2_1.assoc.txt", header=TRUE)
-myGEMMA.2.W <- read.table("data/GEMMA_files/03_GEMMAouts/binMAF20NA10_PLINK_kmat2_2.assoc.txt", header=TRUE)
-myGEMMA.2.S <- read.table("data/GEMMA_files/03_GEMMAouts/binMAF20NA10_PLINK_kmat2_3.assoc.txt", header=TRUE)
 
-myGEMMA.1.D <- read.table("data/GEMMA_files/03_GEMMAouts/binMAF20NA10_PLINK_kmat1_1.assoc.txt", header=TRUE)
-myGEMMA.1.W <- read.table("data/GEMMA_files/03_GEMMAouts/binMAF20NA10_PLINK_kmat1_2.assoc.txt", header=TRUE)
-myGEMMA.1.S <- read.table("data/GEMMA_files/03_GEMMAouts/binMAF20NA10_PLINK_kmat1_3.assoc.txt", header=TRUE)
-
-#run through this once for myGEMMA.2, once for myGEMMA.1
-names(myGEMMA.1.D)
-myGEMMA <- myGEMMA.1.D[,c(1,3,9,13)]
+names(myGEMMA.D)
+myGEMMA <- myGEMMA.D[,c(1,3,9,13)]
 names(myGEMMA)[3] <- "beta.D"
 names(myGEMMA)[4] <- "pscore.D"
-myGEMMA <- cbind(myGEMMA,myGEMMA.1.W[,c(9,13)])
+myGEMMA <- cbind(myGEMMA,myGEMMA.W[,c(9,13)])
 names(myGEMMA)[5] <- "beta.W"
 names(myGEMMA)[6] <- "pscore.W"
-myGEMMA <- cbind(myGEMMA,myGEMMA.1.S[,c(9,13)])
+myGEMMA <- cbind(myGEMMA,myGEMMA.S[,c(9,13)])
 names(myGEMMA)[7] <- "beta.S"
 names(myGEMMA)[8] <- "pscore.S"
+
 #Make plotting variables
 myGEMMA$Index = NA
 lastbase = 0
@@ -54,6 +53,7 @@ for (i in unique(myGEMMA$chr)) {
 }
 
 #add a tottraits variable
+##need to wait until permutation is done for this step. come back to this
 myGEMMA$TotTraits <- ifelse(myGEMMA$pscore.D < 0.01 & myGEMMA$pscore.W < 0.01 & myGEMMA$pscore.S <0.01, "ALL",
                               ifelse(myGEMMA$pscore.D < 0.01 & myGEMMA$pscore.W < 0.01, "DW",
                                      ifelse(myGEMMA$pscore.W < 0.01 & myGEMMA$pscore.S <0.01, "WS",
@@ -65,8 +65,8 @@ myGEMMA$TotTraits <- ifelse(myGEMMA$pscore.D < 0.01 & myGEMMA$pscore.W < 0.01 & 
 table(myGEMMA$TotTraits)
 
 myGEMMA.fulldat <- myGEMMA
-write.csv(myGEMMA.fulldat, "data/GEMMA_files/04_analysis/GEMMA_allDWS_kmat1.csv")
-myGEMMA.fulldat <- read.csv("data/GEMMA_files/04_analysis/GEMMA_allDWS_kmat1.csv")
+write.csv(myGEMMA.fulldat, "data/GEMMA_files/D_08_results/GEMMA_allDWS_kmat1.csv")
+myGEMMA.fulldat <- read.csv("data/GEMMA_files/D_08_results/GEMMA_allDWS_kmat1.csv")
 #select just top SNPs for comparison to bigRR T4
 #conditionally replace nonsig values with zero
 hist(myGEMMA$beta.D)
@@ -85,8 +85,8 @@ myGEMMA_2$TotTraits <- ifelse(myGEMMA_2$beta.D != 0 & myGEMMA_2$beta.W != 0 & my
 
 table(myGEMMA_2$TotTraits)
 
-write.csv(myGEMMA_2, "data/GEMMA_files/04_analysis/GEMMA_peaksDWS_kmat1.csv")
-myGEMMA_2 <- read.csv("data/GEMMA_files/04_analysis/GEMMA_peaksDWS_kmat1.csv")
+write.csv(myGEMMA_2, "data/GEMMA_files/D_08_results/GEMMA_peaksDWS_kmat1.csv")
+myGEMMA_2 <- read.csv("data/GEMMA_files/D_08_results/GEMMA_peaksDWS_kmat1.csv")
 
 
 #-------------------------------------------------------------------------------------
@@ -114,19 +114,25 @@ myColors <- c("#050505", "#1C86EE", "#EE7600")
 #names(myColors) <- levels(HEM.plotdata$Phenos)
 colScale <- scale_colour_manual(name="Phenotype", values=myColors)
 
+#get chromosome midpoints
+my.chroms <- as.data.frame(myGEMMA[!duplicated(myGEMMA$chr, fromLast=FALSE), "Index"]) #Lower Bounds
+names(my.chroms)[1] <- "Chr.Start"
+my.chroms$Chr.End <- myGEMMA[!duplicated(myGEMMA$chr, fromLast=TRUE), "Index"] # Upper Bounds
+my.chroms$Chr.Mid <- (my.chroms$Chr.Start + my.chroms$Chr.End)/2
+
 jpeg("paper/plots/addGEMMA/S4A_DWSmanhattan.jpg", width=7.5, height=5, units='in', res=600)
 ggplot(myGEMMA_3, aes(x=Index))+
   theme_bw()+
   colScale+
-  labs(list(y="SNP Effect Estimate", x="Chromosome position", title=element_blank()))+
+  labs(list(y=expression('-log'[10]*'p'), x="Chromosome position", title=element_blank()))+
   guides(col = guide_legend(nrow = 8, title="Phenotype"))+
-  geom_point(aes(x=Index, y=-log(plot.D), color = "Domesticated"), alpha=1/4)+
-  geom_point(aes(x=Index, y=-log(plot.W), color = "Wild"), alpha=1/4)+
-  geom_point(aes(x=Index, y=-log(plot.S), color = "Sensitivity"), alpha=1/4)+
-  geom_hline(yintercept=-log(0.01), colour = "black", lty=2)+
-  geom_hline(yintercept=-log(0.001), colour = "black", lty=2)+
-  geom_text(aes(0,-log(0.001), label="p = 0.001", vjust = 1, hjust = -0.1), col= "black")+
-  geom_text(aes(0,-log(0.01), label="p = 0.01", vjust = 1, hjust = -0.1), col= "black")+
+  geom_point(aes(x=Index, y=-log10(plot.D), color = "Domesticated"), alpha=1/4)+
+  geom_point(aes(x=Index, y=-log10(plot.W), color = "Wild"), alpha=1/4)+
+  geom_point(aes(x=Index, y=-log10(plot.S), color = "Sensitivity"), alpha=1/4)+
+  #geom_hline(yintercept=-log(0.01), colour = "black", lty=2)+
+  #geom_hline(yintercept=-log(0.001), colour = "black", lty=2)+
+  #geom_text(aes(0,-log(0.001), label="p = 0.001", vjust = 1, hjust = -0.1), col= "black")+
+  #geom_text(aes(0,-log(0.01), label="p = 0.01", vjust = 1, hjust = -0.1), col= "black")+
   theme(legend.position="none")+
   theme(text = element_text(size=14), axis.text.x = element_text(size=14), axis.text.y = element_text(size=14))+
   theme(panel.border = element_blank(), panel.grid.major = element_blank(),
