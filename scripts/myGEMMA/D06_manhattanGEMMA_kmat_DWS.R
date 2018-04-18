@@ -11,7 +11,7 @@ setwd("~/Projects/BcSolGWAS/")
 #13 is Domest, 14 is Wild, 15 is Sensitivity
 
 #on laptop:
-myGEMMA <- read.table("data/GEMMA_files/D_04_randphenos/binMAF20NA10_fullrand_kmat1_pheno13_Domest.assoc.txt", header=TRUE)
+myGEMMA <- read.table("data/GEMMA_files/D_04_randphenos/binMAF20NA10_fullrand_kmat1_pheno15_Sens.assoc.txt", header=TRUE)
 
 library(ggplot2); 
 
@@ -63,20 +63,20 @@ hist(myGEMMA$ps)
 hist(myGEMMA$Index)
 #positions look fine...
 
-#need to add thresholds later? once I do permutation analysis
-#thresholds: p < 0.05 , p < 0.01, p < 0.001
+#get thresholds here 
+mythrs <- read.csv("data/GEMMA_files/D_07_randOUTS/GEMMA_1krand_thresholds.csv")
+mythrs
 
-jpeg(paste("paper/plots/addGEMMA/SlBc_MAF20_10NA_GEMMArand_Domest.jpg", sep=""), width=8, height=5, units='in', res=600)
+jpeg(paste("paper/plots/addGEMMA/SlBc_MAF20_10NA_GEMMArand_Sens.jpg", sep=""), width=8, height=5, units='in', res=600)
 #print(ggplot(myGEMMA, aes(x=Index, y=beta))+
 print(ggplot(myGEMMA, aes(x=Index, y=(-log10(p_score))))+
         theme_bw()+
         colScale+
         geom_point(aes(color = factor(chr),alpha=0.001))+
-        labs(list(y=expression('-log'[10]*'p'), title="Domesticated"))+
+        labs(list(y=expression('-log'[10]*'p'), title="Sensitivity"))+
         guides(col = guide_legend(nrow = 8, title="Chromosome"))+
-        # geom_hline(yintercept=-log(0.01), colour = "black", lty=2)+
-        # geom_hline(yintercept=-log(0.001), colour = "black", lty=2)+
-        # geom_text(aes(0,-log(0.001), label="p = 0.001", vjust = 1, hjust = -0.1), col= "black")+
+        geom_hline(yintercept=-log10(2.350535e-03), colour = "black", lty=2)+ #250
+        geom_hline(yintercept=-log10(1.419165e-02), colour = "black", lty=3)+ #2500
         theme(legend.position="none")+
         theme(text = element_text(size=14), axis.text.x = element_text(size=14), axis.text.y = element_text(size=14))+
         theme(panel.border = element_blank(), panel.grid.major = element_blank(),

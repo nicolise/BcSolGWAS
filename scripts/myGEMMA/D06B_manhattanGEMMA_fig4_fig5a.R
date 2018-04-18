@@ -8,6 +8,9 @@ rm(list=ls())
 setwd("~/Documents/GitRepos/BcSolGWAS/")
 setwd("~/Projects/BcSolGWAS/")
 
+#get thresholds here 
+mythrs <- read.csv("data/GEMMA_files/D_07_randOUTS/GEMMA_1krand_thresholds.csv")
+
 #LA2093 is pheno 6 (see Phenos_match)
 Phenos_match <- read.csv("data/GEMMA_files/D_02_randGEMMA/binMAF20NA10_fam.csv")
 names(Phenos_match)
@@ -73,42 +76,60 @@ names(my.chroms)[1] <- "Chr.Start"
 my.chroms$Chr.End <- myGEMMA[!duplicated(myGEMMA$chr, fromLast=TRUE), "Index"] # Upper Bounds
 my.chroms$Chr.Mid <- (my.chroms$Chr.Start + my.chroms$Chr.End)/2
 
+#get threshold
+mythrs[mythrs$pheno=="LA2093",]
+#average at 250th SNP ~99.9% Thr = 2.283886e-03
+#2500th SNP ~99% Thr = 1.404838e-02
+#actual 99.9% threshold is average of SNP ~ 250 (250/272000)
+
 jpeg(paste("paper/plots/addGEMMA/SlBc_MAF20_10NA_GEMMArand_LA2093_kmat1_pscore.jpg", sep=""), width=8, height=5, units='in', res=600)
-  #print(ggplot(myGEMMA, aes(x=Index, y=beta))+
 print(ggplot(myGEMMA, aes(x=Index, y=(-log10(p_score))))+
           theme_bw()+
           colScale+
           geom_point(aes(color = factor(chr),alpha=0.001))+
           labs(list(y=expression('-log'[10]*'p'), title="LA2093"))+
           guides(col = guide_legend(nrow = 8, title="Chromosome"))+
-        # geom_hline(yintercept=-log(0.01), colour = "black", lty=2)+
-        # geom_hline(yintercept=-log(0.001), colour = "black", lty=2)+
-        # geom_text(aes(0,-log(0.001), label="p = 0.001", vjust = 1, hjust = -0.1), col= "black")+
+          geom_hline(yintercept=-log10(2.283886e-03), colour = "black", lty=2)+ #250
+          geom_hline(yintercept=-log10(1.404838e-02), colour = "black", lty=3)+ #2500
           theme(legend.position="none")+
           theme(text = element_text(size=14), axis.text.x = element_text(size=14), axis.text.y = element_text(size=14))+
   theme(panel.border = element_blank(), panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
   #same for all 3 phenos
           scale_x_continuous(name="Chromosome", breaks = c(2045143, 5763240, 9045566, 11884449, 14590093, 17417481, 20093765, 22716437, 25291433, 27764370, 30138572, 32480630, 34788869, 36988057, 39090468, 40253384), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
-          expand_limits(y=0)
-    # geom_vline(xintercept=11314745, lty=2)+
-    # geom_vline(xintercept=36318265, lty=2)+
-    # geom_vline(xintercept=29494631, lty=2)+
-    # geom_vline(xintercept=15533048, lty=2)+
-    # geom_vline(xintercept=33521184, lty=2)+
-    # geom_vline(xintercept=31206188, lty=2)+
-    # geom_vline(xintercept=16109750, lty=2)+
-    # geom_vline(xintercept=23134240, lty=2)+
-    # geom_vline(xintercept=40158898, lty=2)+
-    # geom_vline(xintercept=37183274, lty=2)+
-    # geom_vline(xintercept=10959311, lty=2)
+          expand_limits(y=0)+
+  geom_vline(xintercept=1447936, lty=2)+
+    geom_vline(xintercept=1885377, lty=2)+
+    geom_vline(xintercept=2209430, lty=2)+
+    geom_vline(xintercept=4790255, lty=2)+
+    geom_vline(xintercept=7302540, lty=2)+
+    geom_vline(xintercept=12546559, lty=2)+
+    geom_vline(xintercept=13007560, lty=2)+
+    geom_vline(xintercept=16687404, lty=2)+
+    geom_vline(xintercept=20864412, lty=2)+
+    geom_vline(xintercept=21549298, lty=2)+
+    geom_vline(xintercept=21848271, lty=2)+
+    geom_vline(xintercept=22288525, lty=2)+
+    geom_vline(xintercept=22783105, lty=2)+
+    geom_vline(xintercept=25601190, lty=2)+
+    geom_vline(xintercept=26577239, lty=2)+
+    geom_vline(xintercept=31063497, lty=2)+
+    geom_vline(xintercept=31953496, lty=2)+
+    geom_vline(xintercept=34388621, lty=2)+
+    geom_vline(xintercept=36077967, lty=2)
+  
     )
   dev.off()
   
+  #top SNP list: see below
+  #p value < 250Thr = 99.9%
+  #and SUMM > 10 traits
+  #1447936  1885377  2209430  4790255  7302540 12546559 13007560 16687404 20864412 21549298
+  #21848271 22288525 22783105 25601190 26577239 31063497 31953496 34388621 36077967
+  
 #------------------------------------------------------------------------------ 
-## start analysis here once I have permutations
   #now plot for 4b
-  setwd("~/Projects/BcSolGWAS/data/GEMMA_files/D_04_randphenos/")
+setwd("~/Projects/BcSolGWAS/data/GEMMA_files/D_04_randphenos/")
         
   #read in each of 12 phenotypes
   # my.files <- list.files(pattern = c("assoc"))
@@ -132,62 +153,117 @@ print(ggplot(myGEMMA, aes(x=Index, y=(-log10(p_score))))+
            ifelse(i == 1, names(full.file)[13] <- paste(my.names[i], "_pscore", sep=""), names(full.file)[(ncol(full.file))] <- paste(my.names[i], "_pscore", sep=""))
   }
 full.file <- full.file[,-c(2,11,12)]
-pheno.bin <- full.file
 
- #now, PosPhenos = 1 if p < 0.01, 0 if p > 0.01
+#sort dataframe rows in order of Chrom, then Pos
+str(full.file)
+#full.file$ps <- as.numeric(full.file$ps)
+#full.file$chr <- as.numeric(full.file$chr)
+full.file <- full.file[with(full.file, order(chr, ps)), ]
+
+#Make plotting variables
+full.file$Index = NA
+lastbase = 0
+
+#Redo the positions to make them sequential		-- accurate position indexing
+for (i in unique(full.file$chr)) {
+  print(i)
+  if (i==1) {
+    #for the subset of HEM.plotdata rows with Chromosome 1, set Index variable for each row to equal Pos.
+    full.file[full.file$chr==i, ]$Index=full.file[full.file$chr==i, ]$ps
+    #for all other chromosomes: 
+  }	else {
+    #lastbase for chromosome i is the greater of:
+    #current lastbase counter plus the maxiumum position of chromosome i-1
+    #OR 1
+    lastbase=lastbase+max(subset(full.file,full.file$chr==i-1)$ps, 1)
+    #and then for the subset of HEM.plotdata rows with Chromosome i, set Index variable for each row to equal Pos + lastbase
+    full.file[full.file$chr==i, ]$Index=full.file[full.file$chr==i, ]$ps+lastbase
+  }
+}
+
+pheno.bin <- full.file
+ #now, PosPhenos = 1 if p < avg 2500th SNP 1000x thr (99%), 0 if p > thr
+ # also calculate/ report in text for 99.9% Thr = 250
+gethr <- mythrs[mythrs$SNPnum==2500,]
+#get an ordered threshold list for the phenotypes
+mythrlist <- rbind(gethr[gethr$pheno=="LA0410",],gethr[gethr$pheno=="LA3475",],gethr[gethr$pheno=="LA4345",],gethr[gethr$pheno=="LA4355",],gethr[gethr$pheno=="LA0480",],gethr[gethr$pheno=="LA1547",],gethr[gethr$pheno=="LA1589",],gethr[gethr$pheno=="LA1684",],gethr[gethr$pheno=="LA2093",],gethr[gethr$pheno=="LA2176",],gethr[gethr$pheno=="LA2706",],gethr[gethr$pheno=="LA3008",])
+
+#remove Domesticated for this part
+pheno.bin <- pheno.bin[,c(1:7,8:19,29:53)]
   ##unclear which phenotypes are significant without permutation analysis -- need to wait on this step until determining permutation threshold.
 setwd("~/Projects/BcSolGWAS/data/GEMMA_files")
   for (i in c(1:12)){
     mybeta = 5 + (3*i)
     mypscore = 7 + (3*i)
-  pheno.bin[,paste(colnames(pheno.bin[mybeta]),"bin", sep="")] <- ifelse(pheno.bin[,mypscore] < 0.01, 1, 0)
+  pheno.bin[,paste(colnames(pheno.bin[mybeta]),"bin", sep="")] <- ifelse(pheno.bin[,mypscore] < mythrlist[i,3], 1, 0)
   }
 
 names(pheno.bin)
-pheno.bin$SUMM <- rowSums(pheno.bin[,c(44:55)], na.rm=T)
+pheno.bin$SUMM <- rowSums(pheno.bin[,c(45:56)], na.rm=T)
 
-write.csv(pheno.bin, "D_08_results/12Plants_allSNPs_MAF20NA10_GEMMA_1kpermut_kmat1.csv")
+#write.csv(pheno.bin, "D_08_results/12Plants_allSNPs_MAF20NA10_GEMMA_1kpermut99Thr_kmat1.csv")
 table(pheno.bin$SUMM)
   
 #high overlap SNP list for annotation
 HOSNP <- pheno.bin[pheno.bin$SUMM > 6,]
-write.csv(HOSNP, "D_08_results/12Plants_HiOverlapSNPs_trueMAF20_10NA_GEMMA_1kpermut_kmat1.csv")
+#write.csv(HOSNP, "D_08_results/12Plants_HiOverlapSNPs_trueMAF20_10NA_GEMMA_1kpermut99Thr_kmat1.csv")
 
 #and top 1000 SNPs > Thr per genotype
 #then wide format
 top1ksnp <- pheno.bin
-#*_betabin columns tells SNP p < 0.01 Thr or not
-table(top1ksnp$`11_LA4355_betabin`)
+#*_betabin columns tells SNP p < Thr or not
+table(top1ksnp$`9_LA3008_betabin`)
 #SUMM column tells which SNPs have no sig phenos
 #and number of sig phenos per SNP
 #sig phenos only p < 0.01:
 top1ksnp <- top1ksnp[top1ksnp$SUMM>0,]
 #now only keep rows with top 1000 per phenotype
-#remove column 20:22 for failed genotype
-top1ksnp <- top1ksnp[,c(1:19,23:43,56,57)]
 
-for (y in c(10,13,16,19,22,25,28,31,34,37,40)){
+for (y in c(10,13,16,19,22,25,28,31,34,37,40,43)){
   #sort data frame with small to high p values for each phenotype
   top1ksnp <- top1ksnp[order(top1ksnp[,y]),]
   #then reassign beta to be snp rank 
-  top1ksnp[,(y-2)] <- 1:71754
+  top1ksnp[,(y-2)] <- 1:nrow(top1ksnp)
 }
 
+names(top1ksnp)
 
 #only beta <= 1000 are significant
-top1ksnp$top1k <- ifelse(top1ksnp$`1_LA1547_beta` < 1001 | top1ksnp$`3_LA1684_beta` < 1001 | top1ksnp$`4_LA2093_beta` < 1001 | top1ksnp$`5_LA2176_beta` < 1001 | top1ksnp$`6_LA2706_beta` < 1001 | top1ksnp$`7_LA3008_beta` < 1001 | top1ksnp$`8_LA3475_beta` < 1001 | top1ksnp$`9_LA0410_beta` < 1001 | top1ksnp$`10_LA4345_beta` < 1001 | top1ksnp$`11_LA4355_beta` < 1001 | top1ksnp$`12_LA0480_beta` < 1001, "topset", "omit")
+top1ksnp$top1k <- ifelse(top1ksnp$`1_LA0410_beta` < 1001 | top1ksnp$`2_LA0480_beta` < 1001 | top1ksnp$`3_LA1547_beta` < 1001 | top1ksnp$`4_LA1589_beta` < 1001 | top1ksnp$`5_LA1684_beta` < 1001 | top1ksnp$`6_LA2093_beta` < 1001 | top1ksnp$`7_LA2176_beta` < 1001 | top1ksnp$`8_LA2706_beta` < 1001 | top1ksnp$`9_LA3008_beta` < 1001 | top1ksnp$`10_LA3475_beta` < 1001 | top1ksnp$`11_LA4345_beta` < 1001 | top1ksnp$`12_LA4355_beta` < 1001, "topset", "omit")
 table(top1ksnp$top1k)
 
 top1ksnp <- top1ksnp[top1ksnp$top1k == "topset",]
-write.csv(top1ksnp, "D_08_results/12Plants_top1kSNPs_MAF20_10NA_GEMMA_kmat1.csv")
+#write.csv(top1ksnp, "D_08_results/12Plants_top1kSNPs_MAF20_10NA_GEMMA_kmat1_99Thr.csv")
 
 #------------------------------------------------------------------  
-pheno.bin <- read.csv("D_08_results/12Plants_allSNPs_MAF20NA10_GEMMA_kmat1.csv")
+rm(list=ls())
+pheno.bin <- read.csv("D_08_results/12Plants_allSNPs_MAF20NA10_GEMMA_1kpermut99Thr_kmat1.csv")
+
+#get thresholds here 
+mythrs <- read.csv("D_07_randOUTS/GEMMA_1krand_thresholds.csv")
+#now, PosPhenos = 1 if p < avg 2500th SNP 1000x thr (99%), 0 if p > thr
+# also calculate/ report in text for 99.9% Thr = 250
+gethr <- mythrs[mythrs$SNPnum==250,] #too  many at 99% level --> using 99.9%
+
+#find top SNPs to mark: pheno.bin$SUMM and LA2093 pscore
+pheno.bin.top <- pheno.bin[pheno.bin$X6_LA2093_pscore < gethr[8,3], ]
+#top 100 beta out of these
+library(plyr)
+#pheno.bin.top <- head(arrange(pheno.bin.top, desc(X6_LA2093_beta)), n=100)
+pheno.bin.top <- pheno.bin.top[pheno.bin.top$SUMM>10,] #too  many at SUMM > 6 --> using SUMM > 10
+pheno.bin.top$Index
+
+#create a custom color scale
+myColors <- c("grey20", "grey60", "grey20", "grey60", "grey20", "grey60", "grey20", "grey60", "grey20", "grey60", "grey20", "grey60", "grey20", "grey60", "grey20", "grey60")
+names(myColors) <- levels(myGEMMA$chr)
+colScale <- scale_colour_manual(name = "Chrom",values = myColors)
+
+#get top SNPs for lines
+pheno.bin.top$Index
 
 #make plots 
   setwd("~/Projects/BcSolGWAS")
   jpeg("paper/plots/addGEMMA/FigS1b_sigphenos_ManhattanPlot.jpg", width=8, height=5, units='in', res=600)
-  #SUMMtemp <- subset(SUMM.plot[SUMM.plot$Chrom==c(5,6),])
   ggplot(pheno.bin, aes(x=Index, y=SUMM))+
     colScale+ #remove for rainbow plot
     theme_bw()+
@@ -202,26 +278,26 @@ pheno.bin <- read.csv("D_08_results/12Plants_allSNPs_MAF20NA10_GEMMA_kmat1.csv")
     scale_y_continuous(breaks= c(0,2,4,6,8,10,12), labels=c("0","2","4","6","8","10","12"))+
     theme(panel.border = element_blank(), panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
-            geom_vline(xintercept=11314745, lty=2)+
-            geom_vline(xintercept=36318265, lty=2)+
-            geom_vline(xintercept=29494631, lty=2)+
-            geom_vline(xintercept=15533048, lty=2)+
-            geom_vline(xintercept=33521184, lty=2)+
-            geom_vline(xintercept=31206188, lty=2)+
-            geom_vline(xintercept=16109750, lty=2)+
-            geom_vline(xintercept=23134240, lty=2)+
-            geom_vline(xintercept=40158898, lty=2)+
-            geom_vline(xintercept=37183274, lty=2)+
-            geom_vline(xintercept=10959311, lty=2)
+            geom_vline(xintercept=1447936, lty=2)+
+            geom_vline(xintercept=1885377, lty=2)+
+            geom_vline(xintercept=2209430, lty=2)+
+            geom_vline(xintercept=4790255, lty=2)+
+            geom_vline(xintercept=7302540, lty=2)+
+            geom_vline(xintercept=12546559, lty=2)+
+            geom_vline(xintercept=13007560, lty=2)+
+            geom_vline(xintercept=16687404, lty=2)+
+            geom_vline(xintercept=20864412, lty=2)+
+            geom_vline(xintercept=21549298, lty=2)+
+            geom_vline(xintercept=21848271, lty=2)+
+    geom_vline(xintercept=22288525, lty=2)+
+    geom_vline(xintercept=22783105, lty=2)+
+    geom_vline(xintercept=25601190, lty=2)+
+    geom_vline(xintercept=26577239, lty=2)+
+    geom_vline(xintercept=31063497, lty=2)+
+    geom_vline(xintercept=31953496, lty=2)+
+    geom_vline(xintercept=34388621, lty=2)+
+    geom_vline(xintercept=36077967, lty=2)
   dev.off()
-  
-#find top SNPs to mark: pheno.bin$SUMM and LA2093 pscore
-  pheno.bin.top <- pheno.bin[pheno.bin$`6_LA2093_pscore` < 0.001, ]
-  #top 100 beta out of these
-  library(plyr)
-  pheno.bin.top <- head(arrange(pheno.bin.top, desc(`6_LA2093_beta`)), n=100)
-  pheno.bin.top <- pheno.bin.top[pheno.bin.top$SUMM>6,]
-pheno.bin.top$Index
 
 #add figure 5a / b for GEMMA (S3): SNP overlap across phenotypes
 table(pheno.bin$SUMM)
@@ -232,7 +308,7 @@ ggplot(pheno.bin, aes(pheno.bin$SUMM)) +
   theme_bw()+
   theme(panel.border = element_blank(), panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
-  scale_y_continuous(name= "Number of SNPs", limits = c(0,62000))+
+  scale_y_continuous(name= "Number of SNPs", limits = c(0,20000))+
   scale_x_continuous(name= "Plant Genotypes per Candidate SNP", breaks=c(1,2,3,4,5,6,7,8,9,10,11,12),labels=c(1,2,3,4,5,6,7,8,9,10,11,12), limits = c(0, 12))+
   theme(text = element_text(size=14), axis.text.x = element_text(size=14), axis.text.y = element_text(size=14))
 dev.off()
@@ -245,7 +321,7 @@ ggplot(pheno.bin, aes(pheno.bin$SUMM)) +
   theme_bw()+
   theme(panel.border = element_blank(), panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
-  scale_y_continuous(name= "", limits = c(0,250))+
+  scale_y_continuous(name= "", limits = c(0,400))+
   scale_x_continuous(breaks=c(6,7,8,9,10,11,12),labels=c(6,7,8,9,10,11,12), limits = c(5, 13), name="")+
   theme(text = element_text(size=14), axis.text.x = element_text(size=14), axis.text.y = element_text(size=14))
 dev.off()

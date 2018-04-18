@@ -9,6 +9,10 @@ setwd("~/Documents/GitRepos/BcSolGWAS/")
 setwd("~/Projects/BcSolGWAS/")
 #first round: just one file at a time. Then convert to loops
 
+#get thresholds here 
+mythrs <- read.csv("data/GEMMA_files/D_07_randOUTS/GEMMA_1krand_thresholds.csv")
+mythrs
+
 #check phenotype order here
 Phenos_match <- read.csv("data/GEMMA_files/D_02_randGEMMA/binMAF20NA10_fam.csv")
 names(Phenos_match)
@@ -52,27 +56,36 @@ for (i in unique(myGEMMA$chr)) {
   }
 }
 
+mythrs99 <- mythrs[mythrs$SNPnum==2500,]
+mythrs999 <- mythrs[mythrs$SNPnum==250,]
+curthrs <- mythrs99
+thrWi <- curthrs[curthrs$pheno=="Wild",3]
+thrDo <- curthrs[curthrs$pheno=="Domesticated",3]
+thrSe <- curthrs[curthrs$pheno=="DmWoD",3]
+
 #add a tottraits variable
 ##need to wait until permutation is done for this step. come back to this
-myGEMMA$TotTraits <- ifelse(myGEMMA$pscore.D < 0.01 & myGEMMA$pscore.W < 0.01 & myGEMMA$pscore.S <0.01, "ALL",
-                              ifelse(myGEMMA$pscore.D < 0.01 & myGEMMA$pscore.W < 0.01, "DW",
-                                     ifelse(myGEMMA$pscore.W < 0.01 & myGEMMA$pscore.S <0.01, "WS",
-                                            ifelse(myGEMMA$pscore.D < 0.01 & myGEMMA$pscore.S <0.01, "DS",
-                                                   ifelse(myGEMMA$pscore.W < 0.01, "W", 
-                                                          ifelse(myGEMMA$pscore.S < 0.01,"S", 
-                                                                 ifelse(myGEMMA$pscore.D < 0.01, "D", "none")))))))
+myGEMMA$TotTraits <- ifelse(myGEMMA$pscore.D < thrDo & myGEMMA$pscore.W < thrWi & myGEMMA$pscore.S < thrSe, "ALL",
+                              ifelse(myGEMMA$pscore.D < thrDo & myGEMMA$pscore.W < thrWi, "DW",
+                                     ifelse(myGEMMA$pscore.W < thrWi & myGEMMA$pscore.S < thrSe, "WS",
+                                            ifelse(myGEMMA$pscore.D < thrDo & myGEMMA$pscore.S < thrSe, "DS",
+                                                   ifelse(myGEMMA$pscore.W < thrWi, "W", 
+                                                          ifelse(myGEMMA$pscore.S < thrSe,"S", 
+                                                                 ifelse(myGEMMA$pscore.D < thrDo, "D", "none")))))))
 
 table(myGEMMA$TotTraits)
 
 myGEMMA.fulldat <- myGEMMA
-write.csv(myGEMMA.fulldat, "data/GEMMA_files/D_08_results/GEMMA_allDWS_kmat1.csv")
-myGEMMA.fulldat <- read.csv("data/GEMMA_files/D_08_results/GEMMA_allDWS_kmat1.csv")
+write.csv(myGEMMA.fulldat, "data/GEMMA_files/D_08_results/GEMMA_allDWS_kmat1_99thr.csv")
+myGEMMA.fulldat <- read.csv("data/GEMMA_files/D_08_results/GEMMA_allDWS_kmat1_99thr.csv")
+
+myGEMMA <- myGEMMA.fulldat
 #select just top SNPs for comparison to bigRR T4
 #conditionally replace nonsig values with zero
 hist(myGEMMA$beta.D)
-myGEMMA$beta.D[myGEMMA$pscore.D > 0.01] <- 0
-myGEMMA$beta.W[myGEMMA$pscore.W > 0.01] <- 0
-myGEMMA$beta.S[myGEMMA$pscore.S > 0.01] <- 0
+myGEMMA$beta.D[myGEMMA$pscore.D > thrDo] <- 0
+myGEMMA$beta.W[myGEMMA$pscore.W > thrWi] <- 0
+myGEMMA$beta.S[myGEMMA$pscore.S > thrSe] <- 0
 #remove rows if all 3 = 0 
 myGEMMA_2 <- myGEMMA[!(myGEMMA$beta.D==0 & myGEMMA$beta.W==0 & myGEMMA$beta.S==0),]
 #now add counting variable
@@ -85,8 +98,8 @@ myGEMMA_2$TotTraits <- ifelse(myGEMMA_2$beta.D != 0 & myGEMMA_2$beta.W != 0 & my
 
 table(myGEMMA_2$TotTraits)
 
-write.csv(myGEMMA_2, "data/GEMMA_files/D_08_results/GEMMA_peaksDWS_kmat1.csv")
-myGEMMA_2 <- read.csv("data/GEMMA_files/D_08_results/GEMMA_peaksDWS_kmat1.csv")
+write.csv(myGEMMA_2, "data/GEMMA_files/D_08_results/GEMMA_peaksDWS_kmat1_99thr.csv")
+myGEMMA_2 <- read.csv("data/GEMMA_files/D_08_results/GEMMA_peaksDWS_kmat1_99thr.csv")
 
 
 #-------------------------------------------------------------------------------------
@@ -110,9 +123,13 @@ myGEMMA_3$plot.D <- ifelse(myGEMMA_3$Drank < 1001, myGEMMA_3$pscore.D, NA)
 myGEMMA_3$plot.W <- ifelse(myGEMMA_3$Wrank < 1001, myGEMMA_3$pscore.W, NA)
 myGEMMA_3$plot.S <- ifelse(myGEMMA_3$Srank < 1001, myGEMMA_3$pscore.S, NA)
 
-myColors <- c("#050505", "#1C86EE", "#EE7600")
-#names(myColors) <- levels(HEM.plotdata$Phenos)
+#ee is orange, 05 is black, 1c is blue
+myColors <- c("#1C86EE","#050505", "#EE7600")
+names(myColors) <- levels(myGEMMA_3$Phenos)
 colScale <- scale_colour_manual(name="Phenotype", values=myColors)
+
+#double check color: low to high group on y axis is Sens, Wild, Domest 
+#should be S = black, W = orange, D = blue
 
 #get chromosome midpoints
 my.chroms <- as.data.frame(myGEMMA[!duplicated(myGEMMA$chr, fromLast=FALSE), "Index"]) #Lower Bounds
@@ -129,10 +146,6 @@ ggplot(myGEMMA_3, aes(x=Index))+
   geom_point(aes(x=Index, y=-log10(plot.D), color = "Domesticated"), alpha=1/4)+
   geom_point(aes(x=Index, y=-log10(plot.W), color = "Wild"), alpha=1/4)+
   geom_point(aes(x=Index, y=-log10(plot.S), color = "Sensitivity"), alpha=1/4)+
-  #geom_hline(yintercept=-log(0.01), colour = "black", lty=2)+
-  #geom_hline(yintercept=-log(0.001), colour = "black", lty=2)+
-  #geom_text(aes(0,-log(0.001), label="p = 0.001", vjust = 1, hjust = -0.1), col= "black")+
-  #geom_text(aes(0,-log(0.01), label="p = 0.01", vjust = 1, hjust = -0.1), col= "black")+
   theme(legend.position="none")+
   theme(text = element_text(size=14), axis.text.x = element_text(size=14), axis.text.y = element_text(size=14))+
   theme(panel.border = element_blank(), panel.grid.major = element_blank(),
