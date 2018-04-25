@@ -14,7 +14,7 @@ setwd("~/Projects/BcSolGWAS/")
 plant12.snp <- read.csv("data/GEMMA_files/D_08_results/12Plants_top1kSNPs_MAF20_10NA_GEMMA_kmat1_99thr.csv")
 #do need wide top 1000 for gene annotation and figure S3b: make that in this script
 
-#this includes all SNP with p < 99th %ile threshold across > 6/12 genotypes
+#this includes all SNP with p < 99th %ile threshold across >= 6/12 genotypes
 ##check file for threshold
 plantHO.snp <- read.csv("data/GEMMA_files/D_08_results/12Plants_HiOverlapSNPs_trueMAF20_10NA_GEMMA_1kpermut99Thr_kmat1.csv")
 
@@ -25,6 +25,8 @@ domest.snp <- read.csv("data/GEMMA_files/D_08_results/GEMMA_peaksDWS_kmat1_99thr
 #SNPdat is being stupid so I'll try to do it myself
 setwd("~/Projects")
 my.gtf <- read.table("BcGenome/data/ensembl/B05.10/extractedgff/Botrytis_cinerea.ASM83294v1.38.chrom.gtf", fill=TRUE) #replace missing gene names with NAs
+
+num.genes <- my.gtf[unique(my.gtf$V12),]
 
 my.gtf <- my.gtf[,1:14]
 

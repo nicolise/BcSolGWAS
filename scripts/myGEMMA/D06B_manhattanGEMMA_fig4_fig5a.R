@@ -184,6 +184,8 @@ for (i in unique(full.file$chr)) {
 pheno.bin <- full.file
  #now, PosPhenos = 1 if p < avg 2500th SNP 1000x thr (99%), 0 if p > thr
  # also calculate/ report in text for 99.9% Thr = 250
+
+##check threshold here
 gethr <- mythrs[mythrs$SNPnum==2500,]
 #get an ordered threshold list for the phenotypes
 mythrlist <- rbind(gethr[gethr$pheno=="LA0410",],gethr[gethr$pheno=="LA3475",],gethr[gethr$pheno=="LA4345",],gethr[gethr$pheno=="LA4355",],gethr[gethr$pheno=="LA0480",],gethr[gethr$pheno=="LA1547",],gethr[gethr$pheno=="LA1589",],gethr[gethr$pheno=="LA1684",],gethr[gethr$pheno=="LA2093",],gethr[gethr$pheno=="LA2176",],gethr[gethr$pheno=="LA2706",],gethr[gethr$pheno=="LA3008",])
@@ -201,11 +203,14 @@ setwd("~/Projects/BcSolGWAS/data/GEMMA_files")
 names(pheno.bin)
 pheno.bin$SUMM <- rowSums(pheno.bin[,c(45:56)], na.rm=T)
 
+## check file name here
 #write.csv(pheno.bin, "D_08_results/12Plants_allSNPs_MAF20NA10_GEMMA_1kpermut99Thr_kmat1.csv")
+#pheno.bin <- read.csv("D_08_results/12Plants_allSNPs_MAF20NA10_GEMMA_1kpermut99Thr_kmat1.csv")
 table(pheno.bin$SUMM)
   
 #high overlap SNP list for annotation
-HOSNP <- pheno.bin[pheno.bin$SUMM > 6,]
+HOSNP <- pheno.bin[pheno.bin$SUMM > 5,]
+## check file name here
 #write.csv(HOSNP, "D_08_results/12Plants_HiOverlapSNPs_trueMAF20_10NA_GEMMA_1kpermut99Thr_kmat1.csv")
 
 #and top 1000 SNPs > Thr per genotype
@@ -247,7 +252,6 @@ gethr <- mythrs[mythrs$SNPnum==250,] #too  many at 99% level --> using 99.9%
 
 #find top SNPs to mark: pheno.bin$SUMM and LA2093 pscore
 pheno.bin.top <- pheno.bin[pheno.bin$X6_LA2093_pscore < gethr[8,3], ]
-#top 100 beta out of these
 library(plyr)
 #pheno.bin.top <- head(arrange(pheno.bin.top, desc(X6_LA2093_beta)), n=100)
 pheno.bin.top <- pheno.bin.top[pheno.bin.top$SUMM>10,] #too  many at SUMM > 6 --> using SUMM > 10
@@ -302,26 +306,30 @@ pheno.bin.top$Index
 #add figure 5a / b for GEMMA (S3): SNP overlap across phenotypes
 table(pheno.bin$SUMM)
 
-jpeg("paper/plots/addGEMMA/S3a_topSNPOverlap_12Plants_GEMMA.jpg", width=8, height=5, units='in', res=600)
+##check output file name
+jpeg("paper/plots/addGEMMA/S3a_topSNPOverlap_12Plants_GEMMA_999thr.jpg", width=8, height=5, units='in', res=600)
 ggplot(pheno.bin, aes(pheno.bin$SUMM)) + 
   geom_bar()+
   theme_bw()+
   theme(panel.border = element_blank(), panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
-  scale_y_continuous(name= "Number of SNPs", limits = c(0,20000))+
+  #scale_y_continuous(name= "Number of SNPs", limits = c(0,20000))+
+  scale_y_continuous(name= "Number of SNPs", limits = c(0,4500))+
   scale_x_continuous(name= "Plant Genotypes per Candidate SNP", breaks=c(1,2,3,4,5,6,7,8,9,10,11,12),labels=c(1,2,3,4,5,6,7,8,9,10,11,12), limits = c(0, 12))+
   theme(text = element_text(size=14), axis.text.x = element_text(size=14), axis.text.y = element_text(size=14))
 dev.off()
 
 
 #small inset plot
-jpeg("paper/plots/addGEMMA/S3a_topSNPOverlap_12Plants_GEMMA_inset.jpg", width=4, height=3, units='in', res=600)
+##check output filename
+jpeg("paper/plots/addGEMMA/S3a_topSNPOverlap_12Plants_GEMMA_inset_999thr.jpg", width=4, height=3, units='in', res=600)
 ggplot(pheno.bin, aes(pheno.bin$SUMM)) + 
   geom_bar()+
   theme_bw()+
   theme(panel.border = element_blank(), panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
-  scale_y_continuous(name= "", limits = c(0,400))+
+  #scale_y_continuous(name= "", limits = c(0,400))+
+  scale_y_continuous(name= "", limits = c(0,25))+
   scale_x_continuous(breaks=c(6,7,8,9,10,11,12),labels=c(6,7,8,9,10,11,12), limits = c(5, 13), name="")+
   theme(text = element_text(size=14), axis.text.x = element_text(size=14), axis.text.y = element_text(size=14))
 dev.off()

@@ -11,15 +11,15 @@ library(dplyr); library(ggplot2)
 setwd("~/Projects/BcSolGWAS")
 #read in annotation file: see B06_GEMMA_SNPdat_annot.R for which
 #could not get SNPdat working so modified file to annotate with nearest genes < 1kb myself
-#this includes all SNP with p < 0.01 in the top 1000 (small p values) for at least 1/11 genotypes (1/12 failed)
+#this includes all SNP with p < 0.01 in the top 1000 (small p values) for at least 1/12 genotype
 #consistent with bigRR: distance cutoff is 2kb window around the gene body
 ## read in 99% Thr or 99.9% Thr
 plant12gen <- read.csv("data/GEMMA_files/D_08_results/toannot_plant12topgenes_99thr.csv")
 plant12gen <- plant12gen[,-c(1,18,19,23:26,28,30:31)]
 
-#this includes all SNP with p < 0.01 across > 6/11 genotypes (1/12 failed)
+#this includes all SNP with p < sig threshold across > 5/12 phenotypes
 ##check file
-plant12gen.HO <- read.csv("data/GEMMA_files/D_08_results/toannot_plant12HOgenes_99thr.csv")
+plant12gen.HO <- read.csv("data/GEMMA_files/D_08_results/toannot_plant12HOgenes_999thr.csv")
 plant12gen.HO <- plant12gen.HO[,-c(1,18,19,23:26,28,30:31)]
 
 #this includes all SNP with p < 0.01 for D, W, or S
