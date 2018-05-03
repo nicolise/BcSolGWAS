@@ -19,7 +19,6 @@ names(Phenos_match)
 #also phenos have been renamed in script D05B_manhattanGEMMA_fig4_fig5a.R
 
 #13 is Domest, 14 is Wild, 15 is Sensitivity
-#original files, no accounting for pop str
 myGEMMA.D <- read.table("data/GEMMA_files/D_04_randphenos/binMAF20NA10_fullrand_kmat1_pheno13_Domest.assoc.txt", header=TRUE)
 myGEMMA.W <- read.table("data/GEMMA_files/D_04_randphenos/binMAF20NA10_fullrand_kmat1_pheno14_Wild.assoc.txt", header=TRUE)
 myGEMMA.S <- read.table("data/GEMMA_files/D_04_randphenos/binMAF20NA10_fullrand_kmat1_pheno15_Sens.assoc.txt", header=TRUE)
@@ -58,13 +57,13 @@ for (i in unique(myGEMMA$chr)) {
 
 mythrs99 <- mythrs[mythrs$SNPnum==2500,]
 mythrs999 <- mythrs[mythrs$SNPnum==250,]
-curthrs <- mythrs99
+## check which thr
+curthrs <- mythrs999
 thrWi <- curthrs[curthrs$pheno=="Wild",3]
 thrDo <- curthrs[curthrs$pheno=="Domesticated",3]
 thrSe <- curthrs[curthrs$pheno=="DmWoD",3]
 
 #add a tottraits variable
-##need to wait until permutation is done for this step. come back to this
 myGEMMA$TotTraits <- ifelse(myGEMMA$pscore.D < thrDo & myGEMMA$pscore.W < thrWi & myGEMMA$pscore.S < thrSe, "ALL",
                               ifelse(myGEMMA$pscore.D < thrDo & myGEMMA$pscore.W < thrWi, "DW",
                                      ifelse(myGEMMA$pscore.W < thrWi & myGEMMA$pscore.S < thrSe, "WS",
@@ -76,8 +75,9 @@ myGEMMA$TotTraits <- ifelse(myGEMMA$pscore.D < thrDo & myGEMMA$pscore.W < thrWi 
 table(myGEMMA$TotTraits)
 
 myGEMMA.fulldat <- myGEMMA
-write.csv(myGEMMA.fulldat, "data/GEMMA_files/D_08_results/GEMMA_allDWS_kmat1_99thr.csv")
-myGEMMA.fulldat <- read.csv("data/GEMMA_files/D_08_results/GEMMA_allDWS_kmat1_99thr.csv")
+##check which output
+#write.csv(myGEMMA.fulldat, "data/GEMMA_files/D_08_results/GEMMA_allDWS_kmat1_999thr.csv")
+#myGEMMA.fulldat <- read.csv("data/GEMMA_files/D_08_results/GEMMA_allDWS_kmat1_999thr.csv")
 
 myGEMMA <- myGEMMA.fulldat
 #select just top SNPs for comparison to bigRR T4
@@ -98,8 +98,9 @@ myGEMMA_2$TotTraits <- ifelse(myGEMMA_2$beta.D != 0 & myGEMMA_2$beta.W != 0 & my
 
 table(myGEMMA_2$TotTraits)
 
-write.csv(myGEMMA_2, "data/GEMMA_files/D_08_results/GEMMA_peaksDWS_kmat1_99thr.csv")
-myGEMMA_2 <- read.csv("data/GEMMA_files/D_08_results/GEMMA_peaksDWS_kmat1_99thr.csv")
+##check which files
+write.csv(myGEMMA_2, "data/GEMMA_files/D_08_results/GEMMA_peaksDWS_kmat1_999thr.csv")
+myGEMMA_2 <- read.csv("data/GEMMA_files/D_08_results/GEMMA_peaksDWS_kmat1_999thr.csv")
 
 
 #-------------------------------------------------------------------------------------
@@ -124,6 +125,7 @@ myGEMMA_3$plot.W <- ifelse(myGEMMA_3$Wrank < 1001, myGEMMA_3$pscore.W, NA)
 myGEMMA_3$plot.S <- ifelse(myGEMMA_3$Srank < 1001, myGEMMA_3$pscore.S, NA)
 
 #ee is orange, 05 is black, 1c is blue
+library("ggplot2")
 myColors <- c("#1C86EE","#050505", "#EE7600")
 names(myColors) <- levels(myGEMMA_3$Phenos)
 colScale <- scale_colour_manual(name="Phenotype", values=myColors)
@@ -137,7 +139,7 @@ names(my.chroms)[1] <- "Chr.Start"
 my.chroms$Chr.End <- myGEMMA[!duplicated(myGEMMA$chr, fromLast=TRUE), "Index"] # Upper Bounds
 my.chroms$Chr.Mid <- (my.chroms$Chr.Start + my.chroms$Chr.End)/2
 
-jpeg("paper/plots/addGEMMA/S4A_DWSmanhattan.jpg", width=7.5, height=5, units='in', res=600)
+jpeg("paper/plots/addGEMMA/S4A_DWSmanhattan_999thr.jpg", width=7.5, height=5, units='in', res=600)
 ggplot(myGEMMA_3, aes(x=Index))+
   theme_bw()+
   colScale+
