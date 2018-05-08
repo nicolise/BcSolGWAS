@@ -23,7 +23,8 @@ Infinium SNP annotation
 http://solcap.msu.edu/data/tomato_ng_snp_10k_infinium_annotation_v2.10_FINAL_w_solcap_ids.xls
 ==> saved in SlGenome folder
 
-2. Exploring genetic variation in the tomato (Solanum section Lycopersicon) clade by whole-genome sequencing
+2. WGS
+Exploring genetic variation in the tomato (Solanum section Lycopersicon) clade by whole-genome sequencing
 https://onlinelibrary.wiley.com/doi/full/10.1111/tpj.12616
 https://onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1111%2Ftpj.12616&attachmentId=127192963
 ==> Figure S1 saved in SlGenome folder
