@@ -83,8 +83,10 @@ Phenos_match <- Phenos_match[,c(1,10,13,2:9,11:12,14:16)]
 
 myFAM_match2 <- cbind(myFAM_match, Phenos_match)
 myFAM_match2 <- myFAM_match2[order(myFAM_match2$delete),]
+#also remove null phenotype
 myFAM_match2 <- myFAM_match2[,c(1:5,9:ncol(myFAM_match2))]
 
 write.csv(myFAM_match2, "GEMMA_files/D_02_randGEMMA/binMAF20NA10_fam.csv")
 write.table(myFAM_match2, "GEMMA_files/D_02_randGEMMA/binMAF20NA10_allphenos.fam", row.names=FALSE, col.names=TRUE)
 #copy _allphenos.fam to _rand.fam and also copy 01/.bed and 01/.bim to 02/_rand.
+myFAM_match2 <- read.csv("GEMMA_files/D_02_randGEMMA/binMAF20NA10_fam.csv")
