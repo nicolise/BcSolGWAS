@@ -8,6 +8,14 @@ rm(list=ls())
 setwd("~/Projects/BcSolGWAS/data/GEMMA_files")
 
 #---------------------------------------------------------------------------------------
+#mean lesion size and SE for each tomato genotype?
+setwd("~/Projects/BcSolGWAS")
+ModDat <- read.csv("data/preGWAS/BcSolGWAS_PhenotypePlotData_ModDat.csv")
+SummDat <- aggregate(ModDat[, "Scale.LS"], list(ModDat$PlGenoNm), mean)
+SummDat$sd <- aggregate(ModDat[, "Scale.LS"], list(ModDat$PlGenoNm), sd)
+SummDat$n <- aggregate(ModDat[, "Scale.LS"], list(ModDat$PlGenoNm), length)
+SummDat$se <- SummDat$sd.x / (SummDat$n.x^0.5)
+#---------------------------------------------------------------------------------------
 #genome info for B05.10 GEMMA?
 #237,878 SNPs at MAF 0.20 or greater and  less than 10% missing SNP calls
 
@@ -83,6 +91,12 @@ table(plantHO.genes$TotPhenos)
 #domestication gene-level Venn for GEMMA here
 table(domest.genes$TotTraits)
 #-----------------------------------------------------------------------------------
+#how many genes significant across multiple traits in bigRR?
+setwd("~/Projects/BcSolGWAS")
+HOplant2 <- read.csv("data/GWAS_files/05_annotation/window2kb/12plants_HO_genesTOANNOT.csv")
+FullGenes <- read.csv("data/GWAS_files/05_annotation/OverlapCount_plant12topgenes_99thr.csv")
+table(FullGenes$TotTraits)
+#--------------------------------------------------------------------------------------
 #gene overlap from GEMMA to bigRR?
 setwd("~/Projects/BcSolGWAS/data/GEMMA_files")
 #99.9% Thr
@@ -91,8 +105,9 @@ DoGenOverlap <- read.csv("D_08_results/AllDOfuncs_byGene_999thr.csv")
 DoGenSumm <- DoGenOverlap[,c("T4vanKan.BROAD", "BcinB0510gene","TotTraits.b","TotTraits.G","PFAM_DESCRIPTION")]
 DoGenSumm <- DoGenSumm[!duplicated(DoGenSumm$T4vanKan.BROAD),]
 write.csv(DoGenSumm, "D_09_tables/Overlap_Domest_tableS3.csv")
+
 HoGenOverlap <- read.csv("D_08_results/AllHOannots_byGene_999thr.csv")
-Gen12Overlap <- read.csv("D_08_results/All12annots_byGene_999thr.csv")
+Gen12Overlap <- read.csv("D_08_results/All12annots_byGene_999thr.csv") #this is for only >1 pheno genes by each method
 Gen12Summ <- Gen12Overlap[,c("T4vanKan.BROAD", "BcinB0510gene","PFAM_DESCRIPTION","TotPhenos.G","TotPhenos.b","TotPhenos.O")]
 Gen12Summ <- Gen12Summ[!duplicated(Gen12Summ$T4vanKan.BROAD),]
 write.csv(Gen12Summ, "D_09_tables/Overlap_12pGenes_tableS3.csv")

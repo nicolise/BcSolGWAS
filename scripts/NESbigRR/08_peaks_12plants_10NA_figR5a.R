@@ -16,12 +16,12 @@ setwd("~/Projects/BcSolGWAS/")
 library(plyr); library(ggplot2); library(grid)
 
 #Import data (reorganized from script ReformatBigRRouts.R)
-HEM.plotdata <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF20_10NA/SlBc_12plants_trueMAF20_10NA.HEM.PlotFormat.final.csv")
+HEM.plotdata <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF_10NA/SlBc_12plants_trueMAF20_10NA.HEM.PlotFormat.final.csv")
 
 HEM.plotdata <- HEM.plotdata[,c(2:14,16,17,15)]
 
 #get threshhold values 
-HEM.thresh <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF20_10NA/SlBc_12plants_trueMAF20_10NA.HEM.Thresh.final.csv")
+HEM.thresh <- read.csv("data/GWAS_files/04_bigRRoutput/trueMAF_10NA/SlBc_12plants_trueMAF20_10NA.HEM.Thresh.final.csv")
 
 #take the top 50 over the threshold for each phenotype
 TH95pos <- HEM.thresh[5,]
@@ -80,6 +80,23 @@ assign(mydf, cbind(get(mydf), Trait = myblob))
 }
 
 HEM.topSNPs <- rbind(HEM.LA410, HEM.LA0480, HEM.LA1547, HEM.LA1589, HEM.LA1684, HEM.LA2093, HEM.LA2176, HEM.LA2706, HEM.LA3008, HEM.LA3475, HEM.LA4345, HEM.LA4355)
+
+#new HEM.topSNPs for full gene overlap list (Figure 5b)
+myfullist <- NA
+HEM.LA0410 <- HEM.LA410
+mySNPlists <- c("HEM.LA0410", "HEM.LA0480", "HEM.LA1547", "HEM.LA1589", "HEM.LA1684", "HEM.LA2093", "HEM.LA2176", "HEM.LA2706", "HEM.LA3008", "HEM.LA3475", "HEM.LA4345", "HEM.LA4355")
+for ( i in 1:12 ){
+  mycurrlist <- get(mySNPlists[[i]])
+  names(mycurrlist)[5] <- paste(mySNPlists[i], "Effect", sep="_")
+  ifelse(i == 1, mycurrlist <- mycurrlist, mycurrlist <- mycurrlist[,c(4,5)])
+  ifelse(i == 1, myfullist <- mycurrlist, myfullist <- merge(myfullist, mycurrlist, by = "Index", all=TRUE))
+}
+#clean up df
+myfullist <- myfullist[,c(1,5,7:17)]
+#add back in chrom, seg, pos
+myfullist <- merge(myfullist, HEM.plotdata[,c(1:3,16)], by="Index")
+
+write.csv(myfullist, "data/GWAS_files/05_annotation/allsigSNPs_12phenos_new051118.csv")
 
 #total sig SNPs per trait here
 table(HEM.topSNPs$Trait)

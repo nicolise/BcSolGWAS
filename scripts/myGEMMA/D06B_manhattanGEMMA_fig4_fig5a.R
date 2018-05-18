@@ -67,9 +67,6 @@ hist(myGEMMA$ps)
 hist(myGEMMA$Index)
 #positions look fine...
 
-#need to add thresholds later? once I do permutation analysis
-#thresholds: p < 0.05 , p < 0.01, p < 0.001
-
 #get chromosome midpoints
 my.chroms <- as.data.frame(myGEMMA[!duplicated(myGEMMA$chr, fromLast=FALSE), "Index"]) #Lower Bounds
 names(my.chroms)[1] <- "Chr.Start"
@@ -82,6 +79,15 @@ mythrs[mythrs$pheno=="LA2093",]
 #2500th SNP ~99% Thr = 1.404838e-02
 #actual 99.9% threshold is average of SNP ~ 250 (250/272000)
 
+#pheno.bin.top$Index from 99.9% thr
+1885377  2061494 16687404 17187675 20864412 22288525 22783105 25359723 31953496 34388621 36077967
+#99.9% thr
+thr999_2093 <- mythrs[mythrs$pheno=="LA2093",]
+thr999_2093 <- thr999_2093[4,3]
+my2093_tops <- myGEMMA[(myGEMMA$p_score < thr999_2093),]
+my2093_tops <- my2093_tops[my2093_tops$Index %in% pheno.bin.top$Index,] #yay, all!
+
+setwd("~/Projects/BcSolGWAS")
 jpeg(paste("paper/plots/addGEMMA/SlBc_MAF20_10NA_GEMMArand_LA2093_kmat1_pscore.jpg", sep=""), width=8, height=5, units='in', res=600)
 print(ggplot(myGEMMA, aes(x=Index, y=(-log10(p_score))))+
           theme_bw()+
@@ -98,31 +104,22 @@ print(ggplot(myGEMMA, aes(x=Index, y=(-log10(p_score))))+
   #same for all 3 phenos
           scale_x_continuous(name="Chromosome", breaks = c(2045143, 5763240, 9045566, 11884449, 14590093, 17417481, 20093765, 22716437, 25291433, 27764370, 30138572, 32480630, 34788869, 36988057, 39090468, 40253384), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+
           expand_limits(y=0)+
-  geom_vline(xintercept=1447936, lty=2)+
     geom_vline(xintercept=1885377, lty=2)+
-    geom_vline(xintercept=2209430, lty=2)+
-    geom_vline(xintercept=4790255, lty=2)+
-    geom_vline(xintercept=7302540, lty=2)+
-    geom_vline(xintercept=12546559, lty=2)+
-    geom_vline(xintercept=13007560, lty=2)+
+    geom_vline(xintercept=2061494, lty=2)+
     geom_vline(xintercept=16687404, lty=2)+
+    geom_vline(xintercept=17187675, lty=2)+
     geom_vline(xintercept=20864412, lty=2)+
-    geom_vline(xintercept=21549298, lty=2)+
-    geom_vline(xintercept=21848271, lty=2)+
     geom_vline(xintercept=22288525, lty=2)+
     geom_vline(xintercept=22783105, lty=2)+
-    geom_vline(xintercept=25601190, lty=2)+
-    geom_vline(xintercept=26577239, lty=2)+
-    geom_vline(xintercept=31063497, lty=2)+
+    geom_vline(xintercept=25359723, lty=2)+
     geom_vline(xintercept=31953496, lty=2)+
     geom_vline(xintercept=34388621, lty=2)+
     geom_vline(xintercept=36077967, lty=2)
-  
     )
   dev.off()
   
   #top SNP list: see below
-  #p value < 250Thr = 99.9%
+  #p value < 250Thr = 99.9% ... but this is from 99% list sooo fix it.
   #and SUMM > 10 traits
   #1447936  1885377  2209430  4790255  7302540 12546559 13007560 16687404 20864412 21549298
   #21848271 22288525 22783105 25601190 26577239 31063497 31953496 34388621 36077967
@@ -242,7 +239,8 @@ top1ksnp <- top1ksnp[top1ksnp$top1k == "topset",]
 
 #------------------------------------------------------------------  
 rm(list=ls())
-pheno.bin <- read.csv("D_08_results/12Plants_allSNPs_MAF20NA10_GEMMA_1kpermut99Thr_kmat1.csv")
+setwd("~/Projects/BcSolGWAS/data/GEMMA_files")
+pheno.bin <- read.csv("D_08_results/12Plants_allSNPs_MAF20NA10_GEMMA_1kpermut999Thr_kmat1.csv")
 
 #get thresholds here 
 mythrs <- read.csv("D_07_randOUTS/GEMMA_1krand_thresholds.csv")
@@ -254,7 +252,7 @@ gethr <- mythrs[mythrs$SNPnum==250,] #too  many at 99% level --> using 99.9%
 pheno.bin.top <- pheno.bin[pheno.bin$X6_LA2093_pscore < gethr[8,3], ]
 library(plyr)
 #pheno.bin.top <- head(arrange(pheno.bin.top, desc(X6_LA2093_beta)), n=100)
-pheno.bin.top <- pheno.bin.top[pheno.bin.top$SUMM>10,] #too  many at SUMM > 6 --> using SUMM > 10
+pheno.bin.top <- pheno.bin.top[pheno.bin.top$SUMM>6,] #too  many at SUMM > 6 --> using SUMM > 10
 pheno.bin.top$Index
 
 #create a custom color scale
@@ -265,9 +263,11 @@ colScale <- scale_colour_manual(name = "Chrom",values = myColors)
 #get top SNPs for lines
 pheno.bin.top$Index
 
+table(pheno.bin$SUMM)
+
 #make plots 
   setwd("~/Projects/BcSolGWAS")
-  jpeg("paper/plots/addGEMMA/FigS1b_sigphenos_ManhattanPlot.jpg", width=8, height=5, units='in', res=600)
+  jpeg("paper/plots/addGEMMA/FigS3b_sigphenos_ManhattanPlot.jpg", width=8, height=5, units='in', res=600)
   ggplot(pheno.bin, aes(x=Index, y=SUMM))+
     colScale+ #remove for rainbow plot
     theme_bw()+
@@ -282,26 +282,39 @@ pheno.bin.top$Index
     scale_y_continuous(breaks= c(0,2,4,6,8,10,12), labels=c("0","2","4","6","8","10","12"))+
     theme(panel.border = element_blank(), panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
-            geom_vline(xintercept=1447936, lty=2)+
-            geom_vline(xintercept=1885377, lty=2)+
-            geom_vline(xintercept=2209430, lty=2)+
-            geom_vline(xintercept=4790255, lty=2)+
-            geom_vline(xintercept=7302540, lty=2)+
-            geom_vline(xintercept=12546559, lty=2)+
-            geom_vline(xintercept=13007560, lty=2)+
-            geom_vline(xintercept=16687404, lty=2)+
-            geom_vline(xintercept=20864412, lty=2)+
-            geom_vline(xintercept=21549298, lty=2)+
-            geom_vline(xintercept=21848271, lty=2)+
+    geom_vline(xintercept=1885377, lty=2)+
+    geom_vline(xintercept=2061494, lty=2)+
+    geom_vline(xintercept=16687404, lty=2)+
+    geom_vline(xintercept=17187675, lty=2)+
+    geom_vline(xintercept=20864412, lty=2)+
     geom_vline(xintercept=22288525, lty=2)+
     geom_vline(xintercept=22783105, lty=2)+
-    geom_vline(xintercept=25601190, lty=2)+
-    geom_vline(xintercept=26577239, lty=2)+
-    geom_vline(xintercept=31063497, lty=2)+
+    geom_vline(xintercept=25359723, lty=2)+
     geom_vline(xintercept=31953496, lty=2)+
     geom_vline(xintercept=34388621, lty=2)+
     geom_vline(xintercept=36077967, lty=2)
   dev.off()
+  
+# #overlaps for 99% threshold:
+#   geom_vline(xintercept=1447936, lty=2)+
+#     geom_vline(xintercept=1885377, lty=2)+
+#     geom_vline(xintercept=2209430, lty=2)+
+#     geom_vline(xintercept=4790255, lty=2)+
+#     geom_vline(xintercept=7302540, lty=2)+
+#     geom_vline(xintercept=12546559, lty=2)+
+#     geom_vline(xintercept=13007560, lty=2)+
+#     geom_vline(xintercept=16687404, lty=2)+
+#     geom_vline(xintercept=20864412, lty=2)+
+#     geom_vline(xintercept=21549298, lty=2)+
+#     geom_vline(xintercept=21848271, lty=2)+
+#     geom_vline(xintercept=22288525, lty=2)+
+#     geom_vline(xintercept=22783105, lty=2)+
+#     geom_vline(xintercept=25601190, lty=2)+
+#     geom_vline(xintercept=26577239, lty=2)+
+#     geom_vline(xintercept=31063497, lty=2)+
+#     geom_vline(xintercept=31953496, lty=2)+
+#     geom_vline(xintercept=34388621, lty=2)+
+#     geom_vline(xintercept=36077967, lty=2)
 
 #add figure 5a / b for GEMMA (S3): SNP overlap across phenotypes
 table(pheno.bin$SUMM)
