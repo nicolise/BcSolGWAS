@@ -15,7 +15,8 @@ mythrs <- read.csv("data/GEMMA_files/D_07_randOUTS/GEMMA_1krand_thresholds.csv")
 Phenos_match <- read.csv("data/GEMMA_files/D_02_randGEMMA/binMAF20NA10_fam.csv")
 names(Phenos_match)
 
-myGEMMA <- read.table("data/GEMMA_files/D_04_randphenos/binMAF20NA10_fullrand_kmat1_pheno6_LA2093.assoc.txt", header=TRUE)
+#LA2093
+myGEMMA <- read.table("data/GEMMA_files/D_04_randphenos/binMAF20NA10_fullrand_kmat1_pheno6.assoc.txt", header=TRUE)
 
 library(ggplot2); 
 
