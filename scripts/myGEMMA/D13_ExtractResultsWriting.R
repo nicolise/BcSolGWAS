@@ -91,7 +91,7 @@ table(plantHO.genes$TotPhenos)
 #domestication gene-level Venn for GEMMA here
 table(domest.genes$TotTraits)
 #-----------------------------------------------------------------------------------
-#how many genes significant across multiple traits in bigRR?
+how many genes significant across multiple traits in bigRR?
 setwd("~/Projects/BcSolGWAS")
 HOplant2 <- read.csv("data/GWAS_files/05_annotation/window2kb/12plants_HO_genesTOANNOT.csv")
 FullGenes <- read.csv("data/GWAS_files/05_annotation/OverlapCount_plant12topgenes_99thr.csv")
