@@ -33,11 +33,13 @@ names(Funcs)[1] <- "T4vanKan.BROAD"
 
 #now within each gene, merge back onto AnnotGenes
 DWS.overlap <- DWS.overlap[,-c(1)]
-DoGenAnt <- merge(DWS.overlap, Funcs, by="T4vanKan.BROAD")
+DoGenAnt <- merge(DWS.overlap, Funcs, by="T4vanKan.BROAD", all.x=TRUE)
 #keep the list of genes with no function match in the T4 list
 DWS.unmatch <- DWS.overlap[is.na(match(DWS.overlap$T4vanKan.BROAD, Funcs$T4vanKan.BROAD)),]
 #could search for these in data/GEMMA_files/05_compMethods/allBotPort_bigRR_functionLookup.xlsx but for the most part these entries have no functional annotation!
 ##check file name
+#keep only the first function for each gene
+DoGenAnt <- DoGenAnt[!duplicated(DoGenAnt$BcinB0510gene),]
 #write.csv(DoGenAnt, "data/GEMMA_files/D_08_results/AllDOfuncs_byGene_999thr.csv")
 
 HOGenAnt <- pheno12HO.overlap
@@ -46,11 +48,13 @@ HOGenAnt <- merge(HOGenAnt, Funcs, by="T4vanKan.BROAD")
 #write.csv(HOGenAnt, "data/GEMMA_files/D_08_results/AllHOannots_byGene_999thr.csv")
 
 Gen12Ant <- pheno12.overlap
-Gen12Ant <- merge(Gen12Ant, Funcs, by="T4vanKan.BROAD")
+Gen12Ant <- merge(Gen12Ant, Funcs, by="T4vanKan.BROAD", all.x=TRUE)
 p12.unmatch <- pheno12.overlap[is.na(match(pheno12.overlap$T4vanKan.BROAD, Funcs$T4vanKan.BROAD)),]
 Gen12Ant$TotPhenos.O <- Gen12Ant$TotPhenos.b + Gen12Ant$TotPhenos.G
 Gen12Tops <- Gen12Ant[Gen12Ant$TotPhenos.b > 1,]
 Gen12Tops <- Gen12Tops[Gen12Tops$TotPhenos.G > 1,]
+#only keep first mention of each gene
+Gen12Tops <- Gen12Tops[!duplicated(Gen12Tops$BcinB0510gene),]
 ##check file name
 #write.csv(Gen12Tops, "data/GEMMA_files/D_08_results/All12annots_byGene_999thr.csv")
 

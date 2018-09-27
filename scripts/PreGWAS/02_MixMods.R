@@ -104,6 +104,7 @@ flatmod2 <- lmer(Scale.LS ~ Igeno + Species + Species/PlGenoNm + (1|ExpBlock) + 
 
 sink(file='output/flat_effects.txt')
 print("flatmod <- lmer(Scale.LS ~ (1|ExpBlock) + (1|ExpBlock/PExpRep.x) + (1|ExpBlock/PExpRep.x/AgFlat) , data = ModDat)")
+#rand{lmerTest} is deprecated. now use ranova{lmerTest}
 rand(flatmod)
 Anova(flatmod, type=2)
 anova(flatmod)

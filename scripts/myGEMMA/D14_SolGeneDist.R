@@ -78,6 +78,6 @@ dev.off()
 
 #or just the dendrogram
 setwd("~/Projects/BcSolGWAS")
-jpeg("paper/plots/addGEMMA/SolDistance_dendro_Sim2012.jpg", width=10, height=10, units='in', res=600)
-plot(hclust(distgenEUCL))
-dev.off
+jpeg("paper/plots/addGEMMA/SolDistance_dendro_Sim2012.jpg", width=40, height=10, units='in', res=600)
+plot(hclust(distgenEUCL), cex=0.5)
+dev.off()
