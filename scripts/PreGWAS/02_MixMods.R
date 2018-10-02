@@ -164,7 +164,7 @@ fullmod2b <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm +
 fullmod3 <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|Species/PlGenoNm/IndPlant) + (1|ExpBlock:Igeno) + (1|ExpBlock:PlGenoNm), data = ModDat)
 
 #this one works
-#this is the one used for the paper: no random effects
+#this is the one used for early drafts of the paper: no random effects
 Sys.time()
 fullmod <- lm(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + ExpBlock:Igeno + ExpBlock:Species/PlGenoNm, data = ModDat)
 Sys.time()
@@ -177,6 +177,7 @@ Sys.time()
 #Sys.time()
 #sink()
 
+#THIS IS TABLE 1 FROM THE PAPER
 #testing adding in ExpBlock:PExpRep.x
 Sys.time()
 fullmod2 <- lm(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + ExpBlock/PExpRep.x + ExpBlock:Igeno + ExpBlock:Species/PlGenoNm, data = ModDat)
