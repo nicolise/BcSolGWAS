@@ -80,10 +80,10 @@ library(lme4); library(car); library(lmerTest)
 #this is the one used for the paper table 1: no random effects
 #and type 2 ANOVA
 Sys.time()
-fullmod2.rmD <- lm(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + ExpBlock/PExpRep.x + ExpBlock:Igeno + ExpBlock:Species/PlGenoNm, data = ModDat)
+fullmod2.rmD <- lm(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + ExpBlock/PExpRep.x + ExpBlock:Igeno + ExpBlock:Species/PlGenoNm, data = ModDat.rmD)
 Sys.time()
 sink(file='results/output/fixmod_100218_rmDomestIsos.txt')
-print("Model: fullmod2.rmD <- lm(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + ExpBlock/PExpRep.x + ExpBlock:Igeno + ExpBlock:Species/PlGenoNm, data = ModDat)")
+print("Model: fullmod2.rmD <- lm(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + ExpBlock/PExpRep.x + ExpBlock:Igeno + ExpBlock:Species/PlGenoNm, data = ModDat.rmD)")
 Sys.time()
 summary(fullmod2.rmD) # the code generating output
 Anova(fullmod2.rmD, type=2)
