@@ -1,5 +1,6 @@
 #Nicole E Soltis
 #100218
+
 #-------------------------------------------------------------------
 #correlation between Bc lesion on tomato Domest, tomato Wild, and Arabidopsis
 rm(list=ls())
@@ -42,5 +43,11 @@ library(Hmisc)
 myDat.corr.mx <- myDat.corr[,2:3]
 rcorr(as.matrix(myDat.corr.mx), type="pearson") # type can be pearson or spearman
 
-#plot
+#scatterplot... could look up old notes on prettier regression lines from Julin's class maybe
+library(ggplot2)
 
+my_x_title <- substitute(paste("Mean Lesion Size on ",italic('A. thaliana'), " (cm)"))
+ggplot(myDat.corr, aes(x=meanLs.cm.Dm, y=meanLs.cm.Wl)) + geom_point()+
+  theme_bw()+
+  labs(list(y="Mean Lesion Size on Tomato (cm)", x=my_x_title))+
+  geom_smooth(method='lm',formula=y~x)

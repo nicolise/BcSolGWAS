@@ -33,24 +33,6 @@ Sys.time()
 #sink()
 
 #--------------------------------------------------------------------------
-#below here: playing with reconfiguring the models
-#mixed model
-mystarttime <- Sys.time()
-mymmod <- lmer(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno*Species + Igeno*Species/PlGenoNm + (1|PExpRep.x) , data = ModDat)
-
-mymmod <- lmer(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno*Species + Igeno*Species/PlGenoNm + (1|PExpRep.x) + (1|PExpRep.x*Igeno) + (1|PExpRep.x*Species) + (1|PExpRep.x*Species/PlGenoNm) + (1|Species/PlGenoNm/IndPlant), data = ModDat)
-
-randmodtest <- lmer(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/PExpRep.x) + (1|ExpBlock:Igeno) + (1|ExpBlock:Species/PlGenoNm), data = ModDat)
-
-randmodtest <- lmer(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock:Igeno) + (1|ExpBlock:Species), data = ModDat)
-#fails with 1|exp + 1|exp/rep + 1|exp:igeno + 1|exp:species/pgeno 
-#fails with 1|exp + 1|exp:igeno + 1|exp:species/pgeno 
-#may work with 1|exp + 1|exp:igeno + 1|exp:species
-
-#here's the fixed effect model again, for reference
-#Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + ExpBlock/PExpRep.x + ExpBlock:Igeno + ExpBlock:Species/PlGenoNm
-
-
 #testing mixed model here
 #missing terms: 1|ExpBlock/PExpRep.x 1|ExpBlock:Species/PlGenoNm
 mystarttime <- Sys.time()
@@ -72,6 +54,8 @@ sink()
 mystarttime <- Sys.time()
 rownames(ModDat) = make.names(rownames(ModDat), unique=TRUE)
 mymmod <- lmer(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock:Igeno) + (1|ExpBlock/PExpRep.x), data = ModDat)
+#trying this to deal with ranova error of duplicate row.names
+rownames(mymmod) = make.names(c(1:1000), unique=TRUE)
 sink(file='results/output/modtest_100218.txt')
 print(mystarttime)
 print(Sys.time())
@@ -82,7 +66,51 @@ Anova(mymmod, type=2)
 anova(mymmod)
 print(Sys.time())
 sink()
+
 #-------------------------------------------------------------------------------
+#new model: try dropping 2 "domestication sensitive" isolates, rerun fixed fx model
+#from the text, domestication sensitive isolates are: Fd2, Rose
+ModDat.rmD <- subset(ModDat, Igeno != c("Fd2","Rose"))
+
+
+library(lme4); library(car); library(lmerTest)
+
+#models I used for the paper
+#linear model, fixed effects only
+#this is the one used for the paper table 1: no random effects
+#and type 2 ANOVA
+Sys.time()
+fullmod2.rmD <- lm(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + ExpBlock/PExpRep.x + ExpBlock:Igeno + ExpBlock:Species/PlGenoNm, data = ModDat)
+Sys.time()
+sink(file='results/output/fixmod_100218_rmDomestIsos.txt')
+print("Model: fullmod2.rmD <- lm(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + ExpBlock/PExpRep.x + ExpBlock:Igeno + ExpBlock:Species/PlGenoNm, data = ModDat)")
+Sys.time()
+summary(fullmod2.rmD) # the code generating output
+Anova(fullmod2.rmD, type=2)
+anova(fullmod2.rmD)
+Sys.time()
+sink()
+
+#-------------------------------------------------------------------------------
+#experiment with additional models here. not using these for the paper.
+#below here: playing with reconfiguring the models
+#mixed model
+mystarttime <- Sys.time()
+mymmod <- lmer(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno*Species + Igeno*Species/PlGenoNm + (1|PExpRep.x) , data = ModDat)
+
+mymmod <- lmer(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno*Species + Igeno*Species/PlGenoNm + (1|PExpRep.x) + (1|PExpRep.x*Igeno) + (1|PExpRep.x*Species) + (1|PExpRep.x*Species/PlGenoNm) + (1|Species/PlGenoNm/IndPlant), data = ModDat)
+
+randmodtest <- lmer(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock/PExpRep.x) + (1|ExpBlock:Igeno) + (1|ExpBlock:Species/PlGenoNm), data = ModDat)
+
+randmodtest <- lmer(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock:Igeno) + (1|ExpBlock:Species), data = ModDat)
+#fails with 1|exp + 1|exp/rep + 1|exp:igeno + 1|exp:species/pgeno 
+#fails with 1|exp + 1|exp:igeno + 1|exp:species/pgeno 
+#may work with 1|exp + 1|exp:igeno + 1|exp:species
+
+#here's the fixed effect model again, for reference
+#Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + ExpBlock + ExpBlock/PExpRep.x + ExpBlock:Igeno + ExpBlock:Species/PlGenoNm
+
+
 #fixed effect model (linear model)
 mystarttime <- Sys.time()
 mymmod <- lmer(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno*Species + Igeno*Species/PlGenoNm + (PExpRep.x) , data = ModDat)
