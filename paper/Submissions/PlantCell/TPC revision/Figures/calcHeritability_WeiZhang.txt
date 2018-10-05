@@ -1,0 +1,32 @@
+Experiment 
+1 346818 1569.48 < 0.0001 
+Plant Geno 
+2 214653 485.69 < 0.0001 H 0.164 
+Isolate Geno 
+95 197493 9.41 < 0.0001 H 0.151 
+Exp:GFlat 
+6 31410 23.69 < 0.0001 
+Plant:Isolate 
+190 61607 1.47 < 0.0001 H 0.047 
+Exo:GFlat:AFlat 
+24 26866 5.07 < 0.0001 
+Residuals 
+1944 429577 1743 53465
+
+phenotypic variance = SS / (n-1)
+
+total genetic SS = 214653 + 197493 + 61607 = 473753
+total SS Genetic + Env = 346818+214653+197493+31410+61607+26866+429577 = 1308424
+
+VG plant = 214653
+VP = total SS Genetic + Env
+H2 plant = VG / VP = 214653/1308424 = 0.164
+
+VP = VG + VE (genetic and environmental)
+VG = VA + VD + VI (additive, dom., interaction)
+The broad-sense heritability is the
+fraction that’s genetic:
+H2 = VG /VP
+
+
+
