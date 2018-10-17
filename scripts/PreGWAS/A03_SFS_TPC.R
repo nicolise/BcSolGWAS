@@ -65,8 +65,7 @@ mymafdf_all1 <- as.data.frame(mymaf1)
 write.csv(mymaf1,"NES_vcf/iso97vcf_mymaf1.csv")
 write.csv(mymaf2,"NES_vcf/iso97vcf_mymaf2.csv")
 
-#plot it
-library(ggplot2)
+#-------------------------------------------------------------------
 hist(mymafdf$Frequency)
 
 #double check from MAF file for consistency
@@ -88,3 +87,24 @@ write.csv(mymaf_frq_rn, "NES_vcf/freq_analysis_3alleles.csv")
 
 #--------------------------------------------------------------------
 #draw plots on laptop
+#plot it
+setwd("~/Projects/BcGenome")
+#double check freq vs. MAF file for consistency
+mymaf_p3 <- read.csv("data/97_isolates_vcf/NES_vcf/freq_analysis_3alleles.csv")
+mymaf_a1 <- read.csv("data/97_isolates_vcf/NES_vcf/iso97vcf_mymaf1.csv")
+mymaf_a2 <- read.csv("data/97_isolates_vcf/NES_vcf/iso97vcf_mymaf2.csv")
+
+library(ggplot2)
+hist(mymaf_p3$Allele1.frq)
+#not sure what to make of the "minor alleles" with frequency > 0.50
+ggplot(mymaf_p3, aes(x=Allele2.frq)) + geom_histogram(binwidth=0.05, colour="black") + 
+  theme_bw() + 
+  labs(list(y="Count", x="Minor Allele Frequency"))
+
+setwd("~/Projects/BcSolGWAS")
+jpeg("paper/Submissions/PlantCell/TPC revision/Figures/FigureX1_MAF.jpg", width=7.5, height=5, units='in', res=600)
+ggplot(mymaf_a2, aes(x=Frequency)) + geom_histogram(binwidth=0.02, colour="black") + 
+  theme_bw() + 
+  labs(list(y="SNP Count", x="Minor Allele Frequency"))+ 
+  scale_x_continuous(limits = c(0, 0.51))
+dev.off()

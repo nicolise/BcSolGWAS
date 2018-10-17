@@ -50,6 +50,7 @@ print(Sys.time())
 sink()
 
 #an additional mixed model- try adding 1|ExpBlock/PExpRep.x
+#this one fails at ranova step
 #missing terms: 1|ExpBlock:Species 1|ExpBlock:Species/PlGenoNm
 mystarttime <- Sys.time()
 rownames(ModDat) = make.names(rownames(ModDat), unique=TRUE)
@@ -67,6 +68,29 @@ anova(mymmod)
 print(Sys.time())
 sink()
 
+#this one errors out, won't run model, let alone run anova/ ranova
+#missing terms: 1|ExpBlock/PExpRep.x 
+mystarttime <- Sys.time()
+rownames(ModDat) = make.names(rownames(ModDat), unique=TRUE)
+mymmod <- lmer(Scale.LS ~ Igeno + Species + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|ExpBlock:Igeno) + (1|ExpBlock:Species) + (1|ExpBlock:Species/PlGenoNm), data = ModDat)
+
+#testing one more mixed model to match lsmeans
+mystarttime <- Sys.time()
+rownames(ModDat) = make.names(rownames(ModDat), unique=TRUE)
+mymmod <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|IndPlant/Leaf/AorB), data = ModDat)
+sink(file='results/output/modtest_lsmterms_101718.txt')
+print(mystarttime)
+print(Sys.time())
+print("mymmod <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|IndPlant/Leaf/AorB), data = ModDat)")
+#rand{lmerTest} is deprecated. now use ranova{lmerTest}
+ranova(mymmod)
+Anova(mymmod, type=2)
+anova(mymmod) #won't do
+print(Sys.time())
+sink()
+
+anova(mymmod, type=2)
+Anova(mymmod, type=3)
 #-------------------------------------------------------------------------------
 #new model: try dropping 2 "domestication sensitive" isolates, rerun fixed fx model
 #from the text, domestication sensitive isolates are: Fd2, Rose

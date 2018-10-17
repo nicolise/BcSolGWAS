@@ -12,9 +12,11 @@ AtPhenos <- read.csv("LSMeanCamLes4Map_FIN.csv")
 #get tomato data
 setwd("~/Projects/BcSolGWAS/")
 
-mylesion <- read.csv("paper/Submissions/PlantCell/TPC\ revision/Figures/Supplemental\ Figures\ &\ Tables/Supp1_meanlesion.csv")
-
 ModDat <- read.csv("data/preGWAS/SlBc_ModelData.csv")
+ModDat <- subset(ModDat, Igeno != "Gallo3")
+ModDat <- subset(ModDat, Igeno != "94.1")
+ModDat <- ModDat[,-c(1)]
+ModDat$Igeno <- droplevels(ModDat$Igeno)
 library(plyr)
 myDat.plants <- ddply(ModDat, c("Igeno", "Species", "PlGenoNm"), summarise, 
                meanLs.cm = mean(Scale.LS, na.rm=TRUE),
@@ -37,16 +39,12 @@ names(AtPhenos)[2] <- "Igeno"
 AtLes <- AtPhenos[,c(2,4)]
 myDat.corr <- merge(myDat.corr, AtLes, by="Igeno")
 
-# test correlation -- replace this with At later
-cor(myDat.corr$meanLs.cm.Dm, myDat.corr$Col0.Les)
-cor(myDat.corr$meanLs.cm.Wl, myDat.corr$Col0.Les)
-
 # Correlations with significance levels
 cor.test(myDat.corr$meanLs.cm.Dm, myDat.corr$Col0.Les)
 cor.test(myDat.corr$meanLs.cm.Wl, myDat.corr$Col0.Les)
-library(Hmisc)
-myDat.corr.mx <- myDat.corr[,2:3]
-rcorr(as.matrix(myDat.corr.mx), type="pearson") # type can be pearson or spearman
+# library(Hmisc)
+# myDat.corr.mx <- myDat.corr[,2:3]
+# rcorr(as.matrix(myDat.corr.mx), type="pearson") # type can be pearson or spearman
 
 #scatterplot... could look up old notes on prettier regression lines from Julin's class maybe
 library(ggplot2)
