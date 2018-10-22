@@ -1,0 +1,13 @@
+Main model:
+	To assess whether this domestication effect could be explained by random chance, we randomly assigned plant accessions to species for 100x permutation. Our observed domestication effect was in the 80th percentile of sum of squares across all permutations. A larger sample of S. lycopersicum and S. pimpinellifolium would be needed to assess the strength of domestication effect on lesion size variation with more certainty.
+
+Individual isolates:
+	To assess whether isolates could appear domestication-associated due to random chance, we randomly assigned plant accessions to species for 100x permutation. Following permutation, we again identified 2 isolates with significant domestication effects at the p<0.01 level. As such, a larger plant sample or additional experimental replication would be necessary for us to assess domestication-associated isolates.
+
+
+REVISED:
+Main model:
+            To test how this mild domestication effect might be sensitive to shifts in the collection of genotypes, we randomly drew three genotypes from the domestication and wild groupings and assigned them to a new pseudo-wild grouping. The other six genotypes were assigned as a pseudo-domesticate grouping and the model was rerun. This bootstrapping was repeated 100 times with each representing a random draw. Our observed domestication effect was in the top 80th percentile across all bootstraps suggesting that it is relatively stable in response to shifts in the genotypes. However, a larger sample of S. lycopersicum and S. pimpinellifolium genotypes would be needed to develop a more precise estimate of any domestication effect on lesion size.
+
+Individual isolates:
+            To assess whether isolates could appear domestication-associated due to random chance, we utilized the 100 bootstraps from above and used these for the individual isolate models. Across the 100 bootstraps we identified XX. This suggests that to get a precise estimate of isolate x domestication interactions would require larger experiments using either more replication or additional genotypes.
