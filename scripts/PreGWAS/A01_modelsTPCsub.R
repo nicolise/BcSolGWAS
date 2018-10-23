@@ -147,22 +147,23 @@ sink()
 #-------------------------------------------------------------------------------
 #new model: try dropping 2 "domestication sensitive" isolates, rerun fixed fx model
 #from the text, domestication sensitive isolates are: Fd2, Rose
-ModDat.rmD <- subset(ModDat, Igeno != c("Fd2","Rose"))
+ModDat.rmD <- subset(ModDat, Igeno != "Fd2")
+ModDat.rmD <- subset(ModDat.rmD, Igeno != "Rose")
 
 library(lme4); library(car); library(lmerTest)
 
 #mixed fx model I used for final version of paper
 mystarttime <- Sys.time()
-rownames(ModDat) = make.names(rownames(ModDat), unique=TRUE)
-mymmod <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|IndPlant/Leaf/AorB) + (1|ExpBlock:Igeno), data = ModDat)
-sink(file='results/output/modtest_lsmterms_101818.txt')
+rownames(ModDat.rmD) = make.names(rownames(ModDat.rmD), unique=TRUE)
+fullmod.rmD <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|IndPlant/Leaf/AorB) + (1|ExpBlock:Igeno), data = ModDat.rmD)
+sink(file='results/output/dropdomest_lsmterms_102218.txt')
 print(mystarttime)
 print(Sys.time())
-print("mymmod <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|IndPlant/Leaf/AorB) + (1|ExpBlock:Igeno), data = ModDat)")
+print("fullmod.rmD <- lmer(Scale.LS ~ Igeno + Species/PlGenoNm + Igeno:Species/PlGenoNm + Igeno:Species + (1|ExpBlock) + (1|IndPlant/Leaf/AorB) + (1|ExpBlock:Igeno), data = ModDat)")
 #rand{lmerTest} is deprecated. now use ranova{lmerTest}
-ranova(mymmod)
-Anova(mymmod, type=2)
-anova(mymmod, type=2)
+ranova(fullmod.rmD)
+Anova(fullmod.rmD, type=2)
+anova(fullmod.rmD, type=2)
 #anova(mymmod) #won't do
 #Anova(mymmod, type=3)
 print(Sys.time())
