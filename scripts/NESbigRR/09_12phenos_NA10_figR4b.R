@@ -64,8 +64,8 @@ table(SNPbin$SUMM)
 #high overlap SNP list for annotation
 HOSNP <- SNPbin[SNPbin$SUMM > 6,]
 fullSNP <- SNPbin[SNPbin$SUMM > 0,]
-write.csv(HOSNP, "data/GWAS_files/05_annotation/TrueMAF_NAs/12Plants_HiOverlapSNPs_trueMAF20_10NA.csv")
-write.csv(fullSNP, "data/GWAS_files/05_annotation/TrueMAF_NAs/12Plants_AnyOverlapSNPs_trueMAF20_10NA.csv")
+#write.csv(HOSNP, "data/GWAS_files/05_annotation/TrueMAF_NAs/12Plants_HiOverlapSNPs_trueMAF20_10NA.csv")
+#write.csv(fullSNP, "data/GWAS_files/05_annotation/TrueMAF_NAs/12Plants_AnyOverlapSNPs_trueMAF20_10NA.csv")
 
 SUMM.plot <- SNPbin
 #draw the plots!!!
@@ -77,11 +77,16 @@ myColors <- c("grey40", "grey60", "grey40", "grey60", "grey40", "grey60", "grey4
 library(ggplot2)
 colScale <- scale_colour_manual(name = "Chrom",values = myColors)
 
+#highlight points crossing dotted lines
+df.hlt <- data.frame(SUMM.plot[SUMM.plot$Index %in% c(1099438,1836245,31154483,33853054,36555407,41350409,5703231,6589294,7955289,11188054,22332692,24530790),]) 
+df.hlt <- df.hlt[,c("Index", "SUMM")]
+
 #make plots 
 #for poster figures, width=8, height=4
- jpeg("paper/plots/FigR6/FigR6b_Summary_99Thresh_ManhattanPlot_NA10.jpg", width=7.5, height=5, units='in', res=600)
+# jpeg("paper/plots/FigR6/FigR6b_Summary_99Thresh_ManhattanPlot_NA10.jpg", width=7.5, height=5, units='in', res=600)
+jpeg("paper/Submissions/PlantCell/TPC revision/Figures/FigR4a_Summary_99Thresh_ManhattanPlot_NA10.jpg", width=7.5, height=5, units='in', res=600)
 #SUMMtemp <- subset(SUMM.plot[SUMM.plot$Chrom==c(5,6),])
-  ggplot(SUMM.plot, aes(x=Index, y=SUMMpos))+
+  ggplot(SUMM.plot, aes(x=Index, y=SUMM))+
     colScale+ #remove for rainbow plot
     theme_bw()+
 #    scale_x_continuous(breaks = ticks)+
@@ -101,13 +106,20 @@ colScale <- scale_colour_manual(name = "Chrom",values = myColors)
     geom_vline(xintercept=33853054, lty=2)+
     geom_vline(xintercept=36555407, lty=2)+
     geom_vline(xintercept=41350409, lty=2)+
-   # geom_vline(xintercept=5703231, lty=2)+
+    geom_vline(xintercept=5703231, lty=2)+
     geom_vline(xintercept=6589294, lty=2)+
     geom_vline(xintercept=7955289, lty=2)+
     geom_vline(xintercept=11188054, lty=2)+
     geom_vline(xintercept=22332692, lty=2)+
-    geom_vline(xintercept=24530790, lty=2)
+    geom_vline(xintercept=24530790, lty=2)+
+    geom_point(data=df.hlt, pch=21, colour="black")
   dev.off()
+  
+
+  
+  ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, col = Species)) +
+    geom_point() +
+    geom_point(data = df, col = 'blue')
 
 SUMMhi <- subset(SUMM.plot, SUMM.plot$SUMM == 1)
 

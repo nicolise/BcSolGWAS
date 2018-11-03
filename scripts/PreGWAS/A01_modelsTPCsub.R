@@ -152,6 +152,9 @@ ModDat.rmD <- subset(ModDat.rmD, Igeno != "Rose")
 
 library(lme4); library(car); library(lmerTest)
 
+#get mean of lesion size on Domest vs. Wild after these isolates are dropped:
+aggregate(ModDat.rmD[,"Scale.LS"], list(ModDat.rmD$Species), mean)
+
 #mixed fx model I used for final version of paper
 mystarttime <- Sys.time()
 rownames(ModDat.rmD) = make.names(rownames(ModDat.rmD), unique=TRUE)

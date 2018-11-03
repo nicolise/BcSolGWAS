@@ -1,0 +1,62 @@
+﻿geneID,tot_LA0410,tot_LA0480,tot_LA1547,tot_LA1589,tot_LA1684,tot_LA2093,tot_LA2176,tot_LA2706,tot_LA3008,tot_LA3475,tot_LA4345,tot_LA4355,TotPhenos,PFAM_NAME,PFAM_DESCRIPTION,BCIN
+BcT4_1873,1,1,1,1,1,1,1,1,1,1,1,1,12,GMC_oxred_N,GMC oxidoreductase,Bcin09g04570
+BcT4_2485,1,1,1,1,1,1,1,1,1,1,1,1,12,HET,Heterokaryon incompatibility protein (HET),Bcin04g03540
+BcT4_3044,1,1,1,1,1,1,1,1,1,1,1,1,12,NA,NA,Bcin10g04750
+BcT4_3048,1,1,1,1,1,1,1,1,1,1,1,1,12,NA,NA,Bcin10g04790
+BcT4_475,1,1,1,1,1,1,1,1,1,1,1,1,12,RRM_1,RNA recognition motif. (a.k.a. RRM,Bcin03g04120
+BcT4_477,1,1,1,1,1,1,1,1,1,1,1,1,12,NA,NA,Bcin02g04880
+BcT4_479,1,1,1,1,1,1,1,1,1,1,1,1,12,CPSF73-100_C,Pre-mRNA 3'-end-processing endonuclease polyadenylation factor C-term,Bcin03g04080
+BcT4_5778,1,1,1,1,1,1,1,1,1,1,1,1,12,Pkinase,Protein kinase domain,Bcin15g04110
+BcT4_6000,1,1,1,1,1,1,1,1,1,1,1,1,12,MFS_1,Major Facilitator Superfamily,Bcin14g00870
+BcT4_7428,1,1,1,1,1,1,1,1,1,1,1,1,12,2-Hacid_dh_C,D-isomer specific 2-hydroxyacid dehydrogenase,Bcin16g04640
+BcT4_790,1,1,1,1,1,1,1,1,1,1,1,1,12,NA,NA,Bcin03g00550
+BcT4_8803,1,1,1,1,1,1,1,1,1,1,1,1,12,HET,Heterokaryon incompatibility protein (HET),Bcin01g10020
+BcT4_8813,1,1,1,1,1,1,1,1,1,1,1,1,12,M20_dimer,Peptidase dimerisation domain,Bcin01g10130
+BcT4_9744,1,1,1,1,1,1,1,1,1,1,1,1,12,IBR,IBR domain,Bcin15g04510
+BcT4_1316,1,1,1,1,1,1,1,1,1,1,1,0,11,NA,NA,Bcin06g01770
+BcT4_1791,1,1,0,1,1,1,1,1,1,1,1,1,11,Aldedh,Aldehyde dehydrogenase family,NA
+BcT4_1921,1,1,0,1,1,1,1,1,1,1,1,1,11,Sugar_tr,Sugar (and other) transporter,Bcin09g05080
+BcT4_2339,1,0,1,1,1,1,1,1,1,1,1,1,11,CorA,CorA-like Mg2+ transporter protein,Bcin04g03640
+BcT4_2664,1,1,1,1,1,1,1,1,1,0,1,1,11,Pyr_redox_2,Pyridine nucleotide-disulphide oxidoreductase,Bcin10g00570
+BcT4_3043,1,1,1,1,1,1,1,1,1,0,1,1,11,NA,NA,Bcin10g04720
+BcT4_3045,1,1,1,1,1,1,1,1,1,0,1,1,11,NA,NA,Bcin10g04760
+BcT4_3046,1,1,1,1,1,1,1,1,1,0,1,1,11,NA,NA,Bcin10g04770
+BcT4_3054,1,1,1,1,1,1,1,1,1,1,0,1,11,NA,NA,Bcin10g04840
+BcT4_3124,1,1,0,1,1,1,1,1,1,1,1,1,11,NA,NA,Bcin10g05600
+BcT4_3850,1,1,0,1,1,1,1,1,1,1,1,1,11,NA,NA,Bcin07g00190
+BcT4_4121,1,1,0,1,1,1,1,1,1,1,1,1,11,FPN1,Ferroportin1 (FPN1),Bcin11g05830
+BcT4_4122,1,1,0,1,1,1,1,1,1,1,1,1,11,NA,NA,NA
+BcT4_4536,1,1,0,1,1,1,1,1,1,1,1,1,11,NA,NA,Bcin02g07420
+BcT4_4537,1,1,0,1,1,1,1,1,1,1,1,1,11,HEAT_2,HEAT repeats,Bcin02g07410
+BcT4_4564,1,1,0,1,1,1,1,1,1,1,1,1,11,Oxidored_FMN,NADH:flavin oxidoreductase / NADH oxidase family,Bcin02g07090
+BcT4_4566,1,1,0,1,1,1,1,1,1,1,1,1,11,NA,NA,Bcin02g07070
+BcT4_476,1,1,0,1,1,1,1,1,1,1,1,1,11,Het-C,Heterokaryon incompatibility protein Het-C,Bcin03g04100
+BcT4_5054,1,1,0,1,1,1,1,1,1,1,1,1,11,MFS_1,Major Facilitator Superfamily,Bcin01g05010
+BcT4_5586,1,1,0,1,1,1,1,1,1,1,1,1,11,TPP_enzyme_N,Thiamine pyrophosphate enzyme,Bcin15g01860
+BcT4_5624,1,0,1,1,1,1,1,1,1,1,1,1,11,NA,NA,NA
+BcT4_5627,1,1,0,1,1,1,1,1,1,1,1,1,11,NA,NA,Bcin15g02360
+BcT4_5640,1,1,0,1,1,1,1,1,1,1,1,1,11,Fungal_trans,Fungal specific transcription factor domain,Bcin15g02520
+BcT4_5771,1,1,1,1,1,1,1,1,1,0,1,1,11,Pyridox_oxidase,Pyridoxamine 5'-phosphate oxidase,Bcin15g04030
+BcT4_5777,1,1,0,1,1,1,1,1,1,1,1,1,11,NA,NA,Bcin15g04090
+BcT4_5825,1,0,1,1,1,1,1,1,1,1,1,1,11,Sugar_tr,Sugar (and other) transporter,Bcin14g02810
+BcT4_5838,1,0,1,1,1,1,1,1,1,1,1,1,11,NA,NA,Bcin14g02670
+BcT4_5971,1,0,1,1,1,1,1,1,1,1,1,1,11,NA,NA,Bcin14g01160
+BcT4_6001,1,1,0,1,1,1,1,1,1,1,1,1,11,Pectinesterase,Pectinesterase,Bcin14g00860
+BcT4_6002,1,1,0,1,1,1,1,1,1,1,1,1,11,Glyco_hydro_28,Glycosyl hydrolases family 28,Bcin14g00850
+BcT4_6003,1,1,0,1,1,1,1,1,1,1,1,1,11,DUF1279,Protein of unknown function (DUF1279),Bcin14g00840
+BcT4_6020,1,1,1,1,1,1,1,1,1,0,1,1,11,Glyco_hydro_31,Glycosyl hydrolases family 31,Bcin14g00650
+BcT4_6509,1,0,1,1,1,1,1,1,1,1,1,1,11,Lactonase,Lactonase,Bcin13g04750
+BcT4_663,1,0,1,1,1,1,1,1,1,1,1,1,11,PKS17 GFO_IDH_MocA,Oxidoreductase family,Bcin03g02020
+BcT4_6901,1,0,1,1,1,1,1,1,1,1,1,1,11,Thi4,Thi4 family,Bcin12g02910
+BcT4_8116,1,1,1,1,0,1,1,1,1,1,1,1,11,SnoaL,SnoaL-like polyketide cyclase,Bcin05g06490
+BcT4_8414,1,1,0,1,1,1,1,1,1,1,1,1,11,RVT_1,Reverse transcriptase (RNA-dependent DNA polymerase),Bcin11g01080
+BcT4_8440,1,1,0,1,1,1,1,1,1,1,1,1,11,STAS,STAS domain,Bcin11g01360
+BcT4_8731,1,0,1,1,1,1,1,1,1,1,1,1,11,AAA,ATPase family associated with various cellular activities (AAA),Bcin01g09090
+BcT4_8749,1,1,0,1,1,1,1,1,1,1,1,1,11,Ecm29,Proteasome stabiliser,Bcin01g09300
+BcT4_8805,1,1,1,1,1,1,1,1,0,1,1,1,11,DUF3506,Domain of unknown function (DUF3506),Bcin01g10040
+BcT4_9107,1,1,1,1,0,1,1,1,1,1,1,1,11,Mito_carr,Mitochondrial carrier protein,Bcin02g08460
+BcT4_9395,1,1,0,1,1,1,1,1,1,1,1,1,11,NACHT,NACHT domain,Bcin04g00920
+BcT4_9402,1,1,0,1,1,1,1,1,1,1,1,1,11,NA,NA,Bcin04g00840
+BcT4_9404,1,0,1,1,1,1,1,1,1,1,1,1,11,Ank_2,Ankyrin repeats (3 copies),Bcin04g00810
+BcT4_9429,1,1,1,1,1,1,1,1,1,0,1,1,11,NA,NA,NA
+BcT4_9754,1,0,1,1,1,1,1,1,1,1,1,1,11,Peptidase_M3,Peptidase family M3,Bcin15g04410

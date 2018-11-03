@@ -1,0 +1,12 @@
+﻿Fixed Effect ,% genetic variance ,SS,F value,DF,p,,Mean lesion area:,
+Isolate,13.5,36.5,1.7,92,0.009,,Domesticated,0.725
+Domestication,1.2,3.2,13.4,1,0.0008,,Wild,0.62
+Domest/Plant,15.2,41.1,17,10,4.32E-11,,,
+Iso:Domest,5.7,15.3,0.7,92,0.99,,,
+Iso:Domest/Plant,64.4,173.8,0.8,920,1,,,
+Random Effect,LRT,DF,p,,,,,
+1 | Experiment,134.3,1,<2e-16,,,,,
+1 | Whole Plant,0.029,1,0.86,,,,,
+1 | WP/Leaf,24.4,1,7.70E-07,,,,,
+1 | WP/Leaf/Leaflet Pair,0,1,1,,,,,
+1 | Exp:Iso,308.6,1,<2e-16,,,,,
