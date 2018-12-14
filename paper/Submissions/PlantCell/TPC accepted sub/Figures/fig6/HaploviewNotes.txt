@@ -1,0 +1,5 @@
+Files in BcSolGWAS/data/BcGenome/chr2_analysis
+
+use haploview for plot
+
+actual plot 6b is from LDplot2.2V1.lg.png
