@@ -8,7 +8,9 @@ library(tidyr)
 setwd("~/Projects/BcSolGWAS/data/GWAS_files/04_bigRRoutput/trueMAF_10NA/")
 #Import data
 #reorganize file Sl_LesionSize.HEM.csv
-HEMdat <- read.csv("SlBc_12Plants_hpbin_trueMAF20_10NA.HEM.csv")
+HEMdat <- read.csv("SlBc_12Plants_hpbin_trueMAF20_10NA.HEM.fix.csv")
+
+checkdat <- read.csv("RawOuts/SlBc_IndPlants_LA2176_hpbin_trueMAF20_10NA.HEM.csv")
 
 #first remove first 4 rows (threshold data)
 HEMdat <- HEMdat[,-c(1)]

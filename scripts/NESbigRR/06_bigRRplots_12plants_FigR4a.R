@@ -62,10 +62,10 @@ names(myColors) <- levels(HEM.plotdata$Chrom)
 colScale <- scale_colour_manual(name = "Chrom",values = myColors)
 
 #get midpoint positions per chromosome
-((max(HEM.plotdata[ which(HEM.plotdata$Chrom=='16'),]$Index) - min(HEM.plotdata[ which(HEM.plotdata$Chrom=='16'),]$Index))/2+min(HEM.plotdata[ which(HEM.plotdata$Chrom=='16'),]$Index))
+#((max(HEM.plotdata[ which(HEM.plotdata$Chrom=='16'),]$Index) - min(HEM.plotdata[ which(HEM.plotdata$Chrom=='16'),]$Index))/2+min(HEM.plotdata[ which(HEM.plotdata$Chrom=='16'),]$Index))
 
 #get length per chromosome segment
-max(HEM.plotdata[which(HEM.plotdata$Chrom.Seg.F=='16.7'),]$Index) - min(HEM.plotdata[which(HEM.plotdata$Chrom.Seg.F=='16.7'),]$Index)
+#max(HEM.plotdata[which(HEM.plotdata$Chrom.Seg.F=='16.7'),]$Index) - min(HEM.plotdata[which(HEM.plotdata$Chrom.Seg.F=='16.7'),]$Index)
 
 #this is the correct list for NA10
 #c(1674920, 5242762, 8999082, 11057880, 13580364, 17181767, 20009659, 22371413, 24388631, 26765466, 28559407, 30104939, 31864287, 33980281, 35775028, 38876579)
@@ -73,11 +73,21 @@ max(HEM.plotdata[which(HEM.plotdata$Chrom.Seg.F=='16.7'),]$Index) - min(HEM.plot
 #this is the correct list for NA20
 #c(1677869, 5250031, 9006772, 11066464, 13584641, 17192569, 20021437, 22387756, 24411342, 26784999, 28587689, 30133032, 31892533, 34009041, 35807682,  38915229)
 
+df.hlt <- data.frame(HEM.plotdata[HEM.plotdata$Index %in% c(1099438,1836245,31154483,33853054,36555407,41350409,5703231,6589294,7955289,11188054,22332692,24530790),]) 
+df.hlt <- df.hlt[,c("Index", "LA2093")]
+df.hlt$myY <- 100*df.hlt$LA2093
+df.hlt <- df.hlt[,c(1,3)]
+names(df.hlt)[2] <- "myY"
+
+HEM.plotdata$myY <- 100*HEM.plotdata[,7]
+
 #greyscale version
 #4 to 15
-for (i in c(7)){
-  jpeg(paste("paper/plots/FigR6/bw_Sl_LesionSize_trueMAF20_NA10_lowTR_", names(HEM.plotdata[i]), ".ManhattanPlot.jpg", sep=""), width=7.5, height=5, units='in', res=600)
-  plot(ggplot(HEM.plotdata, aes(x=Index, y=100*HEM.plotdata[,i]))+
+#for (i in c(7)){
+i <- 7
+  jpeg(paste("paper/Submissions/PlantCell/TPC revision/Figures/Fig4a_bw_Sl_LesionSize_trueMAF20_NA10_lowTR_", names(HEM.plotdata[i]), ".ManhattanPlot.jpg", sep=""), width=7.5, height=5, units='in', res=600)
+  plot(
+    ggplot(HEM.plotdata, aes(x=Index, y=myY))+
          theme_bw()+
          colScale+
          geom_point(aes(color = factor(Chrom)))+
@@ -101,15 +111,17 @@ for (i in c(7)){
          geom_vline(xintercept=33853054, lty=2)+
          geom_vline(xintercept=36555407, lty=2)+
          geom_vline(xintercept=41350409, lty=2)+
-         #geom_vline(xintercept=5703231, lty=2)+
+         geom_vline(xintercept=5703231, lty=2)+
          geom_vline(xintercept=6589294, lty=2)+
          geom_vline(xintercept=7955289, lty=2)+
          geom_vline(xintercept=11188054, lty=2)+
          geom_vline(xintercept=22332692, lty=2)+
-         geom_vline(xintercept=24530790, lty=2)
+         geom_vline(xintercept=24530790, lty=2)+
+         geom_point(data=df.hlt,  pch=21, colour="black")
+    #
   )
   dev.off()
-}
+#}
 
 #NA20 chromosomes
 #scale_x_continuous(name="Chromosome", breaks = c(1677869, 5250031, 9006772, 11066464, 13584641, 17192569, 20021437, 22387756, 24411342, 26784999, 28587689, 30133032, 31892533, 34009041, 35807682, 38915229), labels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10", "11", "12", "13", "14", "15", "16"))+

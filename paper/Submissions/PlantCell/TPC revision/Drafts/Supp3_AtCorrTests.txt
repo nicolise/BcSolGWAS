@@ -1,0 +1,25 @@
+> cor.test(myDat.corr$meanLs.cm.Dm, myDat.corr$Col0.Les)
+
+	Pearson's product-moment correlation
+
+data:  myDat.corr$meanLs.cm.Dm and myDat.corr$Col0.Les
+t = 3.0225, df = 92, p-value = 0.003247
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.1042803 0.4742821
+sample estimates:
+     cor 
+0.300547 
+
+> cor.test(myDat.corr$meanLs.cm.Wl, myDat.corr$Col0.Les)
+
+	Pearson's product-moment correlation
+
+data:  myDat.corr$meanLs.cm.Wl and myDat.corr$Col0.Les
+t = 2.4461, df = 92, p-value = 0.01634
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.04684014 0.42828500
+sample estimates:
+      cor 
+0.2471119 

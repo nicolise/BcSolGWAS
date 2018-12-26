@@ -1,0 +1,23 @@
+﻿Function,More Function,Enzyme,fisher.up.All,fisher.up.Do,fisher.up.Wi,fisher.up.Se
+2OG-Fe(II) oxygenase superfamily,,y,0.095566172,0.155098474,0.031354155,1
+ABC-2 type transporter,,,0.175448052,0.150579732,0.049971041,1
+Acetyltransferase (GNAT) family,,y,0.970918916,1,0.866412802,1
+Alcohol dehydrogenase GroES-like domain,,y,0.975244541,1,0.878110635,1
+Aldehyde dehydrogenase family,,y,0.027038641,0.048120046,0.180853822,0.024795532
+C2H2 type zinc-finger (2 copies),,,0.107344357,0.360487301,0.040557284,1
+Clr5 domain,,,0.071670613,0.060134627,0.017756436,1
+DNA polymerase family B,,,0.045924725,0.038230181,0.01084408,1
+Dopa 4,betalain biosynthesis,y,0.274715652,0.257708474,1,0.003339128
+Enoyl-CoA hydratase/isomerase family,,y,0.595431476,0.832912721,0.315925912,0.019881985
+Haloacid dehalogenase-like hydrolase,,y,0.216119104,0.412560339,0.064377777,0.014945753
+Indoleamine 2,"possibly: trp degradation in tomato. Indoleamine 2,3-dioxygenase",,0.337610912,0.647739513,0.47263339,0.011642283
+KR domain,"kringle, binding",,0.933177489,0.990056533,0.913715933,1
+OPT oligopeptide transporter protein,,,0.141993548,0.264479262,0.282408636,0.018239099
+PHD-zinc-finger like domain,,,0.274715652,0.257708474,0.167028635,0.003339128
+Phosphopantetheine attachment site,,,0.988880644,0.983317719,1,1
+Phosphotyrosyl phosphate activator (PTPA) protein,,,0.107344357,0.094811632,0.040557284,1
+Pre-mRNA splicing Prp18-interacting factor,,,0.274715652,0.257708474,0.167028635,0.003339128
+Protein of unknown function (DUF3445),,,0.071670613,0.196627891,0.017756436,1
+Sulfatase,likely miscat: Type I phosphodiesterase/nucleotide pyrophosphatase/phosphate transferase,y,0.474006167,1,1,0.006668033
+Ubiquitin fusion degradation protein UFD1,,,0.107344357,0.094811632,0.040557284,1
+WSC domain,carbohydrate binding,,0.141993548,0.264479262,0.028396574,1

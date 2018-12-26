@@ -15,7 +15,7 @@ GenesDForAnnot <- read.csv("data/GWAS_files/05_annotation/Domest_TopSNPs_10NA_in
 Genes12ForAnnot <- read.csv("data/GWAS_files/05_annotation/window2kb/hi12plants_genesTOANNOT.csv")
 HOGenesForAnnot <- read.csv("data/GWAS_files/05_annotation/window2kb/12plants_HO_genesTOANNOT.csv")
 
-FuncAnnot <- read.csv("data/genome/annotation/botrytis_cinerea__t4__1_pfam_to_genes_mycleaned.csv")
+FuncAnnot <- read.csv("data/BcGenome/annotation/botrytis_cinerea__t4__1_pfam_to_genes_mycleaned.csv")
 
 head(FuncAnnot)
 

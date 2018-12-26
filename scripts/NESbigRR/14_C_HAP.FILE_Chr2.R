@@ -9,7 +9,7 @@ rm(list=ls())
 setwd("~/Documents/GitRepos/BcSolGWAS/")
 setwd("~/Projects/BcSolGWAS/")
 
-# first bring Chr16_A.qassoc.hap into excel or libreoffice calc. Do fixed-width import -- tab separated didn't work in R directly. Save as .csv
+# first bring Chr2_A.qassoc.hap into excel or libreoffice calc. Do fixed-width import -- tab separated didn't work in R directly. Save as .csv
 myHAP.1 <-  read.csv("data/genome/chr2_analysis/haps/chr2_A.qassoc.hap.csv", sep=",")
 myHAP.2 <-  read.csv("data/genome/chr2_analysis/haps/chr2_A.qassoc_test.hap.csv", sep=",")
 
