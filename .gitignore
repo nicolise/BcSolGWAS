@@ -7,5 +7,7 @@ plots/
 images/
 results/
 photos/
+Figures/
+figures/
 
 packrat/lib*/
